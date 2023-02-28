@@ -29,15 +29,15 @@ git push origin branch
 ~~~
 git branch <branch_name>
 ~~~
-* Create <branch name></b>
+* Create "<branch_name>"</b>
 ~~~
 git branch -b <branch_name>
 ~~~
-* Move to the <branch name></b>
+* Move to the "<branch_name>"</b>
 ~~~
 git branch -d <branch_name>
 ~~~
-* Delete the <branch name>
+* Delete the "<branch_name>"
 ## Alias
 ~~~
 [alias]
