@@ -5,7 +5,7 @@ services:
   app:
     build: .
     environment:
-      DOCKER: 1
+      DOCKER: 1 # Environment variable for Vlad
       WAIT_HOSTS: mongo:27017
     ports:
       - '8080:8000'
