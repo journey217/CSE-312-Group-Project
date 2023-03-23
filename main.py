@@ -1,9 +1,5 @@
 from flask import Flask, render_template
-from pymongo import MongoClient
-
-mongo_client = MongoClient("mongo")
-db = mongo_client["CSE312-Group-Project-Test"]
-master = db["Testing"]
+from Database import Database, DBType, UserVal, AuctionVal
 
 
 app = Flask(__name__)
@@ -15,4 +11,5 @@ def homepage():  # Naming convention can be changed
 
 
 if __name__ == '__main__':
+    db = Database()
     app.run(debug=True)
