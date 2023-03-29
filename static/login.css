@@ -1,10 +1,12 @@
+body{
+    background-color: #2C2C3C;
+    margin-top:10%;
+}
 .login {
     display: flex;
-    min-height: 97vh;
     text-align: left;
     align-items: center;
     justify-content: center;
-    background: #2C2C3C;
 }
 
 .header {
@@ -12,18 +14,18 @@
     font-style: normal;
     font-weight: 700;
     font-size: 60px;
-
     text-align: center;
 
     color: #0BA484;
 
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 1);
 }
 
 .login-form {
-    display: flex;
     background-color: #424242;
-    width: 40%;
+    border-radius: 15px;
+    padding-top: 10%;
+    padding-bottom:10%;
 }
 .login-inputs {
     display: flex;
@@ -33,11 +35,12 @@
 
 
 .login-form input {
+    
     text-decoration: none;
     padding: 10px;
     border-radius: 5px;
     border: none;
-    margin: 0.5rem 0;
+    margin:5% 20% 0% 20%;
 }
 
 
@@ -53,6 +56,7 @@
     padding: 10px;
     border-radius: 10px;
     cursor: pointer;
+    margin:5% 30% 0% 30%
 }
 
 .login-form a {
@@ -60,15 +64,19 @@
 }
 
 .forgot-button {
-    margin-top: 30px;
+    margin-top:5%;
+    margin-left:25%;
+    margin-right:9%;
     border: none;
     background: none;
     color: white;
+    cursor:pointer;
+
 }
 
-.register-button {
-    margin-top: 30px;
+.signup-button {
     border: none;
     background: none;
     color: white;
+    cursor:pointer;
 }
