@@ -45,7 +45,7 @@ class Database:
         return self.db[type_.value].find_one({'ID': ID, 'deleted': False})
 
     def find_user_by_email(self, email):
-        return self.users_collection.find_one({"Email": email, 'deleted': False})
+        return self.users_collection.find_one({"email": email, 'deleted': False})
 
     def add_bid_to_db(self, userID, auctionID, price):
         bidID = uuid4()
@@ -56,6 +56,7 @@ class Database:
                    "timestamp": datetime.datetime.now()
                    }
         # Add bid to Bids
+        self.bids_collection.insert_one(new_bid)
         # Add bidID to User.bids_history
         # Add bidID to Auction.bid_history
         return new_bid
@@ -72,12 +73,14 @@ class Database:
                        "end_time": end_time,
                        "bid_history": []}
         # Add Auction to Auctions
+        self.auctions_collection.insert_one(new_auction)
         # Add auctionID to User.auctions_made
+        self.users_collection.update_one()
         return new_auction
 
     def add_user_to_db(self, username, email, hashed_password, profile_pic, bio, name):
         user_id = uuid4()
-        new_user = {"ID": uuid4(),
+        new_user = {"ID": user_id,
                     "username": username,
                     "email": email,
                     "hashed_password": hashed_password,
@@ -87,6 +90,7 @@ class Database:
                     "auctions_made": [],
                     "bid_history": []}
         # Add User to Users
+        self.users_collection.insert_one(new_user)
         return new_user
 
     # user_val is an enum of UserVal
