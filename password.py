@@ -22,8 +22,6 @@ def long_password_hash(password):
 
 # In a future revision, function should return error messages in some way. That's why its written badly
 def valid_password(password):
-    if password == "password":
-        return False
     # At least 8 characters
     if len(password) < 8:
         return False
