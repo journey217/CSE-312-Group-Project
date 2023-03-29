@@ -18,7 +18,7 @@ def login_page():  # Naming convention can be changed
 
 @app.route('/register')
 def register_page():  # Naming convention can be changed
-    return render_template('register.html')
+    return render_template('registration.html')
 
 
 if __name__ == '__main__':
