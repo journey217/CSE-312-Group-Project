@@ -1,35 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
+import React from "react";
+import {Link} from 'react-router-dom';
+import "../styles/login.css";
 
-<head>
-    <link rel="stylesheet" href="../static/login.css">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-</head>
+export default function Login(page) {
 
-<body>
-    <div class="login">
-        <ul>
-            <header class="header">PRODUCT NAME</header>
-            <div class="login-form">
-                <form class="login-inputs" onSubmit={handleSubmission}>
-                    <label for="email"></label>
-                    <input type="email" placeholder="Email" name="email" />
-                    <label for="password"></label>
-                    <input type="password" placeholder="Password" name="password" required />
-                    <button>Login</button>
-                </form>
-                <button class="forgot-button">
-                    <Link to="/forgot">Forgot Password</Link>
-                </button>
-                <button class="signup-button">
-                    <Link to="/register">Sign Up</Link>
-                </button>
-            </div>
-        </ul>
-    </div>
-</body>
-
-</html>
+    const handleSubmission = (e) =>{
+        
+    }
+    return (
+        <div class="login">
+            <ul>
+                <header class="header">PRODUCT NAME</header>
+                <div class="login-form">
+                    <form class="login-inputs" onSubmit={handleSubmission}>
+                        <label for="email"></label>
+                        <input type="email" placeholder="Email" name="email" />
+                        <label for="password"></label>
+                        <input type="password" placeholder="Password" name="password" required />
+                        <button>Login</button>
+                    </form>
+                    <button class="forgot-button">
+                        <Link to="/forgot">Forgot Password</Link>
+                    </button>
+                    <button class="signup-button">
+                        <Link to="/register">Sign Up</Link>
+                    </button>
+                </div>
+            </ul>
+        </div>
+    );
+}
