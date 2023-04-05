@@ -1,11 +1,15 @@
 from flask import Flask, render_template
 from pymongo import MongoClient
 import json
+from os import environ as environment
 from database import Database, DBType, UserVal, AuctionVal
 
 app = Flask(__name__)
 
-mongo_client = MongoClient("mongo")
+if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
+    mongo_client = MongoClient('mongo')
+else:  # Otherwise None
+    mongo_client = MongoClient('localhost')
 db = mongo_client["CSE312-Group-Project-Test"]
 auctions_collection = db["Auctions"]
 users_collection = db["Users"]
@@ -32,6 +36,10 @@ def home_page():  # Naming convention can be changed
     # items_list = db2.home_page_items()
     return json.dumps(items_list)
 
+@app.route("/test")
+def test():  # Naming convention can be changed
+    items_list = [{'name': 'item_one'}, {'name': 'item_two'}]
+    return items_list
 
 @app.route("/login")
 def login_page():  # Naming convention can be changed

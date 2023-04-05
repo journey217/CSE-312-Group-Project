@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Dropdown from "../components/Dropdown";
-import "../styles/LandingPage.css"
+import Dropdown from "../components/dropdown";
+import "../styles/landingPage.css"
 
 export default function LandingPage(page) {
     const [searchText, setSearchText] = useState("");

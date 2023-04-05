@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from uuid import uuid4
 import datetime
 from enum import Enum
+from os import environ as environment
 
 
 class DBType(Enum):
@@ -34,6 +35,10 @@ class AuctionVal(Enum):  # Editable Auction Values
 
 class Database:
     def __init__(self):
+        if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
+            mongo_client = MongoClient('mongo')
+        else:  # Otherwise None
+            mongo_client = MongoClient('localhost')
         mongo_client = MongoClient("mongo")
         self.db = mongo_client["CSE312-Group-Project-Test"]
         self.auctions_collection = self.db["Auctions"]
