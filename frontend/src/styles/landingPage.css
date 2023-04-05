@@ -34,7 +34,7 @@ body {
     appearance: none;
     background: #D5D5D5;
     border: none;
-
+    padding: 0px 10px;
     border-radius: 15px;
 
     height: 40px;
@@ -47,6 +47,7 @@ body {
 
     background: #237563;
     border-radius: 15px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     width: 90px;
     height: 40px;
@@ -61,6 +62,10 @@ body {
     margin-right: 10px;
 
     color: #FFFFFF;
+}
+.landing_search_button:hover{
+    background-color: #37AA91;
+    box-shadow: none;
 }
 
 .landing_category {
@@ -95,7 +100,7 @@ body {
     appearance: none;
     border: none;
 
-    background: #237563;
+    background-color: #237563;
     border-radius: 15px;
 
     width: 90px;
@@ -110,6 +115,11 @@ body {
 
     color: #FFFFFF;
 
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.landing_category_new_item:hover{
+    background-color: #37AA91;
+    box-shadow: none;
 }
 
 .landing_category_container {
