@@ -42,35 +42,3 @@ li {
 .nav-item a:hover {
   background: red;
 }
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.search-bar input[type="text"] {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 20px;
-  font-size: 16px;
-  width: 200px; /* set a fixed width for the input element */
-  background-color: #f5f5f5;
-  margin-right: 8px;
-}
-
-.search-bar input[type="text"]::placeholder {
-  color: #aaa;
-}
-
-.search-bar button {
-  position: absolute;
-  right: 0;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.search-bar button:hover {
-  color: red;
-}

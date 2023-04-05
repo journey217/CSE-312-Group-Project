@@ -19,11 +19,6 @@ export default function Navbar() {
                 LOGO IMAGE
             </Link>
             <ul className="nav-items">
-                <li>
-                    <form className="search-form">
-                        <input type="text" placeholder="Search" onChange={handleSearchChange} />
-                    </form>
-                </li>
                 {navItems.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => {
                     if (item.title === "Profile") {
                         return (
