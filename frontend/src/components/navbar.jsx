@@ -14,37 +14,37 @@ export default function Navbar() {
     };
 
     return (
-            <nav className="navbar">
-                <Link to="/" className="navbar-logo">
-                    LOGO IMAGE
-                </Link>
-                <ul className="nav-items">
-                    <li>
-                        <form className="search-form">
-                            <input type="text" placeholder="Search" onChange={handleSearchChange} />
-                        </form>
-                    </li>
-                    {navItems.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => {
-                        if (item.title === "Profile") {
-                            return (
-                                <li
-                                    key={item.id}
-                                    className={item.cName}
-                                    onMouseEnter={() => setDropdown(true)}
-                                    onMouseLeave={() => setDropdown(false)}
-                                >
-                                    <Link to={item.path}>{item.title}</Link>
-                                    {dropdown && <Dropdown />}
-                                </li>
-                            );
-                        }
+        <nav className="navbar">
+            <Link to="/" className="navbar-logo">
+                LOGO IMAGE
+            </Link>
+            <ul className="nav-items">
+                <li>
+                    <form className="search-form">
+                        <input type="text" placeholder="Search" onChange={handleSearchChange} />
+                    </form>
+                </li>
+                {navItems.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => {
+                    if (item.title === "Profile") {
                         return (
-                            <li key={item.id} className={item.cName}>
+                            <li
+                                key={item.id}
+                                className={item.cName}
+                                onMouseEnter={() => setDropdown(true)}
+                                onMouseLeave={() => setDropdown(false)}
+                            >
                                 <Link to={item.path}>{item.title}</Link>
+                                {dropdown && <Dropdown />}
                             </li>
                         );
-                    })}
-                </ul>
-            </nav>
+                    }
+                    return (
+                        <li key={item.id} className={item.cName}>
+                            <Link to={item.path}>{item.title}</Link>
+                        </li>
+                    );
+                })}
+            </ul>
+        </nav>
     );
 };

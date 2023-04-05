@@ -1,4 +1,5 @@
-.dropdown {
+.dropdown_nav {
+    z-index: 999;
     width: 10rem;
     position: absolute;
     top: 65px;
@@ -8,18 +9,18 @@
     align-items: center;
 }
 
-.dropdown li {
+.dropdown_nav li {
     background: blue;
     cursor: pointer;
 }
 
-.dropdown li a:hover {
+.dropdown_nav li a:hover {
     background: rgb(105, 105, 184);
     width: 80%;
     cursor: pointer;
 }
 
-.dropdown.clicked {
+.dropdown_nav.clicked {
     display: none;
 }
 
