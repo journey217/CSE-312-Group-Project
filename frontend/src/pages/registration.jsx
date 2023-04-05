@@ -11,7 +11,7 @@ export default function Registration(page) {
     return (
         < div class='register' >
             <ul>
-                <header class="header">PRODUCT NAME</header>
+                <header class="header">JESSBAY</header>
                 <div class="register-form">
                     <form class="reg-inputs" onSubmit={handleSubmission}>
                         <header class="formheader">Create New Account</header>

@@ -10,7 +10,7 @@ export default function Login(page) {
     return (
         <div class="login">
             <ul>
-                <header class="header">PRODUCT NAME</header>
+                <header class="header">JESSBAY</header>
                 <div class="login-form">
                     <form class="login-inputs" onSubmit={handleSubmission}>
                         <label for="email"></label>
@@ -23,7 +23,7 @@ export default function Login(page) {
                         <Link to="/forgot">Forgot Password</Link>
                     </button>
                     <button class="signup-button">
-                        <Link to="/register">Sign Up</Link>
+                        <Link to="/registration">Sign Up</Link>
                     </button>
                 </div>
             </ul>

@@ -1,6 +1,5 @@
 body{
     background-color: #2C2C3C;
-    margin-top:10%;
 }
 .login {
     display: flex;
@@ -60,18 +59,15 @@ body{
 }
 
 .login-form a {
-    color: black;
+    color: white;
 }
 
 .forgot-button {
-    margin-top:5%;
-    margin-left:25%;
-    margin-right:9%;
     border: none;
     background: none;
     color: white;
     cursor:pointer;
-
+    
 }
 
 .signup-button {

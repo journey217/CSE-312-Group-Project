@@ -1,0 +1,34 @@
+.dropdown {
+    width: 10rem;
+    position: absolute;
+    top: 65px;
+    padding-left: 0px;
+    list-style: none;
+    text-align: center;
+    align-items: center;
+}
+
+.dropdown li {
+    background: blue;
+    cursor: pointer;
+}
+
+.dropdown li a:hover {
+    background: rgb(105, 105, 184);
+    width: 80%;
+    cursor: pointer;
+}
+
+.dropdown.clicked {
+    display: none;
+}
+
+.dd-item {
+    width: 100%;
+    height: 100%;
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
