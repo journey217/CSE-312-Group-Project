@@ -1,22 +1,28 @@
 from flask import Flask, render_template
 from pymongo import MongoClient
 import json
-import Database
+from os import environ as environment
+from database import Database, DBType, UserVal, AuctionVal
 
 app = Flask(__name__)
 
-mongo_client = MongoClient("mongo")
+if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
+    mongo_client = MongoClient('mongo')
+else:  # Otherwise None
+    mongo_client = MongoClient('localhost')
 db = mongo_client["CSE312-Group-Project-Test"]
 auctions_collection = db["Auctions"]
 users_collection = db["Users"]
 bids_collection = db["Bids"]
+db2 = Database()  # In future everything should be changed to this
 
-@app.route('/')
+
+@app.route("/")
 def home_page():  # Naming convention can be changed
-    itemsList = []
-    findItems = auctions_collection.find()
-    for doc in findItems:
-        itemsList.append(
+    items_list = []
+    find_items = auctions_collection.find()
+    for doc in find_items:
+        items_list.append(
             {"ID": doc.get("ID"),
              "creatorID": doc.get("creatorID"),
              "name": doc.get("name"),
@@ -27,82 +33,90 @@ def home_page():  # Naming convention can be changed
              "end_time": doc.get("end_time"),
              "bid_history": doc.get("bid_history")}
         )
-    return json.dumps(itemsList)
+    # items_list = db2.home_page_items()
+    return json.dumps(items_list)
 
+@app.route("/test")
+def test():  # Naming convention can be changed
+    items_list = [{'name': 'item_one'}, {'name': 'item_two'}]
+    return items_list
 
-@app.route('/login')
+@app.route("/login")
 def login_page():  # Naming convention can be changed
-    return render_template('login.html')
+    return render_template("login.html")
 
 
 # There should be data sent to /login with a form submission. This data is then matched to a record in the users
 # database before then caching that account to the browser and logging them in.
-@app.post('/login')
-def cacheAccount():
+@app.post("/login")
+def cache_account():
     return True
 
 
 # Requires info from a form submission about what is being changed. Then will go into database and change
 # that data.
-@app.route('/change-?')
+@app.route("/change-?")
 def change():
     return True
 
 
 @app.route("/profile")
 def profile_page():
-    # Check who the user is from caches
-    username = "Passed username from cache/browser"
-    user = {}
-    findUser = users_collection.find_one({"username": username})
-    user["ID"] = findUser.get("ID")
-    user["username"] = findUser.get("username")
-    user["email"] = findUser.get("email")
-    user["profile_pic"] = findUser.get("profile_pic")
-    user["bio"] = findUser.get("bio")
-    user["name"] = findUser.get("name")
-    user["auctions_made"] = findUser.get("auctions_made")
-    user["bid_history"] = findUser.get("bid_history")
+    # username = "Passed username from cache/browser"
+    # user = {}
+    # findUser = users_collection.find_one({"username": username})
+    # user["ID"] = findUser.get("ID")
+    # user["username"] = findUser.get("username")
+    # user["email"] = findUser.get("email")
+    # user["profile_pic"] = findUser.get("profile_pic")
+    # user["bio"] = findUser.get("bio")
+    # user["name"] = findUser.get("name")
+    # user["auctions_made"] = findUser.get("auctions_made")
+    # user["bid_history"] = findUser.get("bid_history")
+
+    # Check the user email from cache
+    email = ""
+    user = db2.find_user_by_email(email)
     return json.dumps(user)
 
 
 @app.route("/create-auction")
-def createAuctionPage():
+def create_auction_page():
     # Return the blank form page for creating an auction item
     return True
 
 
 @app.route("/change-auction")
-def changeAuction():
+def change_auction():
     # Return the blank form page for changing an auction item
     return True
 
 
 @app.post("/change-auction")
-def changeAuction2():
+def change_auction2():
     # Read from the submitted form and use that data to update an auction item.
     itemID = "Item from form"
-    updatedAttribute = "Key they would like to change"
-    updatedValue = "Value they want to update it with"
+    updated_attribute = "Key they would like to change"
+    updated_value = "Value they want to update it with"
     item = {}
-    itemFind = auctions_collection.find_one({"ID": itemID})
-    item[updatedAttribute] = updatedValue
+    item_find = auctions_collection.find_one({"ID": itemID})
+    item[updated_attribute] = updated_value
     # Then update the database
     return True
 
 
 @app.route("/post-bid")
-def postBid():
+def post_bid():
     # Reads submitted form for what item the bid is on and then appends that bid to that items bid list
     return True
 
 
 @app.route("/get-bid")
-def getBid():
+def get_bid():
     # Returns a bid by ID?
     return True
 
 
-@app.route('/register')
+@app.route("/register")
 def register_page():  # Naming convention can be changed
-    return render_template('register.html')
+    return render_template("register.html")

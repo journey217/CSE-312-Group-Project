@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from uuid import uuid4
 import datetime
 from enum import Enum
+from os import environ as environment
 
 
 class DBType(Enum):
@@ -34,6 +35,10 @@ class AuctionVal(Enum):  # Editable Auction Values
 
 class Database:
     def __init__(self):
+        if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
+            mongo_client = MongoClient('mongo')
+        else:  # Otherwise None
+            mongo_client = MongoClient('localhost')
         mongo_client = MongoClient("mongo")
         self.db = mongo_client["CSE312-Group-Project-Test"]
         self.auctions_collection = self.db["Auctions"]
@@ -42,10 +47,10 @@ class Database:
 
     # type_ has to be DBType.User, DBType.Auction, or DBType.Bid
     def find_by_ID(self, ID, type_):
-        return self.db[type_.value].find_one({'ID': ID, 'deleted': False})
+        return self.db[type_.value].find_one({"ID": ID}, projection={"_id": False, "ID": False})
 
     def find_user_by_email(self, email):
-        return self.users_collection.find_one({"email": email, 'deleted': False})
+        return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
 
     def add_bid_to_db(self, userID, auctionID, price):
         bidID = uuid4()
@@ -58,7 +63,10 @@ class Database:
         # Add bid to Bids
         self.bids_collection.insert_one(new_bid)
         # Add bidID to User.bids_history
+        self.users_collection.update_one({"ID": userID}, {"$push": {"bid_history": bidID}})
         # Add bidID to Auction.bid_history
+        self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
+
         return new_bid
 
     def add_auction_to_db(self, creatorID, name, desc, images, category, end_time):
@@ -75,7 +83,7 @@ class Database:
         # Add Auction to Auctions
         self.auctions_collection.insert_one(new_auction)
         # Add auctionID to User.auctions_made
-        self.users_collection.update_one()
+        self.users_collection.update_one({"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
         return new_auction
 
     def add_user_to_db(self, username, email, hashed_password, profile_pic, bio, name):
@@ -107,4 +115,19 @@ class Database:
     # Returns list of bids for a user
     # If there are multiple bids for an item, only have the newest bid in the return list
     def find_unique_item_bids_for_user(self, userID):
-        bid_list = self.users_collection.find_one({})
+        unique_bids = {}  # auctionIDs -> bid
+        users_bidIDs = self.users_collection.find_one({"ID": userID})["bid_history"]
+        for bidID in users_bidIDs:
+            bid = self.find_by_ID(bidID, DBType.Bid)
+            auctionID = bid["auctionID"]
+            if auctionID in unique_bids.keys():
+                current_bid_timestamp = unique_bids[auctionID]["timestamp"]
+                new_bid_timestamp = bid["timestamp"]
+                if new_bid_timestamp > current_bid_timestamp:
+                    unique_bids[auctionID] = bid
+            else:
+                unique_bids[auctionID] = bid
+        return [value for _, value in unique_bids.items()]  # In future needs to be sorted
+
+    def home_page_items(self):
+        pass

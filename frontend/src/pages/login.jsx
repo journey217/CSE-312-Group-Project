@@ -1,29 +1,30 @@
 import React from "react";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import "../styles/login.css";
 
 export default function Login(page) {
 
-    const handleSubmission = (e) =>{
-        
+    const handleSubmission = (e) => {
+
     }
     return (
-        <div class="login">
+        <div className="login">
             <ul>
-                <header class="header">JESSBAY</header>
-                <div class="login-form">
-                    <form class="login-inputs" onSubmit={handleSubmission}>
-                        <label for="email"></label>
+
+                <header className="header">PRODUCT NAME</header>
+                <div className="login-form">
+                    <form className="login-inputs" onSubmit={handleSubmission}>
+                        <label htmlFor="email"></label>
                         <input type="email" placeholder="Email" name="email" />
-                        <label for="password"></label>
+                        <label htmlFor="password"></label>
                         <input type="password" placeholder="Password" name="password" required />
                         <button>Login</button>
                     </form>
-                    <button class="forgot-button">
+                    <button className="forgot-button">
                         <Link to="/forgot">Forgot Password</Link>
                     </button>
-                    <button class="signup-button">
-                        <Link to="/registration">Sign Up</Link>
+                    <button className="signup-button">
+                        <Link to="/register">Sign Up</Link>
                     </button>
                 </div>
             </ul>

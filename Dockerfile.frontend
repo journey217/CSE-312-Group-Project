@@ -1,0 +1,17 @@
+# This is shit might as well start from scratch
+FROM node:16-alpine
+
+ENV HOME /root/frontend
+WORKDIR /root/frontend
+
+COPY . .
+
+ENV PATH /frontend/node_modules/.bin:$PATH
+
+COPY /frontend/package.json /frontend/package-lock.json ./
+COPY ./frontend/src ./
+COPY ./frontend/public ./
+
+RUN cd frontend
+RUN npm install
+RUN npm start
