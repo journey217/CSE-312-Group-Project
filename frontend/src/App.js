@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from './pages/login';
 import Registration from './pages/registration';
-import Index from './pages/index';
 import Navbar from './components/navbar';
 import LandingPage from './pages/landingPage';
 import './App.css';
@@ -26,10 +25,9 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path='/' element={<Index />} />
+          <Route path='/' element={<LandingPage />} />
           <Route path='/login' element={<Login />} />
           <Route path='/registration' element={<Registration />} />
-          <Route path='/itemList' element={<LandingPage />}/>
         </Routes>
       </Router>
     </div>
