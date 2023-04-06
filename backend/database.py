@@ -11,6 +11,16 @@ class DBType(Enum):
     Bid = "Bids"
 
 
+class Categories(Enum):
+    Car_Parts = "Car Parts"
+    Electronics = "Electronics"
+    Home_Decor = "Home Decor"
+    Clothing = "Clothing"
+    Toys = "Toys"
+    Sports = "Sports"
+    Appliances = "Appliances"
+
+
 class UserVal(Enum):  # Editable User Values
     Username = "username"
     Email = "email"
@@ -36,10 +46,9 @@ class AuctionVal(Enum):  # Editable Auction Values
 class Database:
     def __init__(self):
         if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
-            mongo_client = MongoClient('mongo')
+            mongo_client = MongoClient('mongo', uuidRepresentation='standard')
         else:  # Otherwise None
-            mongo_client = MongoClient('localhost')
-        mongo_client = MongoClient("mongo")
+            mongo_client = MongoClient('localhost', uuidRepresentation='standard')
         self.db = mongo_client["CSE312-Group-Project-Test"]
         self.auctions_collection = self.db["Auctions"]
         self.users_collection = self.db["Users"]
@@ -66,7 +75,6 @@ class Database:
         self.users_collection.update_one({"ID": userID}, {"$push": {"bid_history": bidID}})
         # Add bidID to Auction.bid_history
         self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
-
         return new_bid
 
     def add_auction_to_db(self, creatorID, name, desc, images, category, end_time):
@@ -86,7 +94,7 @@ class Database:
         self.users_collection.update_one({"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
         return new_auction
 
-    def add_user_to_db(self, username, email, hashed_password, profile_pic, bio, name):
+    def add_user_to_db(self, username, email, hashed_password, bio, name, profile_pic="blank.jpeg"):
         user_id = uuid4()
         new_user = {"ID": user_id,
                     "username": username,
