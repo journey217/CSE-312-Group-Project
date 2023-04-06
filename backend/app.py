@@ -2,6 +2,8 @@ from flask import Flask, render_template
 from pymongo import MongoClient
 import json
 from os import environ as environment
+
+from backend import searchFunctions
 from database import Database, DBType, UserVal, AuctionVal
 
 app = Flask(__name__)
@@ -19,20 +21,7 @@ db2 = Database()  # In future everything should be changed to this
 
 @app.route("/")
 def home_page():  # Naming convention can be changed
-    items_list = []
-    find_items = auctions_collection.find()
-    for doc in find_items:
-        items_list.append(
-            {"ID": doc.get("ID"),
-             "creatorID": doc.get("creatorID"),
-             "name": doc.get("name"),
-             "description": doc.get("description"),
-             "category": doc.get("category"),
-             "images": doc.get("images"),
-             "start_time": doc.get("start_time"),
-             "end_time": doc.get("end_time"),
-             "bid_history": doc.get("bid_history")}
-        )
+    items_list = searchFunctions.allItemSearch()
     # items_list = db2.home_page_items()
     return json.dumps(items_list)
 
