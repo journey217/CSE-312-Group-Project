@@ -10,7 +10,7 @@ def fill_with_data():
     p3 = generate_hashed_pass("goodPa$$word2023")
     db.add_user_to_db(username="Vandorlot",
                       name="Volodymyr Semenov",
-                      email="semenov@buffalo.edu",
+                      email="ubcodingprojects@gmail.com",
                       hashed_password=p1,
                       bio="UB2025")
     db.add_user_to_db(username="AAron",
