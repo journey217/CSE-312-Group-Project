@@ -1,5 +1,8 @@
 from backend.app import auctions_collection, users_collection
 import re
+import random
+from datetime import datetime
+
 
 
 def allItemSearch():
@@ -49,3 +52,21 @@ def userFind(query):
         if re.search(query, item.get("username"), re.IGNORECASE):
             searchList.append(item)
     return searchList
+
+def randomItemOrder():
+    items_list = []
+    find_items = auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}})
+    for doc in find_items:
+        items_list.append(
+            {"ID": doc.get("ID"),
+             "creatorID": doc.get("creatorID"),
+             "name": doc.get("name"),
+             "description": doc.get("description"),
+             "category": doc.get("category"),
+             "images": doc.get("images"),
+             "start_time": doc.get("start_time"),
+             "end_time": doc.get("end_time"),
+             "bid_history": doc.get("bid_history")}
+        )
+    random.shuffle(items_list)
+    return items_list
