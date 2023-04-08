@@ -11,20 +11,21 @@ export default function Login(page) {
         <div className="login">
             <ul>
 
-                <header className="header">PRODUCT NAME</header>
+                <header className="header">JBAY</header>
                 <div className="login-form">
                     <form className="login-inputs" onSubmit={handleSubmission}>
+                        <header className="formheader">Login</header>
                         <label htmlFor="email"></label>
                         <input type="email" placeholder="Email" name="email" />
                         <label htmlFor="password"></label>
                         <input type="password" placeholder="Password" name="password" required />
-                        <button>Login</button>
+                        <button className="login-button">Login</button>
                     </form>
-                    <button className="forgot-button">
-                        <Link to="/forgot">Forgot Password</Link>
+                    <button className="forgot-button" onClick={() => { window.location.href = "/forgot"; }}>
+                        Forgot Password
                     </button>
-                    <button className="signup-button">
-                        <Link to="/register">Sign Up</Link>
+                    <button className="signup-button" onClick={() => { window.location.href = "/register"; }}>
+                        Sign Up
                     </button>
                 </div>
             </ul>
