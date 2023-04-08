@@ -7,7 +7,7 @@ function Dropdown() {
 
     return (
         <>
-            <ul className={dropdown_nav ?"dropdown clicked" : "dropdown_nav"} onClick={() => setDropdown(!dropdown_nav)}>
+            <ul className={dropdown_nav ? "dropdown clicked" : "dropdown_nav"} onClick={() => setDropdown(!dropdown_nav)}>
                 {dropDown.map((item) => {
                     return (
                         <li key={item.id}>

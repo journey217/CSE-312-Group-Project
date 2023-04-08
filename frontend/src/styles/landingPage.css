@@ -18,7 +18,7 @@ body {
 }
 
 .landing_serach_container {
-    margin-top:20px;
+    margin-top: 20px;
     display: flex;
     flex-direction: row;
     background-color: #424242;
@@ -64,7 +64,8 @@ body {
 
     color: #FFFFFF;
 }
-.landing_search_button:hover{
+
+.landing_search_button:hover {
     background-color: #37AA91;
     box-shadow: none;
 }
@@ -118,7 +119,8 @@ body {
 
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.landing_category_new_item:hover{
+
+.landing_category_new_item:hover {
     background-color: #37AA91;
     box-shadow: none;
 }
@@ -146,7 +148,7 @@ body {
     gap: 0px
 }
 
-.landing_categories :hover{
+.landing_categories :hover {
     color: #252525;
 }
 
@@ -178,7 +180,7 @@ body {
     background-color: #424242;
     width: 90%;
     height: 80%;
-    
+
     overflow: auto;
 }
 
@@ -217,4 +219,113 @@ body {
     color: #E3DDDD;
     margin: 0;
     pointer-events: none;
+}
+
+.add-listing-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: #424242;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.add-listing-popup h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: white;
+}
+
+.add-listing-popup label {
+
+    color: white;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.add-listing-popup input[type="text"],
+.add-listing-popup textarea {
+    width: 70%;
+    margin: 0 auto;
+    display: block;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.add-listing-popup input[type="file"] {
+    width: 70%;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.add-listing-popup button[type="submit"],
+.add-listing-popup button[type="button"] {
+    display: block;
+    width: 100%;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.add-listing-popup button[type="submit"]:hover {
+    background-color: #37AA91;
+}
+
+.add-listing-popup button[type="button"]:hover {
+    background-color: #f8776e;
+}
+
+.add-listing-popup button[type="submit"]:focus,
+.add-listing-popup button[type="button"]:focus {
+    outline: none;
+}
+
+.add-listing-popup button[type="submit"] {
+    background-color: #237563;
+}
+
+.add-listing-popup button[type="button"] {
+    background-color: #f44336;
+    margin-right: 10px;
+}
+
+.add-listing-popup .form-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.add-listing-popup .form-field label {
+    flex-basis: 30%;
+    margin-right: 10px;
+    text-align: right;
+}
+
+.add-listing-popup .form-field input,
+.add-listing-popup .form-field textarea {
+    flex-basis: 70%;
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-listing-popup select {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
 }

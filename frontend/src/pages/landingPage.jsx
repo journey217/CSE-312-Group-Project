@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Dropdown from "../components/dropdown";
 import "../styles/landingPage.css"
+import AddListingPopup from "../components/AddListingPopup";
 
 export default function LandingPage(page) {
     const [searchText, setSearchText] = useState("");
@@ -75,7 +76,23 @@ export default function LandingPage(page) {
         "c3",
         "c4"
     ]
+    const [showAddListingPopup, setShowAddListingPopup] = useState(false);
 
+    const handleOpenAddListingPopup = () => {
+        setShowAddListingPopup(true);
+    };
+
+    const handleCloseAddListingPopup = () => {
+        setShowAddListingPopup(false);
+    };
+
+    const handleAddListing = (formData) => {
+        // Handle submitting the form data (e.g. send it to your server)
+        console.log(formData);
+
+        // Close the popup form
+        setShowAddListingPopup(false);
+    };
     return (
         <div className="landing_page">
             <div className="landing_serach_container">
@@ -89,7 +106,13 @@ export default function LandingPage(page) {
                         <p className="landing_category_container_title">Category</p>
                         <hr style={{ width: "105px", margin: "5px 0px 0px 0px", alignSelf: "flex-start" }}></hr>
                     </div>
-                    <button className="landing_category_new_item">new</button>
+                    <div>
+                        <button className="landing_category_new_item" onClick={handleOpenAddListingPopup}>Add Listing</button>
+                        {showAddListingPopup && (
+                            <AddListingPopup onClose={handleCloseAddListingPopup} onSubmit={handleAddListing} />
+                        )}
+                    </div>
+
                 </div>
                 <div className="landing_category_container">
                     <Category categories={categories}></Category>

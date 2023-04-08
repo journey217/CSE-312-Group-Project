@@ -22,7 +22,8 @@ li {
   text-align: center;
   width: 70vw;
   justify-content: flex-end;
-  margin-right: 20px; /* add some space between the nav items and search bar */
+  margin-right: 20px;
+  /* add some space between the nav items and search bar */
 }
 
 .nav-item {

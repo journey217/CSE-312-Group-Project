@@ -16,7 +16,7 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <Link to="/" className="navbar-logo">
-                <img className="navbar-logo" src="/logo.png" alt="jBay Logo"/>
+                <img className="navbar-logo" src="/logo.png" alt="jBay Logo" />
             </Link>
             <ul className="nav-items">
                 {navItems.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => {
