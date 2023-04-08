@@ -25,7 +25,7 @@ function AddListingPopup({ onClose, onSubmit }) {
       <h2>Add Listing</h2>
       <form onSubmit={handleSubmit}>
         <div class="form-field">
-          <label>Name:</label>
+          <label>Item Name:</label>
           <input type="text" value={name} onChange={handleNameChange} />
         </div>
         <div class="form-field">

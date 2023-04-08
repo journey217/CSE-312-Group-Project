@@ -304,23 +304,25 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-}
-
-.add-listing-popup .form-field label {
+  }
+  
+  .add-listing-popup .form-field label {
     flex-basis: 30%;
-    margin-right: 10px;
+    min-width: 100px; /* Set a minimum width for all labels */
+    margin-right: 20px; /* Add extra space between the label and input */
     text-align: right;
-}
-
-.add-listing-popup .form-field input,
-.add-listing-popup .form-field textarea {
-    flex-basis: 70%;
+  }
+  
+  .add-listing-popup .form-field input,
+  .add-listing-popup .form-field textarea,
+  .add-listing-popup .form-field select {
     display: block;
     width: 100%;
-    padding: 8px;
+    padding: 9px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
+  }
+  
 
 .add-listing-popup select {
     width: 70%;
