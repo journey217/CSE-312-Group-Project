@@ -24,7 +24,7 @@ export default function Login(page) {
                     <button className="forgot-button" onClick={() => { window.location.href = "/forgot"; }}>
                         Forgot Password
                     </button>
-                    <button className="signup-button" onClick={() => { window.location.href = "/register"; }}>
+                    <button className="signup-button" onClick={() => { window.location.href = "/registration"; }}>
                         Sign Up
                     </button>
                 </div>
