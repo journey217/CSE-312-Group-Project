@@ -32,7 +32,7 @@ def test():  # Naming convention can be changed
 
 @app.route("/login")
 def login_page():  # Naming convention can be changed
-    return render_template("login.html")
+    pass
 
 
 # There should be data sent to /login with a form submission. This data is then matched to a record in the users
