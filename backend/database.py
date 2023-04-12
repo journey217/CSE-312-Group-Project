@@ -3,6 +3,8 @@ from uuid import uuid4
 import datetime
 from enum import Enum
 from os import environ as environment
+import random
+from datetime import datetime
 
 
 class DBType(Enum):
@@ -67,7 +69,7 @@ class Database:
                    "userID": userID,
                    "auctionID": auctionID,
                    "price": price,
-                   "timestamp": datetime.datetime.now()
+                   "timestamp": datetime.now()
                    }
         # Add bid to Bids
         self.bids_collection.insert_one(new_bid)
@@ -85,7 +87,7 @@ class Database:
                        "description": desc,
                        "category": category,
                        "images": images,
-                       "start_time": datetime.datetime.now(),
+                       "start_time": datetime.now(),
                        "end_time": end_time,
                        "bid_history": []}
         # Add Auction to Auctions
@@ -137,5 +139,8 @@ class Database:
                 unique_bids[auctionID] = bid
         return [value for _, value in unique_bids.items()]  # In future needs to be sorted
 
-    def home_page_items(self):
-        pass
+    def random_item_order(self):
+        find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}}, projection={"_id": False})
+        items_list = [x for x in find_items]
+        random.shuffle(items_list)
+        return items_list

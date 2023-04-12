@@ -21,14 +21,22 @@ db2 = Database()  # In future everything should be changed to this
 
 @app.route("/")
 def home_page():  # Naming convention can be changed
-    items_list = searchFunctions.allItemSearch()
+    items_list = searchFunctions.all_item_search()
     # items_list = db2.home_page_items()
     return json.dumps(items_list)
+
+
+@app.route("/landing_page_items")
+def landing_page_items():  # Naming convention can be changed
+    print(db2.random_item_order())
+    return db2.random_item_order()
+
 
 @app.route("/test")
 def test():  # Naming convention can be changed
     items_list = [{'name': 'item_one'}, {'name': 'item_two'}]
     return items_list
+
 
 @app.route("/login")
 def login_page():  # Naming convention can be changed

@@ -1,68 +1,30 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Dropdown from "../components/dropdown";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
 import Auction_detail from "../components/auctionDetail";
 
 export default function LandingPage(page) {
+
     const [searchText, setSearchText] = useState("");
-    const [auctionItems, setAuctionItems] = useState([{
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }, {
-        "image": "dummy.png",
-        "name": "name",
-        "higherBid": "10000000"
-    }]);
+    const [auctionItems, setAuctionItems] = useState([]);
+// const [auctionItems, setAuctionItems] = useState([{
+//         "image": "dummy.png",
+//         "name": "name",
+//         "higherBid": "10000000"
+//     }])
+    useEffect(() => {
+    fetch("/landing_page_items").then(res => res.json()
+    ).then(data => {
+            console.log(data)
+            setAuctionItems([{
+                    image: "dummy.png",
+                    name: data.name,
+                    higherBid: 100
+                }]);
+        }
+    )
+    }, [])
     const handleChange = (e) => {
         setSearchText(e.target.value);
     };
@@ -72,10 +34,14 @@ export default function LandingPage(page) {
     ];
 
     const categories = [
-        "c1",
-        "c2",
-        "c3",
-        "c4"
+        "All",
+        "Car Parts",
+        "Electronics",
+        "Home Decor",
+        "Clothing",
+        "Toys",
+        "Sports",
+        "Appliances"
     ]
     const [showAddListingPopup, setShowAddListingPopup] = useState(false);
     const [auctionDetailOn, setAuctionDetailOn] = useState(false)
@@ -110,7 +76,7 @@ export default function LandingPage(page) {
                     <Auction_detail close={close_auction_detail}/>
                 )
             }
-            <div className="landing_serach_container">
+            <div className="landing_search_container">
                 <Dropdown searchOptions={searchOptions} width="145px"></Dropdown>
                 <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
                 <button className="landing_search_button">Search</button>
@@ -136,7 +102,7 @@ export default function LandingPage(page) {
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
                     <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
-                        <img className="landing_items_item_img" src={require("../assets/item/" + item.image)} alt="Item Image"></img>
+                        <img className="landing_items_item_img" src={require("../assets/item/" + item.image)} alt="Item"></img>
                         <p className="landing_items_item_p">{item.name}</p>
                         <p className="landing_items_item_p">${item.higherBid}</p>
                     </div>
@@ -149,12 +115,16 @@ export default function LandingPage(page) {
 function Category(props) {
     return (
         <div className="landing_categories">
-            {props.categories.map((item, index) => (
+            {props.categories.slice(0,-1).map((item, index) => (
                 <div className="landing_category_item" key={index}>
                     <p>{item}</p>
                     <hr></hr>
                 </div>
             ))}
+            {<div className="landing_category_item" key={props.categories.length - 1}>
+                <p>{props.categories.slice(-1)}</p>
+            </div>
+            }
         </div>
     );
 }

@@ -1,18 +1,16 @@
 from backend.app import auctions_collection, users_collection
 import re
-import random
-from datetime import datetime
 
 
-def allItemSearch():
+def all_item_search():
     find_items = auctions_collection.find({}, projection={"_id": False})
     items_list = [x for x in find_items]
     return items_list
 
 
-def itemFind(query):
+def item_find(query):
     search_list = []
-    items_list = allItemSearch()
+    items_list = all_item_search()
     for item in items_list:
         # The 're' library is used to find if a string contains a given substring while ignoring case
         if re.search(query, item.get("name"), re.IGNORECASE):
@@ -20,7 +18,7 @@ def itemFind(query):
     return search_list
 
 
-def userFind(query):
+def user_find(query):
     searchList = []
     findUser = users_collection.find({}, projection={"_id": False})
     userList = [x for x in findUser]
@@ -28,10 +26,3 @@ def userFind(query):
         if re.search(query, item.get("username"), re.IGNORECASE):
             searchList.append(item)
     return searchList
-
-
-def randomItemOrder():
-    find_items = auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}}, {}, projection={"_id": False})
-    items_list = [x for x in find_items]
-    random.shuffle(items_list)
-    return items_list

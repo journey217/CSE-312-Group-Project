@@ -18,7 +18,7 @@ body {
     height: 100vh;
 }
 
-.landing_serach_container {
+.landing_search_container {
     margin-top: 20px;
     display: flex;
     flex-direction: row;
@@ -86,8 +86,6 @@ body {
     line-height: 25px;
     margin: 0px;
     color: #F6EFFF;
-
-
 }
 
 .landing_category_title_floor {
