@@ -8,12 +8,6 @@ db = Database()  # In future everything should be changed to this
 sock = Sock(app)
 
 
-@app.route("/")
-def home_page():  # Naming convention can be changed
-    items_list = db.random_item_order()
-    return json.dumps(items_list)
-
-
 @app.route("/landing_page_items")
 def landing_page_items():  # Naming convention can be changed
     print(db.random_item_order())
