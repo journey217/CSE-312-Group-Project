@@ -39,19 +39,6 @@ def change():
 
 @app.route("/profile")
 def profile_page():
-    # username = "Passed username from cache/browser"
-    # user = {}
-    # findUser = users_collection.find_one({"username": username})
-    # user["ID"] = findUser.get("ID")
-    # user["username"] = findUser.get("username")
-    # user["email"] = findUser.get("email")
-    # user["profile_pic"] = findUser.get("profile_pic")
-    # user["bio"] = findUser.get("bio")
-    # user["name"] = findUser.get("name")
-    # user["auctions_made"] = findUser.get("auctions_made")
-    # user["bid_history"] = findUser.get("bid_history")
-
-    # Check the user email from cache
     email = ""
     user = db.find_user_by_email(email)
     return json.dumps(user)
