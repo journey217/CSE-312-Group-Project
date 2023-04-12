@@ -5,6 +5,7 @@ from enum import Enum
 from os import environ as environment
 import random
 from datetime import datetime
+import re
 
 
 class DBType(Enum):
@@ -144,3 +145,27 @@ class Database:
         items_list = [x for x in find_items]
         random.shuffle(items_list)
         return items_list
+
+    def all_item_search(self):
+        find_items = self.auctions_collection.find({}, projection={"_id": False})
+        items_list = [x for x in find_items]
+        return items_list
+
+    def item_find(self, query):
+        search_list = []
+        items_list = self.all_item_search()
+        for item in items_list:
+            # The 're' library is used to find if a string contains a given substring while ignoring case
+            if re.search(query, item.get("name"), re.IGNORECASE):
+                search_list.append(item)
+        return search_list
+
+    def user_find(self, query):
+        searchList = []
+        findUser = self.users_collection.find({}, projection={"_id": False})
+        userList = [x for x in findUser]
+        for item in userList:
+            if re.search(query, item.get("username"), re.IGNORECASE):
+                searchList.append(item)
+        return searchList
+

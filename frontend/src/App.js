@@ -8,14 +8,7 @@ import LandingPage from './pages/landingPage';
 import './App.css';
 
 function App() {
-  const [auctionItems, setAuctionItems] = useState([{}])
-  useEffect(() => {
-    fetch("/test").then(res => res.json()
-    ).then(data => {
-            console.log(data)
-        }
-    )
-  }, [])
+
 
   return(
    <div>

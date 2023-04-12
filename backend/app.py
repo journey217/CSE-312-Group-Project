@@ -1,41 +1,21 @@
-from flask import Flask, render_template
-from pymongo import MongoClient
+from flask import Flask
 import json
-from os import environ as environment
-
-from backend import searchFunctions
-from database import Database, DBType, UserVal, AuctionVal
+from database import *
 
 app = Flask(__name__)
-
-if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
-    mongo_client = MongoClient('mongo')
-else:  # Otherwise None
-    mongo_client = MongoClient('localhost')
-db = mongo_client["CSE312-Group-Project-Test"]
-auctions_collection = db["Auctions"]
-users_collection = db["Users"]
-bids_collection = db["Bids"]
-db2 = Database()  # In future everything should be changed to this
+db = Database()  # In future everything should be changed to this
 
 
 @app.route("/")
 def home_page():  # Naming convention can be changed
-    items_list = searchFunctions.all_item_search()
-    # items_list = db2.home_page_items()
+    items_list = db.random_item_order()
     return json.dumps(items_list)
 
 
 @app.route("/landing_page_items")
 def landing_page_items():  # Naming convention can be changed
-    print(db2.random_item_order())
-    return db2.random_item_order()
-
-
-@app.route("/test")
-def test():  # Naming convention can be changed
-    items_list = [{'name': 'item_one'}, {'name': 'item_two'}]
-    return items_list
+    print(db.random_item_order())
+    return db.random_item_order()
 
 
 @app.route("/login")
@@ -73,7 +53,7 @@ def profile_page():
 
     # Check the user email from cache
     email = ""
-    user = db2.find_user_by_email(email)
+    user = db.find_user_by_email(email)
     return json.dumps(user)
 
 
@@ -92,12 +72,6 @@ def change_auction():
 @app.post("/change-auction")
 def change_auction2():
     # Read from the submitted form and use that data to update an auction item.
-    itemID = "Item from form"
-    updated_attribute = "Key they would like to change"
-    updated_value = "Value they want to update it with"
-    item = {}
-    item_find = auctions_collection.find_one({"ID": itemID})
-    item[updated_attribute] = updated_value
     # Then update the database
     return True
 
@@ -116,4 +90,4 @@ def get_bid():
 
 @app.route("/register")
 def register_page():  # Naming convention can be changed
-    return render_template("register.html")
+    return
