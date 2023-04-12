@@ -14,16 +14,25 @@ export default function LandingPage(page) {
 //         "higherBid": "10000000"
 //     }])
     useEffect(() => {
-    fetch("/landing_page_items").then(res => res.json()
-    ).then(data => {
+    fetch("/landing_page_items")
+        .then(res => res.json())
+        .then(data => {
             console.log(data)
-            setAuctionItems([{
-                    image: "dummy.png",
-                    name: data.name,
-                    higherBid: 100
-                }]);
-        }
-    )
+//             // let new_data = []
+//             // for(let item of data){
+//             //     console.log(item)
+//             //     let dict = {
+//             //         "image": "dummy.png",
+//             //         "name": item.name,
+//             //         "higherBid": "10000000"
+//             //     };
+//             //     console.log(dict)
+//             //     new_data += dict
+//             // }
+//             // console.log(new_data)
+            setAuctionItems(data);
+            console.log(auctionItems)
+            })
     }, [])
     const handleChange = (e) => {
         setSearchText(e.target.value);
@@ -102,9 +111,9 @@ export default function LandingPage(page) {
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
                     <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
-                        <img className="landing_items_item_img" src={require("../assets/item/" + item.image)} alt="Item"></img>
+                        <img className="landing_items_item_img" src={require("../assets/item/" + "dummy.png")} alt="Item"></img>
                         <p className="landing_items_item_p">{item.name}</p>
-                        <p className="landing_items_item_p">${item.higherBid}</p>
+                        <p className="landing_items_item_p">{item.description}</p>
                     </div>
                 ))}
             </div>
