@@ -1,9 +1,11 @@
 from flask import Flask
 import json
 from database import *
+from flask_sock import Sock
 
 app = Flask(__name__)
 db = Database()  # In future everything should be changed to this
+sock = Sock(app)
 
 
 @app.route("/")
@@ -16,6 +18,20 @@ def home_page():  # Naming convention can be changed
 def landing_page_items():  # Naming convention can be changed
     print(db.random_item_order())
     return db.random_item_order()
+
+
+@app.route("/item/<auction_id>")
+def routeItem(auction_id):
+    item = db.find_by_ID(auction_id, DBType.Auction)
+    if item:
+        return dict(item)
+
+
+@sock.route("/item/<auction_id>")
+def makeWebsocketConnection(ws):
+    while True:
+        data = ws.receive()
+        ws.send(data)
 
 
 @app.route("/login")
