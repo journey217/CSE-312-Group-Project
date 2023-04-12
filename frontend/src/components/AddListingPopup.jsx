@@ -30,7 +30,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <div class="form-field">
           <label>Price:</label>
-          <input type="text" value={price} onChange={handlePriceChange} />
+          <input type="number" value={price} onChange={handlePriceChange} />
         </div>
         <div class="form-field">
           <label>Description:</label>

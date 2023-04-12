@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Dropdown from "../components/dropdown";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
+import Auction_detail from "../components/auctionDetail";
 
 export default function LandingPage(page) {
     const [searchText, setSearchText] = useState("");
@@ -77,6 +78,7 @@ export default function LandingPage(page) {
         "c4"
     ]
     const [showAddListingPopup, setShowAddListingPopup] = useState(false);
+    const [auctionDetailOn, setAuctionDetailOn] = useState(false)
 
     const handleOpenAddListingPopup = () => {
         setShowAddListingPopup(true);
@@ -86,6 +88,8 @@ export default function LandingPage(page) {
         setShowAddListingPopup(false);
     };
 
+
+
     const handleAddListing = (formData) => {
         // Handle submitting the form data (e.g. send it to your server)
         console.log(formData);
@@ -93,8 +97,19 @@ export default function LandingPage(page) {
         // Close the popup form
         setShowAddListingPopup(false);
     };
+    const auctionDetail_show = () => {
+        setAuctionDetailOn(true)
+    }
+    const close_auction_detail = () => {
+        setAuctionDetailOn(false)
+    }
     return (
         <div className="landing_page">
+            {
+                auctionDetailOn && (
+                    <Auction_detail close={close_auction_detail}/>
+                )
+            }
             <div className="landing_serach_container">
                 <Dropdown searchOptions={searchOptions} width="145px"></Dropdown>
                 <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
@@ -120,7 +135,7 @@ export default function LandingPage(page) {
             </div>
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
-                    <div className="landing_items_item" key={index}>
+                    <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
                         <img className="landing_items_item_img" src={require("../assets/item/" + item.image)} alt="Item Image"></img>
                         <p className="landing_items_item_p">{item.name}</p>
                         <p className="landing_items_item_p">${item.higherBid}</p>

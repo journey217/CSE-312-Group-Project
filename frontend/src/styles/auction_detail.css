@@ -1,0 +1,131 @@
+.auction_detail_popup_background{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(1, 1, 1, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auction_detail_popup{
+    position: relative;
+    width: 400px;
+    height: 800px;
+    background: #424242;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
+    gap: 5px;
+}
+.auction_detail_title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+.auction_detail_item_name{
+    padding: 0;
+    margin: 0;
+    color: #E5DDDD;
+    padding-left: 4%;
+}
+
+.auction_detail_hr{
+    width: 92%;
+    margin-top: -5px;
+}
+
+.auction_detail_close_button{
+    width: 15px;
+    height: 15px;
+    margin-top: 10px;
+    margin-right: 10px;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    src: "../assets/close_button.png";
+    background-image: url("../assets/close_button.png");
+    background-size: 15px;
+}
+
+.auction_detail_close_button:hover{
+    background-size: 15px;
+    background-image: url("../assets/close_button_hover.png");
+}
+
+
+.auction_detail_vendor{
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0px;
+    font-weight: 700;
+    color: #E5DDDD;
+}
+
+.auction_detial_time_left{
+    font-size: 30px;
+    line-height: 40px;
+    color: #E5DDDD;
+}
+
+.auction_detial_bid_button{
+    appearance: none;
+    border: none;
+
+    background-color: #237563;
+    font-size: 20px;
+    color: #E5DDDD;
+    font-weight: 700;
+
+    padding: 10px 20px;
+    border-radius: 15px;
+}
+
+.auction_detial_bid_button:hover{
+    appearance: none;
+    border: none;
+
+    background-color: #0ba484;
+    font-size: 20px;
+}
+
+.auction_detail_bid_history{
+    width: 90%;
+    height: 48%;
+    background-color: #333333;
+    border-radius: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.auction_detail_bid_history_item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 96%;
+}
+
+.auction_detail_timestamp{
+    margin-left: auto;
+    justify-self: flex-end;
+    align-items: flex-end;
+    font-size: 10px;
+    color: #E5DDDD;
+}
+
+.auction_detail_bid_user_id{
+    color: #E5DDDD;
+    width: 20%;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.auction_detail_price{
+    color: #E5DDDD;
+}
