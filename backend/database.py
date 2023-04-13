@@ -140,7 +140,7 @@ class Database:
                 unique_bids[auctionID] = bid
         return [value for _, value in unique_bids.items()]  # In future needs to be sorted
 
-    def random_item_order(self):
+    def landing_page_items(self):
         find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}}, projection={"_id": False})
         items_list = [x for x in find_items]
         random.shuffle(items_list)

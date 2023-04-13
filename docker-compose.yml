@@ -13,7 +13,7 @@ services:
       WAIT_HOSTS: mongo:27017
     ports:
       - '5000:5000'
-  frontend: # Might want to remove and first get backend to work because takes forever to build
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
