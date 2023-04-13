@@ -5,38 +5,22 @@ import AddListingPopup from "../components/AddListingPopup";
 import Auction_detail from "../components/auctionDetail";
 
 export default function LandingPage(page) {
-
     const [searchText, setSearchText] = useState("");
     const [auctionItems, setAuctionItems] = useState([]);
-// const [auctionItems, setAuctionItems] = useState([{
-//         "image": "dummy.png",
-//         "name": "name",
-//         "higherBid": "10000000"
-//     }])
+
     useEffect(() => {
-    fetch("/landing_page_items")
-        .then(res => res.json())
-        .then(data => {
-            console.log(data)
-//             // let new_data = []
-//             // for(let item of data){
-//             //     console.log(item)
-//             //     let dict = {
-//             //         "image": "dummy.png",
-//             //         "name": item.name,
-//             //         "higherBid": "10000000"
-//             //     };
-//             //     console.log(dict)
-//             //     new_data += dict
-//             // }
-//             // console.log(new_data)
-            setAuctionItems(data);
-            console.log(auctionItems)
+        fetch("/landing_page_items")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                setAuctionItems(data);
             })
     }, [])
+
     const handleChange = (e) => {
         setSearchText(e.target.value);
     };
+
     const searchOptions = [
         "Item Name",
         "User Name"

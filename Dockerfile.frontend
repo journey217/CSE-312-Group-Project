@@ -4,7 +4,7 @@ ENV HOME /root
 WORKDIR /root
 
 COPY /frontend .
-
+COPY /frontend/package_for_docker.json ./package.json
 RUN npm install
 
 EXPOSE 3000

@@ -3,13 +3,12 @@ from database import *
 from flask_sock import Sock
 
 app = Flask(__name__)
-db = Database()  # In future everything should be changed to this
+db = Database()
 sock = Sock(app)
 
 
 @app.route("/landing_page_items")
-def landing_page_items():  # Naming convention can be changed
-    print(db.landing_page_items())
+def landing_page_items():
     return jsonify(db.landing_page_items())
 
 
