@@ -13,13 +13,13 @@ export default function Login(page) {
 
                 <header className="header">JBAY</header>
                 <div className="login-form">
-                    <form className="login-inputs" onSubmit={handleSubmission}>
+                    <form className="login-inputs" onSubmit={() => { window.location.href = "/login-user"; }}>
                         <header className="formheader">Login</header>
                         <label htmlFor="email"></label>
                         <input type="email" placeholder="Email" name="email" />
                         <label htmlFor="password"></label>
                         <input type="password" placeholder="Password" name="password" required />
-                        <button className="login-button">Login</button>
+                        <button className="login-button" type={"submit"} onClick={() => { window.location.href = "/login-user"; }}>Login</button>
                     </form>
                     <button className="forgot-button" onClick={() => { window.location.href = "/forgot"; }}>
                         Forgot Password

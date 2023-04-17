@@ -13,17 +13,17 @@ def fill_with_data():
     user_1 = db.add_user_to_db(username="Vandorlot",
                       name="Vlad S",
                       email="ubcodingprojects@gmail.com",
-                      hashed_password=p1,
+                      hashed_password=p1.decode(),
                       bio="UB2025")
     user_2 = db.add_user_to_db(username="AAron",
                       name="Aaron Rodgers",
                       email="aaron.rodgers@gmail.com",
-                      hashed_password=p2,
+                      hashed_password=p2.decode(),
                       bio="Jets")
     user_3 = db.add_user_to_db(username="JHurts",
                       name="Jalen Hurts",
                       email="jalen.hurts@gmail.com",
-                      hashed_password=p3,
+                      hashed_password=p3.decode(),
                       bio="Eagles",
                       profile_pic="blank.jpeg")
     db.add_auction_to_db(creatorID=user_1.get('ID'),
