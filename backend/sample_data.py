@@ -1,4 +1,4 @@
-from password import check_login, generate_hashed_pass, PasswordError
+from login import generate_hashed_pass
 from database import *
 from datetime import datetime
 

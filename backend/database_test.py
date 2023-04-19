@@ -1,14 +1,14 @@
-from password import check_login, generate_hashed_pass, PasswordError
+from login import check_password, generate_hashed_pass, PasswordError
 
 
 def test_password():
     p1 = generate_hashed_pass("ABcd1234$s")
     p2 = generate_hashed_pass("goodPa$$word2023"*20)
     p3 = generate_hashed_pass("ABcd1234$s")
-    assert check_login(p1, "ABcd1234$s")
-    assert not check_login(p1, "ABcd1234$s2")
-    assert check_login(p2, "goodPa$$word2023"*20)
-    assert not check_login(p2, "goodPa$$word2023"*20 + "$")
+    assert check_password(p1, "ABcd1234$s")
+    assert not check_password(p1, "ABcd1234$s2")
+    assert check_password(p2, "goodPa$$word2023"*20)
+    assert not check_password(p2, "goodPa$$word2023"*20 + "$")
     assert p1 != p3
 
     p4 = generate_hashed_pass("!234567A")  # Lower
