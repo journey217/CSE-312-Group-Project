@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from database import Database, AuctionVal, UserVal, DBType, Categories
 from flask_sock import Sock
-from login import verify_login, set_browser_cookie, generate_hashed_pass
+from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username
 from json import loads as json_loads
 
 app = Flask(__name__)
@@ -46,8 +46,14 @@ def register_user():
     fname = request.form['fname']
     lname = request.form['lname']
     username = request.form['username']
+    if verify_username(username):
+        # Return message that username is already taken
+        return False
     birthday = request.form['dob']
     email = request.form['email']
+    if verify_email(email):
+        # Return message that email is already registered with another account
+        return False
     password1 = request.form['password1']
     password2 = request.form['password2']
     full_name = fname + ' ' + lname

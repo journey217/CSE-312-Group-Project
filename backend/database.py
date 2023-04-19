@@ -64,6 +64,9 @@ class Database:
     def find_user_by_email(self, email):
         return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
 
+    def find_user_by_username(self, username):
+        return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
+
     def add_bid_to_db(self, userID, auctionID, price):
         bidID = uuid4()
         new_bid = {"ID": bidID,

@@ -21,6 +21,12 @@ def verify_email(email):
     return False
 
 
+def verify_username(username):
+    if db.find_user_by_username(username):
+        return True
+    return False
+
+
 def verify_password(email, password):
     user = db.find_user_by_email(email)
     hashed_password = user['hashed_password']
