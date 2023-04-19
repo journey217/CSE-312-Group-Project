@@ -1,11 +1,13 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Link } from 'react-router-dom';
 import "../styles/registration.css";
 
 export default function Registration(page) {
 
-    const handleSubmission = (e) => {
-    }
+    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
+
+    const handleSubmission = (e) => {}
 
     return (
         <div className='register'>

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, make_response
 from database import *
 from flask_sock import Sock
 from login import *
+from json import loads as json_loads
 
 app = Flask(__name__)
 db = Database()
@@ -27,10 +28,11 @@ def makeWebsocketConnection(ws):
         ws.send(data)
 
 
-@app.route("/login-user")
+@app.post("/login-user")
 def loginUser():
-    email = request.form['email']
-    password = request.form['password']
+    data = json_loads(request.data)
+    email = data['email']
+    password = data['password']
     if not verifyLogin(email, password):
         return False
     authToken = setBrowserCookie(email)
