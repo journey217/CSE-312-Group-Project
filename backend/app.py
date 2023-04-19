@@ -36,15 +36,9 @@ def login_user():
     if not verify_login(email, password):
         print('false')
         # return False
+
     authToken = set_browser_cookie(email)
-    myResponse = make_response('Response')
-    myResponse.headers['Set-Cookie'] = f'authenticationToken={authToken}; HttpOnly'
-    myResponse.headers['Location'] = '/'
-    myResponse.headers['X-Content-Type-Options'] = 'nosniff'
-    myResponse.status_code = 301
-    myResponse.mimetype = 'text/html; charset=utf-8'
-    myResponse.content_length = '0'
-    return myResponse
+    return redirect_response('/', [['authenticationToken', authToken]])
 
 
 @app.post("/register-user")
@@ -65,11 +59,16 @@ def register_user():
     db.add_user_to_db(username, email, hash, full_name)
 
     authToken = set_browser_cookie(email)
+    return redirect_response('/', [['authenticationToken', authToken]])
+
+
+def redirect_response(path, cookies):
     myResponse = make_response('Response')
-    myResponse.headers['Set-Cookie'] = f'authenticationToken={authToken}; HttpOnly'
-    myResponse.headers['Location'] = '/'
+    for cookie in cookies:
+        myResponse.set_cookie(key=cookie[0], value=cookie[1], max_age=3600, httponly=True)
+    myResponse.headers['Location'] = path
     myResponse.headers['X-Content-Type-Options'] = 'nosniff'
-    myResponse.status_code = 301
+    myResponse.status_code = 302
     myResponse.mimetype = 'text/html; charset=utf-8'
     myResponse.content_length = '0'
     return myResponse
