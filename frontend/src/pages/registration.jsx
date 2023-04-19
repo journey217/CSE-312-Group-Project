@@ -10,17 +10,14 @@ export default function Registration(page) {
                 <header className="header">JBAY</header>
                 <div className="register-form">
                     <form className="reg-inputs" action= "/register-user" method="post">
-                        <header className="formheader">Create New Account</header>
-                        <input type="text" placeholder='First Name' name='fname' required />
-                        <input type="text" placeholder='Last Name' name='lname' required />
+                        <header className="formheader">Create New Account</header>\
                         <input type="text" placeholder='Username' name='username' required />
-                        <input type="date" placeholder='Date of Birth' name='dob' required />
                         <input type="email" placeholder="Email" name="email" required />
                         <input type="password" placeholder="Password" name="password1" required />
                         <input type="password" placeholder="Confirm Password" name="password2" required />
                         <button className="register-button" type="submit" >Register</button>
                     </form>
-                    <button className="login-button" onClick={() => {navigate("/login")}}>
+                    <button className="login-redirect-button" onClick={() => {navigate("/login")}}>
                         Have An Account? Click Here
                     </button>
                     

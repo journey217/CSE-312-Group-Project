@@ -43,26 +43,21 @@ def login_user():
 
 @app.post("/register-user")
 def register_user():
-    fname = request.form['fname']
-    lname = request.form['lname']
     username = request.form['username']
     if verify_username(username):
         # Return message that username is already taken
         return False
-    birthday = request.form['dob']
     email = request.form['email']
     if verify_email(email):
         # Return message that email is already registered with another account
         return False
     password1 = request.form['password1']
     password2 = request.form['password2']
-    full_name = fname + ' ' + lname
-    full_name.title()
     if password1 != password2:
         print('different passwords')
 
     hash = generate_hashed_pass(password1)
-    db.add_user_to_db(username, email, hash, full_name)
+    db.add_user_to_db(username, email, hash)
 
     authToken = set_browser_cookie(email)
     return redirect_response('/', [['authenticationToken', authToken]])

@@ -100,15 +100,13 @@ class Database:
         self.users_collection.update_one({"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
         return new_auction
 
-    def add_user_to_db(self, username, email, hashed_password, name, bio="", profile_pic="blank.jpeg"):
+    def add_user_to_db(self, username, email, hashed_password, profile_pic="blank.jpeg"):
         user_id = uuid4()
         new_user = {"ID": user_id,
                     "username": username,
                     "email": email,
                     "hashed_password": hashed_password,
                     "profile_pic": profile_pic,
-                    "bio": bio,
-                    "name": name,
                     "auctions_made": [],
                     "bid_history": []}
         # Add User to Users
@@ -163,11 +161,11 @@ class Database:
                 search_list.append(item)
         return search_list
 
-    def user_find(self, query):
-        searchList = []
-        findUser = self.users_collection.find({}, projection={"_id": False})
-        userList = [x for x in findUser]
-        for item in userList:
-            if re.search(query, item.get("username"), re.IGNORECASE):
-                searchList.append(item)
-        return searchList
+    # def user_find(self, query):
+    #     searchList = []
+    #     findUser = self.users_collection.find({}, projection={"_id": False})
+    #     userList = [x for x in findUser]
+    #     for item in userList:
+    #         if re.search(query, item.get("username"), re.IGNORECASE):
+    #             searchList.append(item)
+    #     return searchList
