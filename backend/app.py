@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response
-from database import *
+from database import Database, AuctionVal, UserVal, DBType, Categories
 from flask_sock import Sock
-from login import *
+from login import verify_login, set_browser_cookie, generate_hashed_pass
 from json import loads as json_loads
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ def landing_page_items():
 
 
 @app.route("/item/<auction_id>")
-def routeItem(auction_id):
+def route_item(auction_id):
     item = db.find_by_ID(auction_id, DBType.Auction)
     if item:
         return dict(item)
@@ -29,14 +29,42 @@ def makeWebsocketConnection(ws):
 
 
 @app.post("/login-user")
-def loginUser():
+def login_user():
     email = request.form['email']
     password = request.form['password']
     print(email, password)
-    if not verifyLogin(email, password):
+    if not verify_login(email, password):
         print('false')
         # return False
-    authToken = setBrowserCookie(email)
+    authToken = set_browser_cookie(email)
+    myResponse = make_response('Response')
+    myResponse.headers['Set-Cookie'] = f'authenticationToken={authToken}; HttpOnly'
+    myResponse.headers['Location'] = '/'
+    myResponse.headers['X-Content-Type-Options'] = 'nosniff'
+    myResponse.status_code = 301
+    myResponse.mimetype = 'text/html; charset=utf-8'
+    myResponse.content_length = '0'
+    return myResponse
+
+
+@app.post("/register-user")
+def register_user():
+    fname = request.form['fname']
+    lname = request.form['lname']
+    username = request.form['username']
+    birthday = request.form['dob']
+    email = request.form['email']
+    password1 = request.form['password1']
+    password2 = request.form['password2']
+    full_name = fname + ' ' + lname
+    full_name.title()
+    if password1 != password2:
+        print('different passwords')
+
+    hash = generate_hashed_pass(password1)
+    db.add_user_to_db(username, email, hash, full_name)
+
+    authToken = set_browser_cookie(email)
     myResponse = make_response('Response')
     myResponse.headers['Set-Cookie'] = f'authenticationToken={authToken}; HttpOnly'
     myResponse.headers['Location'] = '/'

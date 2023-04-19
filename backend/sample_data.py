@@ -11,21 +11,21 @@ def fill_with_data():
     p2 = generate_hashed_pass("pA$ssword5")
     p3 = generate_hashed_pass("goodPa$$word2023")
     user_1 = db.add_user_to_db(username="Vandorlot",
-                      name="Vlad S",
-                      email="ubcodingprojects@gmail.com",
-                      hashed_password=p1,
-                      bio="UB2025")
+                               name="Vlad S",
+                               email="ubcodingprojects@gmail.com",
+                               hashed_password=p1,
+                               bio="UB2025")
     user_2 = db.add_user_to_db(username="AAron",
-                      name="Aaron Rodgers",
-                      email="aaron.rodgers@gmail.com",
-                      hashed_password=p2,
-                      bio="Jets")
+                               name="Aaron Rodgers",
+                               email="aaron.rodgers@gmail.com",
+                               hashed_password=p2,
+                               bio="Jets")
     user_3 = db.add_user_to_db(username="JHurts",
-                      name="Jalen Hurts",
-                      email="jalen.hurts@gmail.com",
-                      hashed_password=p3,
-                      bio="Eagles",
-                      profile_pic="blank.jpeg")
+                               name="Jalen Hurts",
+                               email="jalen.hurts@gmail.com",
+                               hashed_password=p3,
+                               bio="Eagles",
+                               profile_pic="blank.jpeg")
     db.add_auction_to_db(creatorID=user_1.get('ID'),
                          name="Jersey",
                          desc="Gameworn Jersey",

@@ -1,30 +1,26 @@
-import React, {useEffect, useState} from "react";
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import "../styles/registration.css";
 
 export default function Registration(page) {
-
-    const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
-
-    const handleSubmission = (e) => {}
-
+    const navigate = useNavigate()
     return (
         <div className='register'>
             <ul>
                 <header className="header">JBAY</header>
                 <div className="register-form">
-                    <form className="reg-inputs" onSubmit={handleSubmission}>
+                    <form className="reg-inputs" action= "/register-user" method="post">
                         <header className="formheader">Create New Account</header>
-                        <input type="name" placeholder='First Name' name='name' required />
-                        <input type="name" placeholder='Last Name' name='name' required />
-                        <input type="date" placeholder='Date of Birth' name='name' required />
+                        <input type="text" placeholder='First Name' name='fname' required />
+                        <input type="text" placeholder='Last Name' name='lname' required />
+                        <input type="text" placeholder='Username' name='username' required />
+                        <input type="date" placeholder='Date of Birth' name='dob' required />
                         <input type="email" placeholder="Email" name="email" required />
-                        <input type="password" placeholder="Password" name="password" required />
-                        <input type="password" placeholder="Confirm Password" name="password" required />
-                        <button className="register-button">Register</button>
+                        <input type="password" placeholder="Password" name="password1" required />
+                        <input type="password" placeholder="Confirm Password" name="password2" required />
+                        <button className="register-button" type="submit" >Register</button>
                     </form>
-                    <button className="create-account-button" onClick={() => { window.location.href = "/login"; }}>
+                    <button className="login-button" onClick={() => {navigate("/login")}}>
                         Have An Account? Click Here
                     </button>
                     

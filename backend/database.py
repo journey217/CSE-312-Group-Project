@@ -97,7 +97,7 @@ class Database:
         self.users_collection.update_one({"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
         return new_auction
 
-    def add_user_to_db(self, username, email, hashed_password, bio, name, profile_pic="blank.jpeg"):
+    def add_user_to_db(self, username, email, hashed_password, name, bio="", profile_pic="blank.jpeg"):
         user_id = uuid4()
         new_user = {"ID": user_id,
                     "username": username,
@@ -168,4 +168,3 @@ class Database:
             if re.search(query, item.get("username"), re.IGNORECASE):
                 searchList.append(item)
         return searchList
-

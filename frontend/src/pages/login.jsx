@@ -11,7 +11,7 @@ export default function Login(page) {
             <ul>
                 <header className="header">JBAY</header>
                 <div className="login-form">
-                    <form className="login-inputs" action= "/login-user" method="post">
+                    <form className="login-inputs" action="/login-user" method="post">
                         <header className="formheader">Login</header>
                         <label htmlFor="email"></label>
                         <input type="email" placeholder="Email" name="email" required/>

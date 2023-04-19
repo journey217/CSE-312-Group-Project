@@ -15,13 +15,13 @@ class PasswordError(Enum):
 
 
 # This function will check the database upon login to ensure that the entered email is linked to an account.
-def verifyEmail(email):
+def verify_email(email):
     if db.find_user_by_email(email):
         return True
     return False
 
 
-def verifyPassword(email, password):
+def verify_password(email, password):
     user = db.find_user_by_email(email)
     hashed_password = user['hashed_password']
     return check_password(hashed_password, password)
@@ -31,19 +31,19 @@ def check_password(stored_hash, pass_attempt):
     return bcrypt.checkpw(long_password_hash(pass_attempt), stored_hash)
 
 
-def verifyLogin(email, password):
-    if not verifyEmail(email):
+def verify_login(email, password):
+    if not verify_email(email):
         # Return an error message indicating that the entered email is incorrect/not registered
         print("Failed Email Verification")
         return False
-    if not verifyPassword(email, password):
+    if not verify_password(email, password):
         # Return an error message indicating that the entered email is incorrect/not registered
         print("Failed Password Verification")
         return False
     return True
 
 
-def setBrowserCookie(email):
+def set_browser_cookie(email):
     authToken = (bcrypt.gensalt()).decode()
     encToken = sha256(authToken.encode()).hexdigest()
     db.users_collection.update_one({"email": email}, {"$set": {"token": encToken}})
@@ -69,7 +69,7 @@ def password_requirements_check(password):
     if len(password) < 8:
         return False, "Needs to be at least 8 characters"
     # At least 1 Uppercase and 1 Lower and 1 Digit
-    if password.islower() or password.isupper() :
+    if password.islower() or password.isupper():
         return False, "Needs at least 1 Uppercase, 1 Lowercase"
     # Special Character Test
     if not any([x.isdigit() for x in password]):
