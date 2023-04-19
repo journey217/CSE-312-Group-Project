@@ -1,5 +1,4 @@
 import hashlib
-
 import bcrypt
 from pymongo import MongoClient
 from database import *

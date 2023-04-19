@@ -30,11 +30,12 @@ def makeWebsocketConnection(ws):
 
 @app.post("/login-user")
 def loginUser():
-    data = json_loads(request.data)
-    email = data['email']
-    password = data['password']
+    email = request.form['email']
+    password = request.form['password']
+    print(email, password)
     if not verifyLogin(email, password):
-        return False
+        print('false')
+        # return False
     authToken = setBrowserCookie(email)
     myResponse = make_response('Response')
     myResponse.headers['Set-Cookie'] = f'authenticationToken={authToken}; HttpOnly'
