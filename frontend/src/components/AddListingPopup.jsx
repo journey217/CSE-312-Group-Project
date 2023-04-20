@@ -14,6 +14,7 @@ function AddListingPopup({ onClose, onSubmit }) {
   const handleConditionChange = (event) => setCondition(event.target.value);
   const handleCategoryChange = (event) => setCategory(event.target.value);
   const handleImageChange = (event) => setImage(event.target.files[0]);
+  const handleDateChange = (event) => setImage(event.target.files[0]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -34,14 +35,15 @@ function AddListingPopup({ onClose, onSubmit }) {
           <label>Base Price:</label>
           <input name="Item_Price" type="number" value={price} onChange={handlePriceChange} />
         </div>
-        <div class="form-field">
+        <div className="form-field">
           <label>Description:</label>
           <textarea value={description} onChange={handleDescriptionChange} />
         </div>
-        <div class="form-field">
+        <div className="form-field">
           <label>Condition:</label>
           <select value={condition} onChange={handleConditionChange}>
-            <option value="" disabled hidden>--- Select From Below ---</option>            <option value="Brand New">Brand New</option>
+            <option value="" disabled hidden>--- Select From Below ---</option>
+            <option value="Brand New">Brand New</option>
             <option value="Like New">Like New</option>
             <option value="Very Good">Very Good</option>
             <option value="Good">Good</option>

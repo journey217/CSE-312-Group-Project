@@ -1,18 +1,11 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
 from database import Database, AuctionVal, UserVal, DBType
-from flask import Flask, jsonify, request, make_response, redirect
-from database import Database, AuctionVal, UserVal, DBType
 from flask_sock import Sock
 from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username
 import os
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
-upload_folder = '/images/item_images'
-app.config['UPLOAD_FOLDER'] = upload_folder
-app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
-# Sets the max image size of an item image to 3 megabytes (can be changed later if we want)
 db = Database()
 sock = Sock(app)
 
@@ -26,7 +19,12 @@ def landing_page_items():
 def route_item(auction_id):
     item = db.find_by_ID(auction_id, DBType.Auction)
     if item:
-        return dict(item)
+        return item
+
+
+@app.route("/image/<filename>")
+def image(filename):
+    return send_from_directory('images', filename)
 
 
 @sock.route("/item/<auction_id>")
