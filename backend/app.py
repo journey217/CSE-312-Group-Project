@@ -1,10 +1,11 @@
-from flask import Flask, jsonify, request, make_response
-from database import Database, AuctionVal, UserVal, DBType, Categories
+from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
+from database import Database, AuctionVal, UserVal, DBType
 from flask_sock import Sock
 from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username
 from json import loads as json_loads
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
 db = Database()
 sock = Sock(app)
 
@@ -12,6 +13,12 @@ sock = Sock(app)
 @app.route("/landing_page_items")
 def landing_page_items():
     return jsonify(db.landing_page_items())
+
+
+@app.route("/image/<filename>")
+def image(filename):
+    print(filename)
+    return send_from_directory('images', filename)
 
 
 @app.route("/item/<auction_id>")

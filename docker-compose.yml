@@ -12,7 +12,7 @@ services:
       DOCKER: 1 # Environment variable for Vlad
       WAIT_HOSTS: mongo:27017
     ports:
-      - '5000:5000'
+      - '5000:5000'  # MUST BE REMOVED!!!!
   frontend:
     build:
       context: .

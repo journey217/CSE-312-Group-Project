@@ -21,11 +21,6 @@ export default function LandingPage(page) {
         setSearchText(e.target.value);
     };
 
-    const searchOptions = [
-        "Item Name",
-        "User Name"
-    ];
-
     const categories = [
         "All",
         "Car Parts",
@@ -70,7 +65,6 @@ export default function LandingPage(page) {
                 )
             }
             <div className="landing_search_container">
-                <Dropdown searchOptions={searchOptions} width="145px"></Dropdown>
                 <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
                 <button className="landing_search_button">Search</button>
             </div>
@@ -95,7 +89,7 @@ export default function LandingPage(page) {
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
                     <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
-                        <img className="landing_items_item_img" src={require("../assets/item/" + "dummy.png")} alt="Item"></img>
+                        <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
                         <p className="landing_items_item_p">{item.name}</p>
                         <p className="landing_items_item_p">{item.description}</p>
                     </div>

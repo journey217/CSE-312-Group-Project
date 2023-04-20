@@ -14,23 +14,12 @@ class DBType(Enum):
     Bid = "Bids"
 
 
-class Categories(Enum):
-    Car_Parts = "Car Parts"
-    Electronics = "Electronics"
-    Home_Decor = "Home Decor"
-    Clothing = "Clothing"
-    Toys = "Toys"
-    Sports = "Sports"
-    Appliances = "Appliances"
-
-
 class UserVal(Enum):  # Editable User Values
     Username = "username"
     Email = "email"
     Password = "hashed_password"  # Should be changed based on how we store passwords
     ProfilePicture = "profile_pic"
-    Bio = "bio"
-    #  ID, Name cannot be changed after account creation
+    #  ID cannot be changed
     #  auctions_made and bid_history are not directly changeable
 
 
@@ -83,14 +72,14 @@ class Database:
         self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
         return new_bid
 
-    def add_auction_to_db(self, creatorID, name, desc, images, category, end_time):
+    def add_auction_to_db(self, creatorID, name, desc, end_time, image_name="Blank.jpeg", condition="New"):
         auctionID = uuid4()
         new_auction = {"ID": auctionID,
                        "creatorID": creatorID,
                        "name": name,
                        "description": desc,
-                       "category": category,
-                       "images": images,
+                       "condition": condition,
+                       "image": image_name,
                        "start_time": datetime.now(),
                        "end_time": end_time,
                        "bid_history": []}
@@ -121,9 +110,6 @@ class Database:
     def update_auction(self, auctionID, auction_val, new_val):
         pass
 
-    def set_auction_images(self, auction, images):   # Images is a list of filenames
-        pass
-
     # Returns list of bids for a user
     # If there are multiple bids for an item, only have the newest bid in the return list
     def find_unique_item_bids_for_user(self, userID):
@@ -139,17 +125,16 @@ class Database:
                     unique_bids[auctionID] = bid
             else:
                 unique_bids[auctionID] = bid
-        return [value for _, value in unique_bids.items()]  # In future needs to be sorted
+        return [value for _, value in unique_bids.items()]
 
     def landing_page_items(self):
-        find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}}, projection={"_id": False})
+        find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}},
+                                                   projection={"_id": False, "ID": False, "creatorID": False, "start_time": False})
         items_list = [x for x in find_items]
-        random.shuffle(items_list)
         return items_list
 
     def all_item_search(self):
-        find_items = self.auctions_collection.find({}, projection={"_id": False})
-        items_list = [x for x in find_items]
+        items_list = [x for x in self.auctions_collection.find({}, projection={"_id": False})]
         return items_list
 
     def item_find(self, query):
@@ -161,11 +146,3 @@ class Database:
                 search_list.append(item)
         return search_list
 
-    # def user_find(self, query):
-    #     searchList = []
-    #     findUser = self.users_collection.find({}, projection={"_id": False})
-    #     userList = [x for x in findUser]
-    #     for item in userList:
-    #         if re.search(query, item.get("username"), re.IGNORECASE):
-    #             searchList.append(item)
-    #     return searchList

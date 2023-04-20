@@ -26,19 +26,19 @@ function AddListingPopup({ onClose, onSubmit }) {
     <div className="add-listing-popup">
       <h2>Add Listing</h2>
       <form onSubmit={handleSubmit}>
-        <div class="form-field">
+        <div className="form-field">
           <label>Item Name:</label>
           <input type="text" value={name} onChange={handleNameChange} />
         </div>
-        <div class="form-field">
-          <label>Price:</label>
+        <div className="form-field">
+          <label>Base Price:</label>
           <input type="number" value={price} onChange={handlePriceChange} />
         </div>
-        <div class="form-field">
+        <div className="form-field">
           <label>Description:</label>
           <textarea value={description} onChange={handleDescriptionChange} />
         </div>
-        <div class="form-field">
+        <div className="form-field">
           <label>Condition:</label>
           <select value={condition} onChange={handleConditionChange}>
             <option value="" disabled hidden>--- Select From Below ---</option>            <option value="Brand New">Brand New</option>
@@ -49,19 +49,7 @@ function AddListingPopup({ onClose, onSubmit }) {
             <option value="Poor">Poor</option>
           </select>
         </div>
-        <div class="form-field">
-          <label>Category</label>
-          <select value={category} onChange={handleCategoryChange}>
-            <option value="" disabled hidden>--- Select From Below ---</option>            <option value="Car Parts">Car Parts</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Home Decor ">Home Decor</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Toys">Toys</option>
-            <option value="Sports">Sports</option>
-            <option value="Appliances">Appliances</option>
-          </select>
-        </div>
-        <div class="form-field">
+        <div className="form-field">
           <label>Image:</label>
           <input type="file" onChange={handleImageChange} />
         </div>

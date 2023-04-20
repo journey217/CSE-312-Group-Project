@@ -1,0 +1,5 @@
+FLASK_ENV = 'development'
+UPLOAD_FOLDER = 'images'
+MAX_CONTENT_PATH = 10485760
+DEBUG = True
+TESTING = True

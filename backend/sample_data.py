@@ -23,14 +23,12 @@ def fill_with_data():
     db.add_auction_to_db(creatorID=user_1.get('ID'),
                          name="Jersey",
                          desc="Gameworn Jersey",
-                         images="blank.jpeg",
-                         category="",
+                         image_name="blank.jpeg",
                          end_time=datetime.max)
     db.add_auction_to_db(creatorID=user_2.get('ID'),
                          name="Hat",
                          desc="Old_hat",
-                         images="blank.jpeg",
-                         category="",
+                         image_name="blank.jpeg",
                          end_time=datetime.max)
 
 
