@@ -6,6 +6,7 @@ from os import environ as environment
 import random
 from datetime import datetime
 import re
+from hashlib import sha256
 
 
 class DBType(Enum):
@@ -19,7 +20,6 @@ class UserVal(Enum):  # Editable User Values
     Email = "email"
     Password = "hashed_password"  # Should be changed based on how we store passwords
     ProfilePicture = "profile_pic"
-    #  ID cannot be changed
     #  auctions_made and bid_history are not directly changeable
 
 
@@ -53,6 +53,11 @@ class Database:
     def find_user_by_email(self, email):
         return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
 
+    def find_user_by_token(self, token):
+        token = str(token)
+        token = sha256(token.encode()).hexdigest()
+        return self.users_collection.find_one({"token": token}, projection={"_id": False, "ID": False})
+
     def find_user_by_username(self, username):
         return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
 
@@ -72,12 +77,13 @@ class Database:
         self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
         return new_bid
 
-    def add_auction_to_db(self, creatorID, name, desc, end_time, image_name="Blank.jpeg", condition="New"):
+    def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="Blank.jpeg", condition="New"):
         auctionID = uuid4()
         new_auction = {"ID": auctionID,
                        "creatorID": creatorID,
                        "name": name,
                        "description": desc,
+                       "price": price,
                        "condition": condition,
                        "image": image_name,
                        "start_time": datetime.now(),
@@ -131,6 +137,7 @@ class Database:
         find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}},
                                                    projection={"_id": False, "ID": False, "creatorID": False, "start_time": False})
         items_list = [x for x in find_items]
+        random.shuffle(items_list)
         return items_list
 
     def all_item_search(self):

@@ -12,10 +12,10 @@ def fill_with_data():
     p3 = generate_hashed_pass("goodPa$$word2023")
     user_1 = db.add_user_to_db(username="Vandorlot",
                                email="ubcodingprojects@gmail.com",
-                               hashed_password=p1,)
+                               hashed_password=p1)
     user_2 = db.add_user_to_db(username="AAron",
                                email="aaron.rodgers@gmail.com",
-                               hashed_password=p2,)
+                               hashed_password=p2)
     user_3 = db.add_user_to_db(username="JHurts",
                                email="jalen.hurts@gmail.com",
                                hashed_password=p3,
@@ -24,12 +24,17 @@ def fill_with_data():
                          name="Jersey",
                          desc="Gameworn Jersey",
                          image_name="blank.jpeg",
-                         end_time=datetime.max)
+                         end_time=datetime.max,
+                         price=500,
+                         condition="Brand New")
     db.add_auction_to_db(creatorID=user_2.get('ID'),
                          name="Hat",
                          desc="Old_hat",
                          image_name="blank.jpeg",
-                         end_time=datetime.max)
+                         end_time=datetime.max,
+                         price=500,
+                         condition="Brand New"
+                         )
 
 
 if __name__ == "__main__":

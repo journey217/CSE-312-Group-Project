@@ -25,20 +25,20 @@ function AddListingPopup({ onClose, onSubmit }) {
   return (
     <div className="add-listing-popup">
       <h2>Add Listing</h2>
-      <form onSubmit={handleSubmit}>
+      <form action="/add-item" method="post">
         <div className="form-field">
           <label>Item Name:</label>
           <input type="text" value={name} onChange={handleNameChange} />
         </div>
         <div className="form-field">
           <label>Base Price:</label>
-          <input type="number" value={price} onChange={handlePriceChange} />
+          <input name="Item_Price" type="number" value={price} onChange={handlePriceChange} />
         </div>
-        <div className="form-field">
+        <div class="form-field">
           <label>Description:</label>
           <textarea value={description} onChange={handleDescriptionChange} />
         </div>
-        <div className="form-field">
+        <div class="form-field">
           <label>Condition:</label>
           <select value={condition} onChange={handleConditionChange}>
             <option value="" disabled hidden>--- Select From Below ---</option>            <option value="Brand New">Brand New</option>
@@ -48,6 +48,10 @@ function AddListingPopup({ onClose, onSubmit }) {
             <option value="Fair">Fair</option>
             <option value="Poor">Poor</option>
           </select>
+        </div>
+        <div className="form-field">
+          <label>Auction End Date:</label>
+          <input type="date" onChange={handleDateChange} />
         </div>
         <div className="form-field">
           <label>Image:</label>
