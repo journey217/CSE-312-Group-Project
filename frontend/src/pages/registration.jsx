@@ -17,8 +17,8 @@ function Register() {
         })
             .then(response => response.json())
             .then(data => {
-                const error = data.errors
-                console.log(error)
+                const errors = data.errors
+                console.log(errors)
                 if (data.errors) {
                     setErrors(data.errors);
                     setSuccess(false);
