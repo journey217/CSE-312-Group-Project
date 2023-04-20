@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
 from database import Database, AuctionVal, UserVal, DBType
 from flask_sock import Sock
-from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username
+from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username, username_exists, email_exists
 import os
+import re
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -48,36 +49,60 @@ def login_user():
 
 
 @app.post("/register-user")
-def register_user():
+def register():
+    # Get form data
     username = request.form['username']
-    if verify_username(username):
-        # Return message that username is already taken
-        return False
     email = request.form['email']
-    if verify_email(email):
-        # Return message that email is already registered with another account
-        return False
     password1 = request.form['password1']
     password2 = request.form['password2']
-    if password1 != password2:
-        print('different passwords')
 
+    # Initialize list to hold error messages
+    errors = []
+
+    # Check if passwords match
+    if password1 != password2:
+        errors.append('Passwords do not match')
+
+    # Check if username already exists
+    if username_exists(username):
+        errors.append('Username already exists')
+
+    # Check if email already exists
+    if email_exists(email):
+        errors.append('Email already exists')
+
+    # Validate email
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        errors.append('Invalid email address')
+
+    # Validate password
+    if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", password1):
+        errors.append('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit')
+
+    # If there are errors, return them as a JSON response
+    if errors:
+        return jsonify({'errors': errors})
+    
+    # Submit data to database
     hash = generate_hashed_pass(password1)
     db.add_user_to_db(username, email, hash)
-
     authToken = set_browser_cookie(email)
+
+    response = make_response(redirect('/'))
+    response.set_cookie('authenticationToken', authToken)
     return redirect_response('/', [['authenticationToken', authToken]])
 
 
 @app.post("/add-item")
 def add_item():
+    image = None
     try:
         item_name = request.form['Item_Name']
         starting_price = request.form['Item_Price']
         item_desc = request.form['Item_Desc']
         condition = request.form['condition']
         end_date = request.form['date']
-        image = request.files['file']
+        image = request.files['image']
     except KeyError as x:
         # Return an error message pop up telling the user that they didn't completely fill out the form
         print("Add Item Key Error!")
@@ -89,7 +114,7 @@ def add_item():
         print("User is not logged in!")
         # return False
     user = db.find_user_by_token(cookieToken)
-    if not user:
+    if user is None:
         # Return an error message pop up telling the user that their auth token is invalid and that they
         # must log out and log back in
         print("User token is invalid!")
@@ -99,8 +124,10 @@ def add_item():
     else:
         x = int(db.auctions_collection.count_documents({})) + 1
     filename = f'image{x}.jpg'
-    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    db.add_auction_to_db(user.get('ID'), item_name, item_desc, image.name, end_date, starting_price, condition)
+    if image:
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    if user is not None:
+        db.add_auction_to_db(user.get('ID'), item_name, item_desc, filename, end_date, starting_price, condition)
     return redirect('/')
 
 

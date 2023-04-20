@@ -18,7 +18,7 @@ class PasswordError(Enum):
 def verify_email(email):
     if db.find_user_by_email(email):
         return True
-    return False
+    return None
 
 
 def verify_username(username):
@@ -68,7 +68,12 @@ def generate_hashed_pass(user_password):
 def long_password_hash(password):
     return b64encode(sha256(password.encode()).digest())
 
-
+def username_exists(username):
+    user = db.find_user_by_username(username)
+    return user
+def email_exists(email):
+    em = db.find_user_by_email(email)
+    return em
 # In a future revision, function should return error messages in some way. That's why its written badly
 def password_requirements_check(password):
     # At least 8 characters
