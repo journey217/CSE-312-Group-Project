@@ -5,65 +5,58 @@ function AddListingPopup({ onClose, onSubmit }) {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [condition, setCondition] = useState('');
-  const [category, setCategory] = useState('');
+  const [date, setDate] = useState('');
   const [image, setImage] = useState(null);
 
   const handleNameChange = (event) => setName(event.target.value);
   const handlePriceChange = (event) => setPrice(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
   const handleConditionChange = (event) => setCondition(event.target.value);
-  const handleCategoryChange = (event) => setCategory(event.target.value);
+  const handleDateChange = (event) => setDate(event.target.value);
   const handleImageChange = (event) => setImage(event.target.files[0]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     // Call the onSubmit prop with the form data
-    onSubmit({ name, price, description, condition, category, image });
+    onSubmit({ name, price, description, condition, date, image });
   };
 
   return (
     <div className="add-listing-popup">
       <h2>Add Listing</h2>
-      <form onSubmit={handleSubmit}>
+      <form action="/add-item" method="post">
         <div className="form-field">
           <label>Item Name:</label>
-          <input type="text" value={name} onChange={handleNameChange} />
+          <input name="Item_Name" type="text" value={name} onChange={handleNameChange} />
         </div>
         <div className="form-field">
           <label>Price:</label>
-          <input type="number" value={price} onChange={handlePriceChange} />
+          <input name="Item_Price" type="number" value={price} onChange={handlePriceChange} />
         </div>
         <div className="form-field">
           <label>Description:</label>
-          <textarea value={description} onChange={handleDescriptionChange} />
+          <textarea name="Item_Desc" value={description} onChange={handleDescriptionChange} />
         </div>
         <div className="form-field">
           <label>Condition:</label>
-          <select value={condition} onChange={handleConditionChange}>
-            <option value="" disabled hidden>--- Select From Below ---</option>            <option value="Brand New">Brand New</option>
-            <option value="Like New">Like New</option>
-            <option value="Very Good">Very Good</option>
-            <option value="Good">Good</option>
-            <option value="Fair">Fair</option>
-            <option value="Poor">Poor</option>
+          <select name="condition" value={condition} onChange={handleConditionChange}>
+            <option name="condition" value="" disabled hidden>--- Select From Below ---</option>
+            <option  value="Brand New" name="condition">Brand New</option>
+            <option value="Like New" name="condition">Like New</option>
+            <option value="Very Good " name="condition">Very Good</option>
+            <option value="Good" name="condition">Good</option>
+            <option value="Fair" name="condition">Fair</option>
+            <option value="Poor" name="condition">Poor</option>
           </select>
         </div>
         <div className="form-field">
-          <label>Category</label>
-          <select value={category} onChange={handleCategoryChange}>
-            <option value="" disabled hidden>--- Select From Below ---</option>            <option value="Car Parts">Car Parts</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Home Decor ">Home Decor</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Toys">Toys</option>
-            <option value="Sports">Sports</option>
-            <option value="Appliances">Appliances</option>
-          </select>
+          <label>Auction End Date:</label>
+          <input type="date" onChange={handleDateChange} />
         </div>
         <div className="form-field">
           <label>Image:</label>
-          <input type="file" onChange={handleImageChange} />
+          <input name="file" type="file"/>
         </div>
         <button type="submit">Add Listing</button>
         <button type="button" onClick={onClose}>Cancel</button>

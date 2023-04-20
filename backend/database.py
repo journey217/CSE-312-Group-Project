@@ -1,3 +1,4 @@
+import bcrypt
 from pymongo import MongoClient
 from uuid import uuid4
 import datetime
@@ -6,6 +7,7 @@ from os import environ as environment
 import random
 from datetime import datetime
 import re
+from hashlib import sha256
 
 
 class DBType(Enum):
@@ -64,6 +66,11 @@ class Database:
     def find_user_by_email(self, email):
         return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
 
+    def find_user_by_token(self, token):
+        token = str(token)
+        token = sha256(token.encode()).hexdigest()
+        return self.users_collection.find_one({"token": token}, projection={"_id": False, "ID": False})
+
     def find_user_by_username(self, username):
         return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
 
@@ -83,14 +90,15 @@ class Database:
         self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
         return new_bid
 
-    def add_auction_to_db(self, creatorID, name, desc, images, category, end_time):
+    def add_auction_to_db(self, creatorID, name, desc, images, end_time, price, condition):
         auctionID = uuid4()
         new_auction = {"ID": auctionID,
                        "creatorID": creatorID,
                        "name": name,
                        "description": desc,
-                       "category": category,
                        "images": images,
+                       "price": price,
+                       "condition": condition,
                        "start_time": datetime.now(),
                        "end_time": end_time,
                        "bid_history": []}

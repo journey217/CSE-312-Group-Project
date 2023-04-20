@@ -1,10 +1,15 @@
-from flask import Flask, jsonify, request, make_response
-from database import Database, AuctionVal, UserVal, DBType, Categories
+from flask import Flask, jsonify, request, make_response, redirect
+from database import Database, AuctionVal, UserVal, DBType
 from flask_sock import Sock
 from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username
-from json import loads as json_loads
+import os
 
 app = Flask(__name__)
+upload_folder = '/images/item_images'
+app.config['UPLOAD_FOLDER'] = upload_folder
+app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+# Sets the max image size of an item image to 3 megabytes (can be changed later if we want)
 db = Database()
 sock = Sock(app)
 
@@ -61,6 +66,41 @@ def register_user():
 
     authToken = set_browser_cookie(email)
     return redirect_response('/', [['authenticationToken', authToken]])
+
+
+@app.post("/add-item")
+def add_item():
+    try:
+        item_name = request.form['Item_Name']
+        starting_price = request.form['Item_Price']
+        item_desc = request.form['Item_Desc']
+        condition = request.form['condition']
+        end_date = request.form['date']
+        image = request.files['file']
+    except KeyError as x:
+        # Return an error message pop up telling the user that they didn't completely fill out the form
+        print("Add Item Key Error!")
+        # return False
+    try:
+        cookieToken = request.cookies.get('authenticationToken')
+    except KeyError as x:
+        # Return an error message pop up telling the user that they're not signed in
+        print("User is not logged in!")
+        # return False
+    user = db.find_user_by_token(cookieToken)
+    if not user:
+        # Return an error message pop up telling the user that their auth token is invalid and that they
+        # must log out and log back in
+        print("User token is invalid!")
+        # return False
+    if db.auctions_collection.count_documents({}) == 0:
+        x = 1
+    else:
+        x = int(db.auctions_collection.count_documents({})) + 1
+    filename = f'image{x}.jpg'
+    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    db.add_auction_to_db(user.get('ID'), item_name, item_desc, image.name, end_date, starting_price, condition)
+    return redirect('/')
 
 
 def redirect_response(path, cookies):
