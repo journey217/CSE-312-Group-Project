@@ -3,7 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import "../styles/registration.css";
 
 function Register() {
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirm_password: '',
+        submit: ''
+    });
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
     const handleSubmit = (event) => {
@@ -17,18 +23,30 @@ function Register() {
         })
             .then(response => response.json())
             .then(data => {
-                const errors = data.errors
-                console.log(errors)
                 if (data.errors) {
-                    setErrors(data.errors);
+                    const errors = data.errors;
+                    let allErrors = {};
+                    errors.forEach(error => {
+                        const field = Object.keys(error)[0];
+                        allErrors[field] = error[field];
+                    });
+                    setErrors({ ...allErrors, submit: 'Unable to create account, please check all fields' });
                     setSuccess(false);
                 } else {
-                    setErrors({});
+                    setErrors({
+                        username: '',
+                        email: '',
+                        password1: '',
+                        password2: '',
+                        submit: ''
+                    });
                     setSuccess(true);
                 }
             })
             .catch(error => console.error(error));
     };
+
+
 
     return (
         <div className='register'>
@@ -37,14 +55,14 @@ function Register() {
                 <div className="register-form">
                     <form className="reg-inputs" onSubmit={handleSubmit}>
                         <header className="formheader">Create New Account</header>
-                        <input type="text" placeholder='Username' name='username' required />
                         {errors.username && <div className="error-message">{errors.username}</div>}
-                        <input type="email" placeholder="Email" name="email" required />
+                        <input type="text" placeholder='Username' name='username' required />
                         {errors.email && <div className="error-message">{errors.email}</div>}
+                        <input type="email" placeholder="Email" name="email" required />
+                        {errors.password1 && <div className="error-message">{errors.password1}</div>}
                         <input type="password" placeholder="Password" name="password1" required />
-                        {errors.password && <div className="error-message">{errors.password}</div>}
+                        {errors.password2 && <div className="error-message">{errors.password2}</div>}
                         <input type="password" placeholder="Confirm Password" name="password2" required />
-                        {errors.confirm_password && <div className="error-message">{errors.confirm_password}</div>}
 
                         <button className="register-button" type="submit" >Register</button>
                         {errors.submit && <div className="error-message">{errors.submit}</div>}

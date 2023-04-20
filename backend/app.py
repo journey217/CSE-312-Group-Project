@@ -61,23 +61,23 @@ def register():
 
     # Check if passwords match
     if password1 != password2:
-        errors.append('Passwords do not match')
+        errors.append({'password2':'Passwords do not match'})
 
     # Check if username already exists
     if username_exists(username):
-        errors.append('Username already exists')
+        errors.append({'username':'Username already exists'})
 
     # Check if email already exists
     if email_exists(email):
-        errors.append('Email already exists')
+        errors.append({'email':'Email already exists'})
 
     # Validate email
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-        errors.append('Invalid email address')
+        errors.append({'email':'Invalid email address'})
 
     # Validate password
-    if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", password1):
-        errors.append('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit')
+    if not re.match(r"^.{8,}$", password1):
+        errors.append({'password1':'Password must be at least 8 characters long'})
 
     # If there are errors, return them as a JSON response
     if errors:
