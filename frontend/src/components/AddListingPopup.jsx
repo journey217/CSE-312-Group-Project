@@ -25,7 +25,7 @@ function AddListingPopup({ onClose, onSubmit }) {
   return (
     <div className="add-listing-popup">
       <h2>Add Listing</h2>
-      <form action="/add-item" method="post">
+      <form action="/add-item" method="POST" encType="multipart/form-data">
         <div className="form-field">
           <label>Item Name:</label>
           <input name="Item_Name" type="text" value={name} onChange={handleNameChange} />
@@ -56,7 +56,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <div className="form-field">
           <label>Image:</label>
-          <input name="file" type="file"/>
+          <input name="image" type="file" onChange={handleImageChange}/>
         </div>
         <button type="submit">Add Listing</button>
         <button type="button" onClick={onClose}>Cancel</button>
