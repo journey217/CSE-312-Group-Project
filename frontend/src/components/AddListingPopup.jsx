@@ -5,31 +5,63 @@ function AddListingPopup({ onClose, onSubmit }) {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [condition, setCondition] = useState('');
-  const [category, setCategory] = useState('');
+  const [date, setDate] = useState('');
   const [image, setImage] = useState(null);
 
   const handleNameChange = (event) => setName(event.target.value);
   const handlePriceChange = (event) => setPrice(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
   const handleConditionChange = (event) => setCondition(event.target.value);
-  const handleCategoryChange = (event) => setCategory(event.target.value);
   const handleImageChange = (event) => setImage(event.target.files[0]);
-  const handleDateChange = (event) => setImage(event.target.files[0]);
+  const handleDateChange = (event) => setDate(event.target.value);
 
+  const [errors, setErrors] = useState({
+        field: ''
+    });
+  const [success, setSuccess] = useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    const formData = new FormData(event.target);
+
+        fetch('/add-item', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.errors) {
+                    const errors = data.errors;
+                    let allErrors = {};
+                    errors.forEach(error => {
+                        const field = Object.keys(error)[0];
+                        allErrors[field] = error[field];
+                    });
+                    setErrors({ ...allErrors});
+                    setSuccess(false);
+                } else {
+                    setErrors({
+                        field: ''
+                    });
+                    setSuccess(true);
+                }
+            })
+            .catch(error => console.error(error));
+
     // Call the onSubmit prop with the form data
-    onSubmit({ name, price, description, condition, category, image });
+    // onSubmit({ name, price, description, condition, date, image });
   };
 
   return (
     <div className="add-listing-popup">
       <h2>Add Listing</h2>
-      <form action="/add-item" method="POST" encType="multipart/form-data">
+      {/*<form action="/add-item" method="POST" onSubmit={handleSubmit} encType="multipart/form-data">*/}
+        <form onSubmit={handleSubmit}>
         <div className="form-field">
+          {errors.field && <div className="error-message">{errors.field}</div>}
+            <br/>
           <label>Item Name:</label>
-          <input type="text" value={name} onChange={handleNameChange} />
+          <input name="Item_Name" type="text" value={name} onChange={handleNameChange} />
         </div>
         <div className="form-field">
           <label>Base Price:</label>
@@ -37,23 +69,23 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <div className="form-field">
           <label>Description:</label>
-          <textarea value={description} onChange={handleDescriptionChange} />
+          <textarea name="Item_Desc" value={description} onChange={handleDescriptionChange} />
         </div>
         <div className="form-field">
           <label>Condition:</label>
-          <select value={condition} onChange={handleConditionChange}>
+          <select name="condition" value={condition} onChange={handleConditionChange}>
             <option value="" disabled hidden>--- Select From Below ---</option>
-            <option value="Brand New">Brand New</option>
-            <option value="Like New">Like New</option>
-            <option value="Very Good">Very Good</option>
-            <option value="Good">Good</option>
-            <option value="Fair">Fair</option>
-            <option value="Poor">Poor</option>
+            <option name="condition" value="Brand New">Brand New</option>
+            <option name="condition" value="Like New">Like New</option>
+            <option name="condition" value="Very Good">Very Good</option>
+            <option name="condition" value="Good">Good</option>
+            <option name="condition" value="Fair">Fair</option>
+            <option name="condition" value="Poor">Poor</option>
           </select>
         </div>
         <div className="form-field">
           <label>Auction End Date:</label>
-          <input type="date" onChange={handleDateChange} />
+          <input name="date" value={date} type="date" onChange={handleDateChange} />
         </div>
         <div className="form-field">
           <label>Image:</label>
@@ -61,6 +93,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <button type="submit">Add Listing</button>
         <button type="button" onClick={onClose}>Cancel</button>
+        {success && <div>Item Listing Success!</div>}
       </form>
     </div>
   );

@@ -95,39 +95,37 @@ def register():
 
 @app.post("/add-item")
 def add_item():
-    image = None
+    errors = []
     try:
         item_name = request.form['Item_Name']
         starting_price = request.form['Item_Price']
         item_desc = request.form['Item_Desc']
         condition = request.form['condition']
         end_date = request.form['date']
-        image = request.files['image']
     except KeyError as x:
-        # Return an error message pop up telling the user that they didn't completely fill out the form
-        print("Add Item Key Error!")
-        # return False
+        errors.append({'field': 'Please fill out all fields before submitting!'})
+        return jsonify({'errors': errors})
     try:
         cookieToken = request.cookies.get('authenticationToken')
     except KeyError as x:
-        # Return an error message pop up telling the user that they're not signed in
         print("User is not logged in!")
-        # return False
+        errors.append({'field': 'Please log in before posting an item!'})
+        return jsonify({'errors': errors})
     user = db.find_user_by_token(cookieToken)
     if user is None:
-        # Return an error message pop up telling the user that their auth token is invalid and that they
-        # must log out and log back in
         print("User token is invalid!")
-        # return False
+        errors.append({'field': 'Invalid log in token. Please sign out and sign back in!'})
+        return jsonify({'errors': errors})
     if db.auctions_collection.count_documents({}) == 0:
         x = 1
     else:
         x = int(db.auctions_collection.count_documents({})) + 1
     filename = f'image{x}.jpg'
+    image = request.files['image']
     if image:
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     if user is not None:
-        db.add_auction_to_db(user.get('ID'), item_name, item_desc, filename, end_date, starting_price, condition)
+        db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename, end_time=end_date, price=starting_price, condition=condition)
     return redirect('/')
 
 
