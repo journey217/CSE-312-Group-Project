@@ -8,6 +8,7 @@ function AddListingPopup({ onClose, onSubmit }) {
   const [date, setDate] = useState('');
   const [image, setImage] = useState(null);
 
+
   const handleNameChange = (event) => setName(event.target.value);
   const handlePriceChange = (event) => setPrice(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
@@ -47,7 +48,6 @@ function AddListingPopup({ onClose, onSubmit }) {
                 }
             })
             .catch(error => console.error(error));
-
     // Call the onSubmit prop with the form data
     // onSubmit({ name, price, description, condition, date, image });
   };
