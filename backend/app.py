@@ -18,6 +18,18 @@ def landing_page_items():
     return jsonify(db.landing_page_items())
 
 
+@app.route('/sign-out')
+def sign_out():
+    response = make_response('Response')
+    response.set_cookie('authenticationToken', '', max_age=0, httponly=True)
+    response.headers['Location'] = '/'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.status_code = 301
+    response.mimetype = 'text/html; charset=utf-8'
+    response.content_length = '0'
+    return response
+
+
 @app.route("/item/<auction_id>")
 def route_item(auction_id):
     item = db.find_by_ID(auction_id, DBType.Auction)

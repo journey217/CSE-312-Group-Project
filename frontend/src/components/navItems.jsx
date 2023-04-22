@@ -35,7 +35,7 @@ export const dropDown = [
     {
         id: 3,
         title: "Sign out",
-        path: "",
+        path: "./sign-out",
         cName: "dd-item"
     },
 ]

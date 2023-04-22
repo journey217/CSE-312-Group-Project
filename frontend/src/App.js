@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/login';
@@ -6,6 +7,7 @@ import Navbar from './components/navbar';
 import LandingPage from './pages/landingPage';
 import './App.css';
 import Profile from './pages/profilePage'
+import SignOut from "./pages/sign-out";
 import Auction_detail from './pages/auctionDetail';
 
 function App() {
@@ -19,8 +21,9 @@ function App() {
           <Route path='/' element={<LandingPage />} />
           <Route path='/login' element={<Login />} />
           <Route path='/registration' element={<Registration />} />
-          <Route path='/profile/' element={<Profile></Profile>} />
+          <Route path='/profile/' element={<Profile />} />
           <Route path='/item/:id' element={<Auction_detail />} />
+          <Route path='/sign-out' element={< SignOut/>} />
         </Routes>
       </Router>
     </div>
