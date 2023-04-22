@@ -109,7 +109,7 @@ class Database:
 
     def landing_page_items(self):
         find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}},
-                                                   projection={"_id": False, "ID": False, "creatorID": False, "start_time": False})
+                                                   projection={"_id": False, "creatorID": False, "start_time": False})
         items_list = [x for x in find_items]
         random.shuffle(items_list)
         return items_list
