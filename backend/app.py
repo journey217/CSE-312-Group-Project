@@ -29,6 +29,16 @@ def sign_out():
     return response
 
 
+@app.route('/profile')
+def profile():
+    cookieToken = request.cookies.get('authenticationToken', '')
+    user = db.find_user_by_token(cookieToken)
+    if user:
+        return jsonify({'status': 1, 'user': user})
+    else:
+        return jsonify({'status': 0})
+
+
 @app.route("/item/<auction_id>")
 def route_item(auction_id):
     item = db.find_by_ID(auction_id, DBType.Auction)
