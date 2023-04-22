@@ -109,7 +109,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <div className="form-field">
           <label>Auction End Date:</label>
-          <input name="date" value={date} type="datetime-local" onChange={handleDateChange} />
+          <input id={"Date1"} name="date" value={date} type="datetime-local" min={new Date().getDate()} onChange={handleDateChange} />
         </div>
         <div className="form-field">
           <label>Image:</label>
