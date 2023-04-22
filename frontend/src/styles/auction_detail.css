@@ -1,16 +1,16 @@
 .auction_detail_popup_background{
     position: absolute;
     width: 100vw;
-    height: 100vh;
-    background-color: rgba(1, 1, 1, 0.4);
+    height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #333333;
 }
 
 .auction_detail_popup{
     position: relative;
-    width: 400px;
+    width: 90%;
     height: 800px;
     background: #424242;
     display: flex;
@@ -29,6 +29,7 @@
     padding: 0;
     margin: 0;
     color: #E5DDDD;
+    font-size: 30pt;
     padding-left: 4%;
 }
 

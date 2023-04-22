@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
-import Dropdown from "../components/dropdown";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
-import Auction_detail from "../components/auctionDetail";
 
 export default function LandingPage(page) {
     const [searchText, setSearchText] = useState("");
@@ -59,9 +57,6 @@ export default function LandingPage(page) {
     }
     return (
         <div className="landing_page">
-            {
-                auctionDetailOn && <Auction_detail close={close_auction_detail}/>
-            }
             <div className="landing_search_container">
                 <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
                 <button className="landing_search_button">Search</button>

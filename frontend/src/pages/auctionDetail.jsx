@@ -2,17 +2,12 @@ import React, { useState } from 'react';
 import "../styles/auction_detail.css"
 
 
-export default function auction_detail(props) {
-    const closePopup = () => {
-        console.log("close")
-        props.close()
-    }
+export default function auction_detail(page) {
     return (
         <div className='auction_detail_popup_background'>
             <div className='auction_detail_popup'>
                 <div className='auction_detail_title'>
                     <h2 className='auction_detail_item_name'>name</h2>
-                    <button className='auction_detail_close_button' onClick={closePopup}></button>
                 </div>
                 <hr className='auction_detail_hr' />
                 <img src={require("../assets/item/dummy.png")}></img>
