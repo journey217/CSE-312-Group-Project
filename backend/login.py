@@ -15,16 +15,20 @@ class PasswordError(Enum):
 
 
 # This function will check the database upon login to ensure that the entered email is linked to an account.
-def verify_email(email):
+def check_email_exists(email):
     if db.find_user_by_email(email):
         return True
-    return None
+    return False
 
 
-def verify_username(username):
+def check_username_exists(username):
     if db.find_user_by_username(username):
         return True
     return False
+
+
+def check_password(stored_hash, pass_attempt):
+    return bcrypt.checkpw(long_password_hash(pass_attempt), stored_hash)
 
 
 def verify_password(email, password):
@@ -33,12 +37,8 @@ def verify_password(email, password):
     return check_password(hashed_password, password)
 
 
-def check_password(stored_hash, pass_attempt):
-    return bcrypt.checkpw(long_password_hash(pass_attempt), stored_hash)
-
-
 def verify_login(email, password):
-    if not verify_email(email):
+    if not check_email_exists(email):
         # Return an error message indicating that the entered email is incorrect/not registered
         print("Failed Email Verification")
         return False
@@ -50,8 +50,6 @@ def verify_login(email, password):
 
 
 def set_browser_cookie(email):
-    print(bcrypt.gensalt())
-    print(len(bcrypt.gensalt()))
     authToken = (bcrypt.gensalt()).decode()
     encToken = generated_token_hash(authToken)
     db.users_collection.update_one({"email": email}, {"$set": {"token": encToken}})
@@ -63,9 +61,6 @@ def generated_token_hash(token):
 
 
 def generate_hashed_pass(user_password):
-    success, reason = password_requirements_check(user_password)
-    if not success:
-        return reason
     salt = bcrypt.gensalt()
     hashed_pass = bcrypt.hashpw(long_password_hash(user_password), salt)
     return hashed_pass
@@ -75,34 +70,17 @@ def long_password_hash(password):
     return b64encode(sha256(password.encode()).digest())
 
 
-def username_exists(username):
-    user = db.find_user_by_username(username)
-    return user
-
-
-def email_exists(email):
-    em = db.find_user_by_email(email)
-    return em
-
-
 # In a future revision, function should return error messages in some way. That's why its written badly
-def password_requirements_check(password):
-    # At least 8 characters
+def strong_password_check(password):
+    errors = []
     if len(password) < 8:
-        return False, "Needs to be at least 8 characters"
-    # At least 1 Uppercase and 1 Lower and 1 Digit
-    if password.islower() or password.isupper():
-        return False, "Needs at least 1 Uppercase, 1 Lowercase"
-    # Special Character Test
+        errors.append("Needs to be at least 8 characters")
+    if password.lower() == password:
+        errors.append("Needs an Uppercase letter")
+    if password.upper() == password:
+        errors.append("Needs a Lowercase letter")
     if not any([x.isdigit() for x in password]):
-        return False, "Needs at least 1 Number"
+        errors.append("Needs at least 1 Number")
     if password.isalnum():
-        return False, "Needs at least 1 special character"
-    # At least 4 Unique Characters "aabbccdd" would work "aabbccaa" would not
-    # Error Message can be too simple of a password
-    unique_characters = set()
-    for i in range(len(password)):
-        unique_characters.add(password[i])
-    if len(unique_characters) < 5:
-        return False, "Too Simple"
-    return True, None
+        errors.append("Needs at least 1 special character")
+    return errors

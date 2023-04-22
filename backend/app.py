@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
 from database import Database, DBType
 from flask_sock import Sock
-from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username, username_exists, email_exists
+from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
 from datetime import datetime
@@ -65,23 +65,24 @@ def register():
 
     # Check if passwords match
     if password1 != password2:
-        errors.append({'password2':'Passwords do not match'})
+        errors.append({'password2': 'Passwords do not match'})
 
     # Check if username already exists
-    if username_exists(username):
-        errors.append({'username':'Username already exists'})
+    if check_username_exists(username):
+        errors.append({'username': 'Username already exists'})
 
     # Check if email already exists
-    if email_exists(email):
-        errors.append({'email':'Email already exists'})
+    if check_email_exists(email):
+        errors.append({'email': 'Email already exists'})
 
     # Validate email
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-        errors.append({'email':'Invalid email address'})
+        errors.append({'email': 'Invalid email address'})
 
     # Validate password
-    if not re.match(r"^.{8,}$", password1):
-        errors.append({'password1':'Password must be at least 8 characters long'})
+    password_errors = strong_password_check(password1)
+    if len(password_errors) != 0:
+        errors.append({'password1': '<br>'.join(password_errors)})
 
     # If there are errors, return them as a JSON response
     if errors:
