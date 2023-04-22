@@ -23,7 +23,7 @@ function App() {
           <Route path='/registration' element={<Registration />} />
           <Route path='/profile/' element={<Profile />} />
           <Route path='/item/:id' element={<Auction_detail />} />
-          <Route path='/sign-out' element={< SignOut/>} />
+          <Route path='/sign-out' element={< LandingPage/>} />
         </Routes>
       </Router>
     </div>
