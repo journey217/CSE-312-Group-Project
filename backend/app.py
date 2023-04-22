@@ -46,8 +46,17 @@ def login_user():
     print(email, password)
     if verify_login(email, password):
         authToken = set_browser_cookie(email)
-        return redirect_response('/', [['authenticationToken', authToken]])
-    return jsonify({"error": "Incorrect Username or Password"})
+        response_data = {'status': '1', 'authenticationToken': authToken}
+        response = jsonify(response_data)
+        response.set_cookie('authenticationToken', authToken, max_age=3600, httponly=True)
+        return response
+    else:
+        response_data = {'status': '0', 'error': 'Incorrect Username or Password'}
+        response = jsonify(response_data)
+        return response
+
+
+
 
 
 @app.post("/register-user")
@@ -84,7 +93,7 @@ def register():
 
     # If there are errors, return them as a JSON response
     if errors:
-        return jsonify({'errors': errors})
+        return jsonify({'status':'0','errors': errors})
     
     # Submit data to database
     hash_ = generate_hashed_pass(password1)
@@ -131,11 +140,10 @@ def add_item():
         return jsonify({'errors': errors})
 
 
-def redirect_response(path, cookies):
+def redirect_response(cookies):
     myResponse = make_response('Response')
     for cookie in cookies:
         myResponse.set_cookie(key=cookie[0], value=cookie[1], max_age=3600, httponly=True)
-    myResponse.headers['Location'] = path
     myResponse.headers['X-Content-Type-Options'] = 'nosniff'
     myResponse.status_code = 302
     myResponse.mimetype = 'text/html; charset=utf-8'
