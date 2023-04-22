@@ -60,9 +60,7 @@ export default function LandingPage(page) {
     return (
         <div className="landing_page">
             {
-                auctionDetailOn && (
-                    <Auction_detail close={close_auction_detail}/>
-                )
+                auctionDetailOn && <Auction_detail close={close_auction_detail}/>
             }
             <div className="landing_search_container">
                 <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
@@ -91,7 +89,7 @@ export default function LandingPage(page) {
                     <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
                         <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
                         <p className="landing_items_item_p">{item.name}</p>
-                        <p className="landing_items_item_p">{item.description}</p>
+                        <p className="landing_items_item_p">{'$' + item.price}</p>
                     </div>
                 ))}
             </div>

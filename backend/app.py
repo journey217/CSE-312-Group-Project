@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
-from database import Database, AuctionVal, UserVal, DBType
+from database import Database, DBType
 from flask_sock import Sock
 from login import verify_login, set_browser_cookie, generate_hashed_pass, verify_email, verify_username, username_exists, email_exists
 import os
 import re
+from datetime import datetime
+from uuid import uuid4
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -25,7 +27,9 @@ def route_item(auction_id):
 
 @app.route("/image/<filename>")
 def image(filename):
-    return send_from_directory('images', filename)
+    if db.image_exists(filename):
+        return send_from_directory('images', filename)
+    return send_from_directory('images', 'NoImage.jpg')
 
 
 @sock.route("/item/<auction_id>")
@@ -116,17 +120,16 @@ def add_item():
         print("User token is invalid!")
         errors.append({'field': 'Invalid log in token. Please sign out and sign back in!'})
         return jsonify({'errors': errors})
-    if db.auctions_collection.count_documents({}) == 0:
-        x = 1
-    else:
-        x = int(db.auctions_collection.count_documents({})) + 1
-    filename = f'image{x}.jpg'
+    filename = f'image{str(uuid4())}.jpg'
     image = request.files['image']
     if image:
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    if user is not None:
-        db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename, end_time=end_date, price=starting_price, condition=condition)
-    return redirect('/')
+        db.add_image(filename)
+        db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename, end_time=datetime.strptime(end_date, '%Y-%m-%dT%H:%M'), price=starting_price, condition=condition)
+        return redirect('/')
+    else:
+        errors.append({'field': 'Please fill out all fields before submitting!'})
+        return jsonify({'errors': errors})
 
 
 def redirect_response(path, cookies):

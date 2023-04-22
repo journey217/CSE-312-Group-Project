@@ -7,13 +7,13 @@ export const navItems = [
     },
     {
         id: 2,
-        title: "Auctions",
-        path: "./",
+        title: "Profile",
+        path: "./profile",
         cName: "nav-item"
     },
     {
         id: 3,
-        title: "Profile",
+        title: "Username / SignIn",
         path: "",
         cName: "nav-item"
     },
@@ -34,12 +34,6 @@ export const dropDown = [
     },
     {
         id: 3,
-        title: "My Account",
-        path: "",
-        cName: "dd-item"
-    },
-    {
-        id: 4,
         title: "Sign out",
         path: "",
         cName: "dd-item"

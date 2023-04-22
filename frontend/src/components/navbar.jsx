@@ -20,7 +20,7 @@ export default function Navbar() {
             </Link>
             <ul className="nav-items">
                 {navItems.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => {
-                    if (item.title === "Profile") {
+                    if (item.title === "Username / SignIn") {
                         return (
                             <li
                                 key={item.id}

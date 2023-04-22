@@ -50,10 +50,16 @@ def verify_login(email, password):
 
 
 def set_browser_cookie(email):
+    print(bcrypt.gensalt())
+    print(len(bcrypt.gensalt()))
     authToken = (bcrypt.gensalt()).decode()
-    encToken = sha256(authToken.encode()).hexdigest()
+    encToken = generated_token_hash(authToken)
     db.users_collection.update_one({"email": email}, {"$set": {"token": encToken}})
     return authToken
+
+
+def generated_token_hash(token):
+    return sha256(token.encode()).hexdigest()
 
 
 def generate_hashed_pass(user_password):
@@ -68,12 +74,17 @@ def generate_hashed_pass(user_password):
 def long_password_hash(password):
     return b64encode(sha256(password.encode()).digest())
 
+
 def username_exists(username):
     user = db.find_user_by_username(username)
     return user
+
+
 def email_exists(email):
     em = db.find_user_by_email(email)
     return em
+
+
 # In a future revision, function should return error messages in some way. That's why its written badly
 def password_requirements_check(password):
     # At least 8 characters

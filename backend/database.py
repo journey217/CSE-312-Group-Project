@@ -15,26 +15,6 @@ class DBType(Enum):
     Bid = "Bids"
 
 
-class UserVal(Enum):  # Editable User Values
-    Username = "username"
-    Email = "email"
-    Password = "hashed_password"  # Should be changed based on how we store passwords
-    ProfilePicture = "profile_pic"
-    #  auctions_made and bid_history are not directly changeable
-
-
-class AuctionVal(Enum):  # Editable Auction Values
-    Name = "name"
-    Description = "description"
-    Category = "category"
-    # bid_history is not directly changeable. new_bid() changes it
-    # Images Has Separate Function To Change
-    # start_time, ID, creatorID are not changeable
-    # end_time is currently not changeable but might be in the future
-
-# Bids cannot be modified after creation
-
-
 class Database:
     def __init__(self):
         if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
@@ -45,6 +25,7 @@ class Database:
         self.auctions_collection = self.db["Auctions"]
         self.users_collection = self.db["Users"]
         self.bids_collection = self.db["Bids"]
+        self.image_collection = self.db["Images"]
 
     # type_ has to be DBType.User, DBType.Auction, or DBType.Bid
     def find_by_ID(self, ID, type_):
@@ -56,7 +37,8 @@ class Database:
     def find_user_by_token(self, token):
         token = str(token)
         token = sha256(token.encode()).hexdigest()
-        return self.users_collection.find_one({"token": token}, projection={"_id": False, "ID": False})
+        print(token)
+        return self.users_collection.find_one({"token": token}, projection={"_id": False})
 
     def find_user_by_username(self, username):
         return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
@@ -77,7 +59,7 @@ class Database:
         self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
         return new_bid
 
-    def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="Blank.jpeg", condition="New"):
+    def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="NoImage.jpg", condition="New"):
         auctionID = uuid4()
         new_auction = {"ID": auctionID,
                        "creatorID": creatorID,
@@ -95,7 +77,7 @@ class Database:
         self.users_collection.update_one({"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
         return new_auction
 
-    def add_user_to_db(self, username, email, hashed_password, profile_pic="blank.jpeg"):
+    def add_user_to_db(self, username, email, hashed_password, profile_pic="NoUser.jpg"):
         user_id = uuid4()
         new_user = {"ID": user_id,
                     "username": username,
@@ -107,14 +89,6 @@ class Database:
         # Add User to Users
         self.users_collection.insert_one(new_user)
         return new_user
-
-    # user_val is an enum of UserVal
-    def update_user(self, userID, user_val, new_val):
-        pass
-
-    # auction_val is an enum of AuctionVal
-    def update_auction(self, auctionID, auction_val, new_val):
-        pass
 
     # Returns list of bids for a user
     # If there are multiple bids for an item, only have the newest bid in the return list
@@ -153,3 +127,10 @@ class Database:
                 search_list.append(item)
         return search_list
 
+    def add_image(self, filename):
+        self.image_collection.insert_one({'filename': filename})
+
+    def image_exists(self, filename):
+        if self.image_collection.count_documents({'filename': filename}) > 0:
+            return True
+        return False
