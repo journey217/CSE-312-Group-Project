@@ -59,7 +59,10 @@ function AddListingPopup({ onClose, onSubmit }) {
       method: 'POST',
       body: formData
     })
-      .then(response => response.json())
+      .then(response => {
+        response.json()
+        console.log(response)
+      })
       .then(data => {
         if (data.errors) {
           setErrors(data.errors);

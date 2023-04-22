@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
 
 
 export default function auction_detail(page) {
+    const ws = "ws://"
+
     return (
         <div className='auction_detail_popup_background'>
             <div className='auction_detail_popup'>

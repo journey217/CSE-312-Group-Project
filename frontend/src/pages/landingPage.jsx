@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
-
+import { useNavigate } from "react-router-dom";
 export default function LandingPage(page) {
+    
     const [searchText, setSearchText] = useState("");
     const [auctionItems, setAuctionItems] = useState([]);
-
+    const [showAddListingPopup, setShowAddListingPopup] = useState(false);
+    const navigate = useNavigate();
     useEffect(() => {
         fetch("/landing_page_items")
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 setAuctionItems(data);
+                console.log(data)
             })
     }, [])
 
@@ -29,8 +31,6 @@ export default function LandingPage(page) {
         "Sports",
         "Appliances"
     ]
-    const [showAddListingPopup, setShowAddListingPopup] = useState(false);
-    const [auctionDetailOn, setAuctionDetailOn] = useState(false)
 
     const handleOpenAddListingPopup = () => {
         setShowAddListingPopup(true);
@@ -40,8 +40,6 @@ export default function LandingPage(page) {
         setShowAddListingPopup(false);
     };
 
-
-
     const handleAddListing = (formData) => {
         // Handle submitting the form data (e.g. send it to your server)
         console.log(formData);
@@ -49,12 +47,11 @@ export default function LandingPage(page) {
         // Close the popup form
         setShowAddListingPopup(false);
     };
-    const auctionDetail_show = () => {
-        setAuctionDetailOn(true)
+
+    const navigateToItem = (item) => {
+        navigate(`/item/${item.ID}`, {item})
     }
-    const close_auction_detail = () => {
-        setAuctionDetailOn(false)
-    }
+
     return (
         <div className="landing_page">
             <div className="landing_search_container">
@@ -81,21 +78,21 @@ export default function LandingPage(page) {
             </div>
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
-                    <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
-                        <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
-                        <p className="landing_items_item_p">{item.name}</p>
-                        <p className="landing_items_item_p">{'$' + item.price}</p>
-                    </div>
-                ))}
+                    <div className="landing_items_item" key={index} onClick={() => navigateToItem(item) }>
+                <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
+                <p className="landing_items_item_p">{item.name}</p>
+                <p className="landing_items_item_p">{'$' + item.price}</p>
             </div>
+                ))}
         </div>
+        </div >
     );
 }
 
 function Category(props) {
     return (
         <div className="landing_categories">
-            {props.categories.slice(0,-1).map((item, index) => (
+            {props.categories.slice(0, -1).map((item, index) => (
                 <div className="landing_category_item" key={index}>
                     <p>{item}</p>
                     <hr></hr>
