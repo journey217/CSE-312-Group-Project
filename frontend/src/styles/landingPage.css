@@ -299,6 +299,10 @@ body {
     margin-right: 10px;
 }
 
+.add-listing-popup button[type="submit"]:disabled{
+    background-color: #D5d5d5;
+}
+
 .add-listing-popup .form-field {
     display: flex;
     align-items: center;
