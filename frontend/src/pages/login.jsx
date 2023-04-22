@@ -5,6 +5,7 @@ import "../styles/login.css";
 export default function Login(page) {
 
     const navigate = useNavigate();
+    const [error, setErrors] = useState('');
 
     return (
         <div className="login">
@@ -13,6 +14,7 @@ export default function Login(page) {
                 <div className="login-form">
                     <form className="login-inputs" action="/login-user" method="post">
                         <header className="formheader">Login</header>
+                        {error !== '' && <div className="error-message">{error}</div>}
                         <label htmlFor="email"></label>
                         <input type="email" placeholder="Email" name="email" required/>
                         <label htmlFor="password"></label>

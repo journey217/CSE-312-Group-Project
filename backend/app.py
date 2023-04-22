@@ -44,12 +44,10 @@ def login_user():
     email = request.form['email']
     password = request.form['password']
     print(email, password)
-    if not verify_login(email, password):
-        print('false')
-        # return False
-
-    authToken = set_browser_cookie(email)
-    return redirect_response('/', [['authenticationToken', authToken]])
+    if verify_login(email, password):
+        authToken = set_browser_cookie(email)
+        return redirect_response('/', [['authenticationToken', authToken]])
+    return jsonify({"error": "Incorrect Username or Password"})
 
 
 @app.post("/register-user")
@@ -89,8 +87,8 @@ def register():
         return jsonify({'errors': errors})
     
     # Submit data to database
-    hash = generate_hashed_pass(password1)
-    db.add_user_to_db(username, email, hash)
+    hash_ = generate_hashed_pass(password1)
+    db.add_user_to_db(username, email, hash_)
     authToken = set_browser_cookie(email)
 
     response = make_response(redirect('/'))
