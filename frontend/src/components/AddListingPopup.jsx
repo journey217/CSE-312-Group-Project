@@ -70,7 +70,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         }
       })
       .catch(error => console.error(error));
-      onClose()
+    onClose()
   };
 
   return (
@@ -106,7 +106,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <div className="form-field">
           <label>Auction End Date:</label>
-          <input name="date" value={date} type="date" onChange={handleDateChange} />
+          <input name="date" value={date} type="datetime-local" onChange={handleDateChange} />
         </div>
         <div className="form-field">
           <label>Image:</label>

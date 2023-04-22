@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
-import Dropdown from "../components/dropdown";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
-import Auction_detail from "./auctionDetail";
 
 export default function LandingPage(page) {
     const [searchText, setSearchText] = useState("");
@@ -86,7 +84,7 @@ export default function LandingPage(page) {
                     <div className="landing_items_item" key={index} onClick={auctionDetail_show}>
                         <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
                         <p className="landing_items_item_p">{item.name}</p>
-                        <p className="landing_items_item_p">{item.description}</p>
+                        <p className="landing_items_item_p">{'$' + item.price}</p>
                     </div>
                 ))}
             </div>

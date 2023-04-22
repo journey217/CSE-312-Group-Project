@@ -7,6 +7,7 @@ def fill_with_data():
     db = Database()
     db.users_collection.delete_many({})
     db.auctions_collection.delete_many({})
+    db.image_collection.delete_many({})
     p1 = generate_hashed_pass("ABcd1234$s")
     p2 = generate_hashed_pass("pA$ssword5")
     p3 = generate_hashed_pass("goodPa$$word2023")
@@ -18,23 +19,40 @@ def fill_with_data():
                                hashed_password=p2)
     user_3 = db.add_user_to_db(username="JHurts",
                                email="jalen.hurts@gmail.com",
-                               hashed_password=p3,
-                               profile_pic="blank.jpeg")
+                               hashed_password=p3)
     db.add_auction_to_db(creatorID=user_1.get('ID'),
                          name="Jersey",
                          desc="Gameworn Jersey",
-                         image_name="blank.jpeg",
+                         image_name="jersey.jpg",
                          end_time=datetime.max,
                          price=500,
                          condition="Brand New")
     db.add_auction_to_db(creatorID=user_2.get('ID'),
                          name="Hat",
                          desc="Old_hat",
-                         image_name="blank.jpeg",
+                         image_name="hat.png",
                          end_time=datetime.max,
-                         price=500,
+                         price=30,
                          condition="Brand New"
                          )
+    db.add_auction_to_db(creatorID=user_2.get('ID'),
+                         name="Scarf",
+                         desc="Old_Scarf",
+                         image_name="NoImage.jpg",
+                         end_time=datetime.max,
+                         price=20,
+                         condition="Brand New"
+                         )
+    db.add_auction_to_db(creatorID=user_2.get('ID'),
+                         name="Neckalce",
+                         desc="Neckalce",
+                         image_name="fakeimage.jpg",
+                         end_time=datetime.max,
+                         price=200,
+                         condition="Brand New"
+                         )
+    db.add_image('jersey.jpg')
+    db.add_image('hat.png')
 
 
 if __name__ == "__main__":

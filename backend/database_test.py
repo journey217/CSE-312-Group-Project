@@ -1,4 +1,4 @@
-from login import check_password, generate_hashed_pass, PasswordError
+from login import check_password, generate_hashed_pass, strong_password_check
 
 
 def test_password():
@@ -11,19 +11,17 @@ def test_password():
     assert not check_password(p2, "goodPa$$word2023"*20 + "$")
     assert p1 != p3
 
-    p4 = generate_hashed_pass("!234567A")  # Lower
-    p5 = generate_hashed_pass("!234567a")  # Upper
-    p6 = generate_hashed_pass("123456aA")  # Special
-    p7 = generate_hashed_pass("!2345Aa")  # Count
-    p8 = generate_hashed_pass("!A1c!A1c")  # Weak
-    p9 = generate_hashed_pass("Ab!defgh")  # digit
+    p4 = strong_password_check("!234567A")  # Lower
+    p5 = strong_password_check("!234567a")  # Upper
+    p6 = strong_password_check("123456aA")  # Special
+    p7 = strong_password_check("!2345Aa")  # Count
+    p8 = strong_password_check("Ab!defgh")  # digit
 
-    assert p4 == "Needs at least 1 Uppercase, 1 Lowercase"
-    assert p5 == "Needs at least 1 Uppercase, 1 Lowercase"
-    assert p6 == "Needs at least 1 special character"
-    assert p7 == "Needs to be at least 8 characters"
-    assert p8 == "Too Simple"
-    assert p9 == "Needs at least 1 Number"
+    assert p4 == ["Needs a Lowercase letter"]
+    assert p5 == ["Needs an Uppercase letter"]
+    assert p6 == ["Needs at least 1 special character"]
+    assert p7 == ["Needs to be at least 8 characters"]
+    assert p8 == ["Needs at least 1 Number"]
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/login';
 import Registration from './pages/registration';
 import Navbar from './components/navbar';
@@ -11,8 +11,8 @@ import Auction_detail from './pages/auctionDetail';
 function App() {
 
 
-  return(
-   <div>
+  return (
+    <div>
       <Router>
         <Navbar />
         <Routes>
