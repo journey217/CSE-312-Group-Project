@@ -20,7 +20,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/registration' element={<Registration />} />
           <Route path='/profile/' element={<Profile></Profile>} />
-          <Route path='/itemDetail' element={<Auction_detail />} />
+          <Route path='/item/:id' element={<Auction_detail />} />
         </Routes>
       </Router>
     </div>
