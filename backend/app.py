@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
+from flask_socketio import SocketIO, emit
 from database import Database, DBType
-from flask_socketio import SocketIO, emit, join_room, leave_room, Namespace
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
@@ -10,8 +10,7 @@ from uuid import uuid4, UUID
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = Database()
-#socketio = SocketIO(app)
-
+socketio = SocketIO(app, namespace="/item")
 
 @app.route("/landing_page_items")
 def landing_page_items():
@@ -47,7 +46,19 @@ def route_item(auction_id):
         return jsonify({'item': item})
     else:
         return "not found"
+    
+@socketio.on('connect', namespace="/item")
+def handle_connect():
+    print('Client connected')
 
+@socketio.on('disconnect', namespace="/item")
+def handle_disconnect():
+    print('Client disconnected')
+
+@socketio.on('message', namespace="/item")
+def handle_message(msg):
+    print(f'Received message: {msg}')
+    emit('reply', f'I received: {msg}')
 
 @app.route("/users/<user_id>", methods=['GET'])
 def get_user_by_id(user_id):
@@ -62,24 +73,6 @@ def get_user_by_id(user_id):
     else:
         return "not found"
 
-"""
-class ItemNamespace(Namespace):
-    def on_connect(self):
-        item_id = request.sid
-        join_room(item_id)
-
-    def on_disconnect(self):
-        item_id = request.sid
-        leave_room(item_id)
-
-    @staticmethod
-    @socketio.on('bid', namespace='/ws')
-    def handle_bid(json):
-        item_id = request.sid
-        emit('bid_response', json, room=item_id)
-
-socketio.on_namespace(ItemNamespace('/ws'))
-"""
 
 @app.route("/image/<filename>")
 def image(filename):

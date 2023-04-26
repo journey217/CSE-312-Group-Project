@@ -6,7 +6,7 @@ export default function Auction_detail() {
     const [item, setItem] = useState(null)
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
-    //const socketRef = useRef(null);
+    const socketRef = useRef(null);
     useEffect(() => {
         fetch(`${itemID}`)
             .then(response => response.json())
@@ -24,25 +24,22 @@ export default function Auction_detail() {
             .catch(error => {
                 console.log(error);
             });
-            /*
+            
         if (!socketRef.current) {
-            socketRef.current = new WebSocket(`ws://localhost:3000/ws`);
+            socketRef.current = new WebSocket(`ws://${window.location.hostname}:5000/item`);
             socketRef.current.onopen = () => {
-                console.log("connected to ws://localhost:3000/item");
+                console.log("connected to ws://localhost:5000/item");
             }
             socketRef.current.onclose = error => {
-                console.log("disconnect from ws://localhost:3000/item");
+                console.log("disconnect from ws://localhost:5000/item");
                 console.log(error);
             };
             socketRef.current.onerror = error => {
-                console.log("connection error ws://localhost:3000/item");
+                console.log("connection error ws://localhost:5000/item");
                 console.log(error);
             };
         }
-        */
     }, []);
-
-
 
     const countDown = () => {
         const countDownDate = new Date(item.end_time).getTime();
@@ -81,14 +78,14 @@ export default function Auction_detail() {
     function handleBid() {
         const input = document.querySelector('.auction_detial_bid_input');
         const price = input.value;
-        /*
+        
         const interval = setInterval(() => {
             if (socketRef.current.readyState === 1) {
                 socketRef.current.send(JSON.stringify({ type: 'bid', data: { price: price } }));
                 clearInterval(interval);
             }
         }, 100);
-        */
+        
     }
 
     return (
