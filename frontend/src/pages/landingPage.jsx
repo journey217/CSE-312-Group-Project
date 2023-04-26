@@ -20,7 +20,7 @@ export default function LandingPage(page) {
     const handleChange = (e) => {
         setSearchText(e.target.value);
     };
-
+/*
     const categories = [
         "All",
         "Car Parts",
@@ -31,7 +31,7 @@ export default function LandingPage(page) {
         "Sports",
         "Appliances"
     ]
-
+*/
     const handleOpenAddListingPopup = () => {
         setShowAddListingPopup(true);
     };
@@ -92,7 +92,7 @@ export default function LandingPage(page) {
         </div >
     );
 }
-
+/*
 function Category(props) {
     return (
         <div className="landing_categories">
@@ -109,3 +109,4 @@ function Category(props) {
         </div>
     );
 }
+*/
