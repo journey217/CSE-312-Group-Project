@@ -17,10 +17,12 @@ class DBType(Enum):
 
 class Database:
     def __init__(self):
-        if environment.get('DOCKER') == '1':  # Set By Docker to 1 to change MongoClient Address
+        # Set By Docker to 1 to change MongoClient Address
+        if environment.get('DOCKER') == '1':
             mongo_client = MongoClient('mongo', uuidRepresentation='standard')
         else:  # Otherwise None
-            mongo_client = MongoClient('localhost', uuidRepresentation='standard')
+            mongo_client = MongoClient(
+                'localhost', uuidRepresentation='standard')
         self.db = mongo_client["CSE312-Group-Project-Test"]
         self.auctions_collection = self.db["Auctions"]
         self.users_collection = self.db["Users"]
@@ -31,8 +33,11 @@ class Database:
     def find_by_ID(self, ID, type_):
         return self.db[type_.value].find_one({"ID": ID}, projection={"_id": False, "ID": False})
 
+    def find_user_by_ID(self, ID):
+        return self.users_collection.find_one({"ID": ID}, projection={"_id": False, "ID": False})
+
     def find_user_by_email(self, email):
-        return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
+        return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False, "hashed_password": False, "auctions_made": False, "bid_history": False})
 
     def find_user_by_token(self, token):
         token = str(token)
@@ -54,9 +59,11 @@ class Database:
         # Add bid to Bids
         self.bids_collection.insert_one(new_bid)
         # Add bidID to User.bids_history
-        self.users_collection.update_one({"ID": userID}, {"$push": {"bid_history": bidID}})
+        self.users_collection.update_one(
+            {"ID": userID}, {"$push": {"bid_history": bidID}})
         # Add bidID to Auction.bid_history
-        self.auctions_collection.update_one({"ID": auctionID}, {"$push": {"bid_history": bidID}})
+        self.auctions_collection.update_one(
+            {"ID": auctionID}, {"$push": {"bid_history": bidID}})
         return new_bid
 
     def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="NoImage.jpg", condition="New"):
@@ -74,7 +81,8 @@ class Database:
         # Add Auction to Auctions
         self.auctions_collection.insert_one(new_auction)
         # Add auctionID to User.auctions_made
-        self.users_collection.update_one({"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
+        self.users_collection.update_one(
+            {"ID": creatorID}, {"$push": {"auctions_made": auctionID}})
         return new_auction
 
     def add_user_to_db(self, username, email, hashed_password, profile_pic="NoUser.jpg"):
@@ -94,7 +102,8 @@ class Database:
     # If there are multiple bids for an item, only have the newest bid in the return list
     def find_unique_item_bids_for_user(self, userID):
         unique_bids = {}  # auctionIDs -> bid
-        users_bidIDs = self.users_collection.find_one({"ID": userID})["bid_history"]
+        users_bidIDs = self.users_collection.find_one({"ID": userID})[
+            "bid_history"]
         for bidID in users_bidIDs:
             bid = self.find_by_ID(bidID, DBType.Bid)
             auctionID = bid["auctionID"]
@@ -115,7 +124,8 @@ class Database:
         return items_list
 
     def all_item_search(self):
-        items_list = [x for x in self.auctions_collection.find({}, projection={"_id": False})]
+        items_list = [x for x in self.auctions_collection.find(
+            {}, projection={"_id": False})]
         return items_list
 
     def item_find(self, query):

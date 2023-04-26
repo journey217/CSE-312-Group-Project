@@ -1,16 +1,16 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
 from database import Database, DBType
-from flask_sock import Sock
+from flask_socketio import SocketIO
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
 from datetime import datetime
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = Database()
-sock = Sock(app)
+socketio = SocketIO(app)
 
 
 @app.route("/landing_page_items")
@@ -38,26 +38,39 @@ def profile():
     else:
         return jsonify({'status': 0})
 
-
 @app.route("/item/<auction_id>")
 def route_item(auction_id):
+    auction_id = UUID(auction_id)
     item = db.find_by_ID(auction_id, DBType.Auction)
     if item:
-        return item
+        return jsonify({'item': item})
+    else:
+        return "not found"
+    
+@app.route("/users/<user_id>", methods=['GET'])
+def get_user_by_id(user_id):
+    user_id = UUID(user_id)
+    user = db.find_user_by_ID(user_id)
+    keys_to_remove = ['hashed_password', 'auctions_made', 'bid_history']
+    for key in keys_to_remove:
+        user.pop(key, None)
+    print(user)
+    if user:
+        return jsonify({'user': user})
+    else:
+        return "not found"
 
+@socketio.on("/item/<auction_id>")
+def makeWebsocketConnection(auction_id):
+    while True:
+        data = request.namespace.socket.receive()
+        request.namespace.socket.send(data)
 
 @app.route("/image/<filename>")
 def image(filename):
     if db.image_exists(filename):
         return send_from_directory('images', filename)
     return send_from_directory('images', 'NoImage.jpg')
-
-
-@sock.route("/item/<auction_id>")
-def makeWebsocketConnection(ws):
-    while True:
-        data = ws.receive()
-        ws.send(data)
 
 
 @app.post("/login-user")

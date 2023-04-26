@@ -55,7 +55,10 @@
     background-size: 15px;
     background-image: url("../assets/close_button_hover.png");
 }
-
+.auction_detail_image{
+    width: 150px;
+    height: 150px;
+}
 
 .auction_detail_vendor{
     font-size: 15px;
