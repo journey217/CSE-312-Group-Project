@@ -12,6 +12,7 @@ app.config.from_pyfile('config.py')
 db = Database()
 socketio = SocketIO(app, namespace="/item")
 
+
 @app.route("/landing_page_items")
 def landing_page_items():
     return jsonify(db.landing_page_items())
@@ -46,19 +47,23 @@ def route_item(auction_id):
         return jsonify({'item': item})
     else:
         return "not found"
-    
+
+
 @socketio.on('connect', namespace="/item")
 def handle_connect():
     print('Client connected')
+
 
 @socketio.on('disconnect', namespace="/item")
 def handle_disconnect():
     print('Client disconnected')
 
+
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
     print(f'Received message: {msg}')
     emit('reply', f'I received: {msg}')
+
 
 @app.route("/users/<user_id>", methods=['GET'])
 def get_user_by_id(user_id):
@@ -140,10 +145,11 @@ def register():
     hash_ = generate_hashed_pass(password1)
     db.add_user_to_db(username, email, hash_)
     authToken = set_browser_cookie(email)
-
-    response = make_response(redirect('/'))
-    response.set_cookie('authenticationToken', authToken)
-    return redirect_response('/', [['authenticationToken', authToken]])
+    print(authToken)
+    response_data = {'status': '1', 'authenticationToken': authToken}
+    response = jsonify(response_data)
+    response.set_cookie('authenticationToken', authToken, max_age=3600, httponly=True)
+    return response
 
 
 @app.post("/add-item")
