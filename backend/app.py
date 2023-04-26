@@ -191,11 +191,12 @@ def add_item():
         return jsonify({'errors': errors})
 
 
-def redirect_response(cookies):
+def redirect_response(path, cookies):
     myResponse = make_response('Response')
     for cookie in cookies:
         myResponse.set_cookie(
             key=cookie[0], value=cookie[1], max_age=3600, httponly=True)
+    myResponse.headers['Location'] = path
     myResponse.headers['X-Content-Type-Options'] = 'nosniff'
     myResponse.status_code = 302
     myResponse.mimetype = 'text/html; charset=utf-8'
