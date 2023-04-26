@@ -37,13 +37,13 @@ class Database:
         return self.users_collection.find_one({"ID": ID}, projection={"_id": False, "ID": False})
 
     def find_user_by_email(self, email):
-        return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False, "hashed_password": False, "auctions_made": False, "bid_history": False})
+        return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
 
     def find_user_by_token(self, token):
         token = str(token)
         token = sha256(token.encode()).hexdigest()
         print(token)
-        return self.users_collection.find_one({"token": token}, projection={"_id": False, 'token': False, 'hashed_password': False})
+        return self.users_collection.find_one({"token": token}, projection={"_id": False, 'token': False})
 
     def find_user_by_username(self, username):
         return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
