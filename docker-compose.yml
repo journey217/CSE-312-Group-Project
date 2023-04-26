@@ -13,9 +13,9 @@ services:
       WAIT_HOSTS: mongo:27017
     ports:
       - '5000:5000'  # MUST BE REMOVED!!!!
- # frontend:
- #   build:
- #     context: .
- #     dockerfile: Dockerfile.frontend
- #   ports:
- #     - '3000:3000'
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - '3000:3000'
