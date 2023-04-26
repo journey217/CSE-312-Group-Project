@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
 from database import Database, DBType
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit, join_room, leave_room, Namespace
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
@@ -10,7 +10,7 @@ from uuid import uuid4, UUID
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = Database()
-socketio = SocketIO(app)
+#socketio = SocketIO(app)
 
 
 @app.route("/landing_page_items")
@@ -38,6 +38,7 @@ def profile():
     else:
         return jsonify({'status': 0})
 
+
 @app.route("/item/<auction_id>")
 def route_item(auction_id):
     auction_id = UUID(auction_id)
@@ -46,7 +47,8 @@ def route_item(auction_id):
         return jsonify({'item': item})
     else:
         return "not found"
-    
+
+
 @app.route("/users/<user_id>", methods=['GET'])
 def get_user_by_id(user_id):
     user_id = UUID(user_id)
@@ -60,11 +62,24 @@ def get_user_by_id(user_id):
     else:
         return "not found"
 
-@socketio.on("/item/<auction_id>")
-def makeWebsocketConnection(auction_id):
-    while True:
-        data = request.namespace.socket.receive()
-        request.namespace.socket.send(data)
+"""
+class ItemNamespace(Namespace):
+    def on_connect(self):
+        item_id = request.sid
+        join_room(item_id)
+
+    def on_disconnect(self):
+        item_id = request.sid
+        leave_room(item_id)
+
+    @staticmethod
+    @socketio.on('bid', namespace='/ws')
+    def handle_bid(json):
+        item_id = request.sid
+        emit('bid_response', json, room=item_id)
+
+socketio.on_namespace(ItemNamespace('/ws'))
+"""
 
 @app.route("/image/<filename>")
 def image(filename):
@@ -82,15 +97,14 @@ def login_user():
         authToken = set_browser_cookie(email)
         response_data = {'status': '1', 'authenticationToken': authToken}
         response = jsonify(response_data)
-        response.set_cookie('authenticationToken', authToken, max_age=3600, httponly=True)
+        response.set_cookie('authenticationToken', authToken,
+                            max_age=3600, httponly=True)
         return response
     else:
-        response_data = {'status': '0', 'error': 'Incorrect Username or Password'}
+        response_data = {'status': '0',
+                         'error': 'Incorrect Username or Password'}
         response = jsonify(response_data)
         return response
-
-
-
 
 
 @app.post("/register-user")
@@ -127,8 +141,8 @@ def register():
 
     # If there are errors, return them as a JSON response
     if errors:
-        return jsonify({'status':'0','errors': errors})
-    
+        return jsonify({'status': '0', 'errors': errors})
+
     # Submit data to database
     hash_ = generate_hashed_pass(password1)
     db.add_user_to_db(username, email, hash_)
@@ -149,7 +163,8 @@ def add_item():
         condition = request.form['condition']
         end_date = request.form['date']
     except KeyError as x:
-        errors.append({'field': 'Please fill out all fields before submitting!'})
+        errors.append(
+            {'field': 'Please fill out all fields before submitting!'})
         return jsonify({'errors': errors})
     try:
         cookieToken = request.cookies.get('authenticationToken')
@@ -160,24 +175,28 @@ def add_item():
     user = db.find_user_by_token(cookieToken)
     if user is None:
         print("User token is invalid!")
-        errors.append({'field': 'Invalid log in token. Please sign out and sign back in!'})
+        errors.append(
+            {'field': 'Invalid log in token. Please sign out and sign back in!'})
         return jsonify({'errors': errors})
     filename = f'image{str(uuid4())}.jpg'
     image = request.files['image']
     if image:
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         db.add_image(filename)
-        db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename, end_time=datetime.strptime(end_date, '%Y-%m-%dT%H:%M'), price=starting_price, condition=condition)
+        db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename,
+                             end_time=datetime.strptime(end_date, '%Y-%m-%dT%H:%M'), price=starting_price, condition=condition)
         return redirect('/')
     else:
-        errors.append({'field': 'Please fill out all fields before submitting!'})
+        errors.append(
+            {'field': 'Please fill out all fields before submitting!'})
         return jsonify({'errors': errors})
 
 
 def redirect_response(cookies):
     myResponse = make_response('Response')
     for cookie in cookies:
-        myResponse.set_cookie(key=cookie[0], value=cookie[1], max_age=3600, httponly=True)
+        myResponse.set_cookie(
+            key=cookie[0], value=cookie[1], max_age=3600, httponly=True)
     myResponse.headers['X-Content-Type-Options'] = 'nosniff'
     myResponse.status_code = 302
     myResponse.mimetype = 'text/html; charset=utf-8'

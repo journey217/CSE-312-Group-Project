@@ -6,21 +6,8 @@ export default function Auction_detail() {
     const [item, setItem] = useState(null)
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
-    const socketRef = useRef(null);
+    //const socketRef = useRef(null);
     useEffect(() => {
-        socketRef.current = new WebSocket('ws://localhost:3000/ws');
-        socketRef.current.onopen = () => {
-            console.log('WebSocket connection established.');
-        };
-
-        socketRef.current.onmessage = (event) => {
-            console.log(`Received message: ${event.data}`);
-        };
-
-        socketRef.current.onclose = () => {
-            console.log('WebSocket connection closed.');
-        };
-
         fetch(`${itemID}`)
             .then(response => response.json())
             .then(data => {
@@ -37,6 +24,22 @@ export default function Auction_detail() {
             .catch(error => {
                 console.log(error);
             });
+            /*
+        if (!socketRef.current) {
+            socketRef.current = new WebSocket(`ws://localhost:3000/ws`);
+            socketRef.current.onopen = () => {
+                console.log("connected to ws://localhost:3000/item");
+            }
+            socketRef.current.onclose = error => {
+                console.log("disconnect from ws://localhost:3000/item");
+                console.log(error);
+            };
+            socketRef.current.onerror = error => {
+                console.log("connection error ws://localhost:3000/item");
+                console.log(error);
+            };
+        }
+        */
     }, []);
 
 
@@ -78,8 +81,14 @@ export default function Auction_detail() {
     function handleBid() {
         const input = document.querySelector('.auction_detial_bid_input');
         const price = input.value;
-        console.log(price);
-        socketRef.current.send(JSON.stringify({ type: 'bid', data: { price: price } }));
+        /*
+        const interval = setInterval(() => {
+            if (socketRef.current.readyState === 1) {
+                socketRef.current.send(JSON.stringify({ type: 'bid', data: { price: price } }));
+                clearInterval(interval);
+            }
+        }, 100);
+        */
     }
 
     return (

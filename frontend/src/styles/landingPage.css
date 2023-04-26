@@ -92,9 +92,9 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-
+    width: 100%;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 .landing_category_new_item {

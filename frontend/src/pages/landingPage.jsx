@@ -3,7 +3,7 @@ import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
 import { useNavigate } from "react-router-dom";
 export default function LandingPage(page) {
-    
+
     const [searchText, setSearchText] = useState("");
     const [auctionItems, setAuctionItems] = useState([]);
     const [showAddListingPopup, setShowAddListingPopup] = useState(false);
@@ -49,7 +49,7 @@ export default function LandingPage(page) {
     };
 
     const navigateToItem = (item) => {
-        navigate(`/item/${item.ID}`, {item})
+        navigate(`/item/${item.ID}`, { item })
     }
 
     return (
@@ -59,32 +59,36 @@ export default function LandingPage(page) {
                 <button className="landing_search_button">Search</button>
             </div>
             <div className="landing_category">
+
                 <div className="landing_category_title_floor">
+                    {/*
                     <div>
                         <p className="landing_category_container_title">Category</p>
                         <hr style={{ width: "105px", margin: "5px 0px 0px 0px", alignSelf: "flex-start" }}></hr>
                     </div>
+                    */}
                     <div>
                         <button className="landing_category_new_item" onClick={handleOpenAddListingPopup}>Add Listing</button>
                         {showAddListingPopup && (
                             <AddListingPopup onClose={handleCloseAddListingPopup} onSubmit={handleAddListing} />
                         )}
                     </div>
-
                 </div>
+                {/*
                 <div className="landing_category_container">
                     <Category categories={categories}></Category>
                 </div>
+                 */}
             </div>
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
-                    <div className="landing_items_item" key={index} onClick={() => navigateToItem(item) }>
-                <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
-                <p className="landing_items_item_p">{item.name}</p>
-                <p className="landing_items_item_p">{'$' + item.price}</p>
-            </div>
+                    <div className="landing_items_item" key={index} onClick={() => navigateToItem(item)}>
+                        <img className="landing_items_item_img" src={"/image/" + item.image} alt={item.name}></img>
+                        <p className="landing_items_item_p">{item.name}</p>
+                        <p className="landing_items_item_p">{'$' + item.price}</p>
+                    </div>
                 ))}
-        </div>
+            </div>
         </div >
     );
 }
