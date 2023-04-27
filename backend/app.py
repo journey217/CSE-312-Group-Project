@@ -12,6 +12,18 @@ app.config.from_pyfile('config.py')
 db = Database()
 socketio = SocketIO(app, namespace="/item")
 
+if os.environ.get('FLASK_ENV') == 'production':
+    origins = [
+        'http://actual-app-url.herokuapp.com',
+        'https://actual-app-url.herokuapp.com'
+    ]
+else:
+    origins = "*"
+
+# initialize your socket instance
+socketio = SocketIO(cors_allowed_origins=origins)
+
+
 
 @app.route("/landing_page_items")
 def landing_page_items():
@@ -61,8 +73,9 @@ def handle_disconnect():
 
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
-    print(f'Received message: {msg}')
-    emit('reply', f'I received: {msg}')
+    print(msg)
+    emit('received')
+
 
 
 @app.route("/users/<user_id>", methods=['GET'])

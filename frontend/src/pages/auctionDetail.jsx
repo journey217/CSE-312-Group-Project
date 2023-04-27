@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "../styles/auction_detail.css"
+import {io} from "socket.io-client";
+
+let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
+    const userID = document.cookie;
     const [item, setItem] = useState(null)
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
-    const socketRef = useRef(null);
+    // const socketRef = useRef(null);
     useEffect(() => {
         fetch(`${itemID}`)
             .then(response => response.json())
@@ -24,21 +28,24 @@ export default function Auction_detail() {
             .catch(error => {
                 console.log(error);
             });
-            
-        if (!socketRef.current) {
-            socketRef.current = new WebSocket(`ws://${window.location.hostname}:5000/item`);
-            socketRef.current.onopen = () => {
-                console.log("connected to ws://localhost:5000/item");
-            }
-            socketRef.current.onclose = error => {
-                console.log("disconnect from ws://localhost:5000/item");
-                console.log(error);
-            };
-            socketRef.current.onerror = error => {
-                console.log("connection error ws://localhost:5000/item");
-                console.log(error);
-            };
-        }
+
+
+        // if (!socketRef.current) {
+        //     // const socket = new WebSocket('ws://' + window.location.host + '/websocket');
+        //     socketRef.current = io.connect(`http://${window.location.hostname}:5000/item`)
+        //     // socketRef.current = new WebSocket(`ws://${window.location.hostname}:5000/item`);
+        //     socketRef.current.onopen = () => {
+        //         console.log("connected to ws://localhost:5000/item");
+        //     }
+        //     socketRef.current.onclose = error => {
+        //         console.log("disconnect from ws://localhost:5000/item");
+        //         console.log(error);
+        //     };
+        //     socketRef.current.onerror = error => {
+        //         console.log("connection error ws://localhost:5000/item");
+        //         console.log(error);
+        //     };
+        // }
     }, []);
 
     const countDown = () => {
@@ -75,16 +82,20 @@ export default function Auction_detail() {
         }
     }, [item]);
 
+
     function handleBid() {
         const input = document.querySelector('.auction_detial_bid_input');
         const price = input.value;
+
+
+        socket.emit({'item': itemID, 'price': price})
         
-        const interval = setInterval(() => {
-            if (socketRef.current.readyState === 1) {
-                socketRef.current.send(JSON.stringify({ type: 'bid', data: { price: price } }));
-                clearInterval(interval);
-            }
-        }, 100);
+        // const interval = setInterval(() => {
+        //     if (socketRef.current.readyState === 1) {
+        //         socketRef.current.send(JSON.stringify({ type: 'bid', data: { price: price } }));
+        //         clearInterval(interval);
+        //     }
+        // }, 100);
         
     }
 
