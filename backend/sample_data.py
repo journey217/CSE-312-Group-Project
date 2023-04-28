@@ -8,6 +8,7 @@ def fill_with_data():
     db.users_collection.delete_many({})
     db.auctions_collection.delete_many({})
     db.image_collection.delete_many({})
+    db.bids_collection.delete_many({})
     p1 = generate_hashed_pass("ABcd1234$s")
     p2 = generate_hashed_pass("pA$ssword5")
     p3 = generate_hashed_pass("goodPa$$word2023")

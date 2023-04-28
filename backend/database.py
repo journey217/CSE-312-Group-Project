@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from uuid import uuid4
+from uuid import uuid4, UUID
 import datetime
 from enum import Enum
 from os import environ as environment
@@ -31,7 +31,7 @@ class Database:
 
     # type_ has to be DBType.User, DBType.Auction, or DBType.Bid
     def find_by_ID(self, ID, type_):
-        return self.db[type_.value].find_one({"ID": ID}, projection={"_id": False, "ID": False})
+        return self.db[type_.value].find_one({"ID": ID}, projection={"_id": False})
 
     def find_user_by_ID(self, ID):
         return self.users_collection.find_one({"ID": ID}, projection={"_id": False, "ID": False})
@@ -52,7 +52,7 @@ class Database:
         bidID = uuid4()
         new_bid = {"ID": bidID,
                    "userID": userID,
-                   "auctionID": auctionID,
+                   "auctionID": UUID(auctionID),
                    "price": price,
                    "timestamp": datetime.now()
                    }
