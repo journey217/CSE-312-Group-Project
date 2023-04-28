@@ -10,7 +10,6 @@ export default function Auction_detail() {
     const [current, setCurrent] = useState(null)
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
-    // const socketRef = useRef(null);
     useEffect(() => {
         fetch(`${itemID}`)
             .then(response => response.json())
@@ -29,24 +28,6 @@ export default function Auction_detail() {
             .catch(error => {
                 console.log(error);
             });
-
-
-        // if (!socketRef.current) {
-        //     // const socket = new WebSocket('ws://' + window.location.host + '/websocket');
-        //     socketRef.current = io.connect(`http://${window.location.hostname}:5000/item`)
-        //     // socketRef.current = new WebSocket(`ws://${window.location.hostname}:5000/item`);
-        //     socketRef.current.onopen = () => {
-        //         console.log("connected to ws://localhost:5000/item");
-        //     }
-        //     socketRef.current.onclose = error => {
-        //         console.log("disconnect from ws://localhost:5000/item");
-        //         console.log(error);
-        //     };
-        //     socketRef.current.onerror = error => {
-        //         console.log("connection error ws://localhost:5000/item");
-        //         console.log(error);
-        //     };
-        // }
     }, []);
 
     const countDown = () => {
@@ -90,13 +71,6 @@ export default function Auction_detail() {
 
 
         socket.emit("message",{'type': 'bid', 'auctionID': itemID, 'price': price, "user": current})
-        
-        // const interval = setInterval(() => {
-        //     if (socketRef.current.readyState === 1) {
-        //         socketRef.current.send(JSON.stringify({ type: 'bid', data: { price: price } }));
-        //         clearInterval(interval);
-        //     }
-        // }, 100);
         
     }
 
