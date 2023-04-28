@@ -88,7 +88,7 @@ export default function Auction_detail() {
         const price = input.value;
 
 
-        socket.emit({'item': itemID, 'price': price})
+        socket.emit("message",{'item': itemID, 'price': price})
         
         // const interval = setInterval(() => {
         //     if (socketRef.current.readyState === 1) {

@@ -73,9 +73,9 @@ def handle_disconnect():
 
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
+    print("message here")
     print(msg)
     emit('received')
-
 
 
 @app.route("/users/<user_id>", methods=['GET'])
