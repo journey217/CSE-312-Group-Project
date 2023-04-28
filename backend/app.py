@@ -73,9 +73,21 @@ def handle_disconnect():
 
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
-    print("message here")
-    print(msg)
-    emit('received')
+    if msg['type'] == 'bid':
+        cookieToken = request.cookies.get('authenticationToken')
+        user = db.find_user_by_token(cookieToken)
+        # Commented out code is what should be the behavior if the find user by token worked. For some reason
+        # it is not working right now so I just hardcoded a username for testing purposes.
+        #
+        # if user:
+        #     db.handle_bid(dict(msg), dict(user))
+        #     print("Added bid to DB")
+        #     emit({"username": user['username'], "bid_price": msg['price']})
+        # else:
+        #     emit("User is not logged in!")
+        db.handle_bid(dict(msg), user)
+        print("Added bid to DB")
+        emit({"username": "user['username']", "bid_price": msg['price']})
 
 
 @app.route("/users/<user_id>", methods=['GET'])
