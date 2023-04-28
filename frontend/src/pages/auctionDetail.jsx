@@ -6,8 +6,8 @@ let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
-    const userID = document.cookie;
     const [item, setItem] = useState(null)
+    const [current, setCurrent] = useState(null)
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
     // const socketRef = useRef(null);
@@ -15,6 +15,7 @@ export default function Auction_detail() {
         fetch(`${itemID}`)
             .then(response => response.json())
             .then(data => {
+                setCurrent(data.username)
                 setItem(data.item)
                 fetch(`/users/${data.item.creatorID}`)
                     .then(response => response.json())
@@ -88,7 +89,7 @@ export default function Auction_detail() {
         const price = input.value;
 
 
-        socket.emit("message",{'type': 'bid', 'auctionID': itemID, 'price': price})
+        socket.emit("message",{'type': 'bid', 'auctionID': itemID, 'price': price, "user": current})
         
         // const interval = setInterval(() => {
         //     if (socketRef.current.readyState === 1) {

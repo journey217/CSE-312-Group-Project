@@ -55,8 +55,9 @@ def profile():
 def route_item(auction_id):
     auction_id = UUID(auction_id)
     item = db.find_by_ID(auction_id, DBType.Auction)
+    user = request.cookies.get('authenticationToken')
     if item:
-        return jsonify({'item': item})
+        return jsonify({'item': item, 'username': user})
     else:
         return "not found"
 
@@ -74,20 +75,18 @@ def handle_disconnect():
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
     if msg['type'] == 'bid':
-        cookieToken = request.cookies.get('authenticationToken')
-        user = db.find_user_by_token(cookieToken)
-        # Commented out code is what should be the behavior if the find user by token worked. For some reason
-        # it is not working right now so I just hardcoded a username for testing purposes.
-        #
-        # if user:
-        #     db.handle_bid(dict(msg), dict(user))
-        #     print("Added bid to DB")
-        #     emit({"username": user['username'], "bid_price": msg['price']})
-        # else:
-        #     emit("User is not logged in!")
-        db.handle_bid(dict(msg), user)
-        print("Added bid to DB")
-        emit({"username": "user['username']", "bid_price": msg['price']})
+        # print(msg)
+        # print("msg['user']:", msg['user'])
+        user = db.find_user_by_token(msg['user'])
+        auction_ID = msg['auctionID']
+        price = msg['price']
+        # print("user:", user)
+        if user:
+            db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
+            print("Added bid to DB")
+            emit({"username": user['username'], "bid_price": msg['price']})
+        else:
+            emit("User is not logged in!")
 
 
 @app.route("/users/<user_id>", methods=['GET'])
@@ -97,7 +96,7 @@ def get_user_by_id(user_id):
     keys_to_remove = ['hashed_password', 'auctions_made', 'bid_history']
     for key in keys_to_remove:
         user.pop(key, None)
-    print(user)
+    # print(user)
     if user:
         return jsonify({'user': user})
     else:
@@ -115,7 +114,7 @@ def image(filename):
 def login_user():
     email = request.form['email']
     password = request.form['password']
-    print(email, password)
+    # print(email, password)
     if verify_login(email, password):
         authToken = set_browser_cookie(email)
         response_data = {'status': '1', 'authenticationToken': authToken}
@@ -170,7 +169,7 @@ def register():
     hash_ = generate_hashed_pass(password1)
     db.add_user_to_db(username, email, hash_)
     authToken = set_browser_cookie(email)
-    print(authToken)
+    # print(authToken)
     response_data = {'status': '1', 'authenticationToken': authToken}
     response = jsonify(response_data)
     response.set_cookie('authenticationToken', authToken, max_age=3600, httponly=True)

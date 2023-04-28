@@ -42,7 +42,7 @@ class Database:
     def find_user_by_token(self, token):
         token = str(token)
         token = sha256(token.encode()).hexdigest()
-        print(token)
+        # print(token)
         return self.users_collection.find_one({"token": token}, projection={"_id": False, 'token': False})
 
     def find_user_by_username(self, username):
@@ -52,7 +52,7 @@ class Database:
         bidID = uuid4()
         new_bid = {"ID": bidID,
                    "userID": userID,
-                   "auctionID": UUID(auctionID),
+                   "auctionID": auctionID,
                    "price": price,
                    "timestamp": datetime.now()
                    }
@@ -144,7 +144,3 @@ class Database:
         if self.image_collection.count_documents({'filename': filename}) > 0:
             return True
         return False
-
-    def handle_bid(self, bid, user):
-        # userID has a fixed value right now until I can figure out why the user is not being found by their token
-        self.add_bid_to_db(userID="user['ID']", auctionID=bid['auctionID'], price=bid['price'])
