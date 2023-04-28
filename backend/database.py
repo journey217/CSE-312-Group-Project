@@ -56,6 +56,18 @@ class Database:
                    "price": price,
                    "timestamp": datetime.now()
                    }
+        current_auction = self.auctions_collection.find_one({'ID': auctionID})
+        if current_auction['highest_bid'] is None:
+            self.auctions_collection.update_one(
+                {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
+        else:
+            highest_bid = current_auction['highest_bid']
+            current_bid_price = dict(self.bids_collection.find_one({'ID': highest_bid}))['price']
+            if price > current_bid_price:
+                self.auctions_collection.update_one(
+                    {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
+            else:
+                return False
         # Add bid to Bids
         self.bids_collection.insert_one(new_bid)
         # Add bidID to User.bids_history
@@ -77,7 +89,8 @@ class Database:
                        "image": image_name,
                        "start_time": datetime.now(),
                        "end_time": end_time,
-                       "bid_history": []}
+                       "bid_history": [],
+                       "highest_bid": None}
         # Add Auction to Auctions
         self.auctions_collection.insert_one(new_auction)
         # Add auctionID to User.auctions_made

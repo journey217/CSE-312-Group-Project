@@ -24,7 +24,6 @@ else:
 socketio = SocketIO(cors_allowed_origins=origins)
 
 
-
 @app.route("/landing_page_items")
 def landing_page_items():
     return jsonify(db.landing_page_items())
@@ -75,16 +74,16 @@ def handle_disconnect():
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
     if msg['type'] == 'bid':
-        # print(msg)
-        # print("msg['user']:", msg['user'])
         user = db.find_user_by_token(msg['user'])
         auction_ID = msg['auctionID']
         price = msg['price']
-        # print("user:", user)
         if user:
-            db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
-            print("Added bid to DB")
-            emit({"username": user['username'], "bid_price": msg['price']})
+            new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
+            if not new_bid:
+                emit("Submitted bid is not larger than highest bid!")
+            else:
+                print("Added bid to DB")
+                emit({"username": user['username'], "bid_price": msg['price']})
         else:
             emit("User is not logged in!")
 
