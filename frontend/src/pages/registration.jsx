@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/registration.css";
 
-function Register() {
+function Register({signal}) {
     const [errors, setErrors] = useState({
         username: '',
         email: '',
@@ -45,8 +45,6 @@ function Register() {
             .catch(error => console.error(error));
     };
 
-
-
     return (
         <div className='register'>
             <ul>
@@ -62,7 +60,6 @@ function Register() {
                         <input type="password" placeholder="Password" name="password1" required />
                         {errors.password2 && <div className="error-message">{errors.password2}</div>}
                         <input type="password" placeholder="Confirm Password" name="password2" required />
-
                         <button className="register-button" type="submit" >Register</button>
                         {errors.submit && <div className="error-message">{errors.submit}</div>}
                     </form>

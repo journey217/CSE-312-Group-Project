@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, send_from_directory, redirect
+from flask import Flask, jsonify, request, make_response, send_from_directory
 from flask_socketio import SocketIO, emit
 from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
@@ -128,6 +128,16 @@ def login_user():
         return response
 
 
+@app.route("/myUsername")
+def username():
+    cookieToken = request.cookies.get('authenticationToken')
+    user = db.find_user_by_token(cookieToken)
+    if user:
+        return {'status': 1, 'username': user.get('username')}
+    else:
+        return {'status': 0}
+
+
 @app.post("/register-user")
 def register():
     # Get form data
@@ -208,16 +218,3 @@ def add_item():
     db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename,
                          end_time=formatted_date, price=starting_price, condition=condition)
     return jsonify({'status': 1})
-
-
-def redirect_response(path, cookies):
-    myResponse = make_response('Response')
-    for cookie in cookies:
-        myResponse.set_cookie(
-            key=cookie[0], value=cookie[1], max_age=3600, httponly=True)
-    myResponse.headers['Location'] = path
-    myResponse.headers['X-Content-Type-Options'] = 'nosniff'
-    myResponse.status_code = 302
-    myResponse.mimetype = 'text/html; charset=utf-8'
-    myResponse.content_length = '0'
-    return myResponse

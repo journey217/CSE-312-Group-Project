@@ -12,7 +12,6 @@ import Auction_detail from './pages/auctionDetail';
 
 function App() {
 
-
   return (
     <div>
       <Router>
