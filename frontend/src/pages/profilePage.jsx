@@ -23,7 +23,7 @@ export default function Login(page) {
                     setUsername(data.user.username)
                     setAuctionHistory(data.user.auctionHistory)
                     console.log(auctionHistory)
-                    // setBidHistory(data.user.bidHistory)
+                    setBidHistory(data.user.bidHistory)
                 }
             })
     }, [])
@@ -51,6 +51,14 @@ export default function Login(page) {
                 </div>
                 <div className="profile_bid_container">
                     <h2>Bids history</h2>
+                    {bidHistory && bidHistory.map(item => (
+                        <div key={item.id} className="item_row">
+                            <p>Name: {item.name}</p>
+                            <p>Time Remaining: {item.endtime}</p>
+                            <p>Status: {item.ongoing}</p>
+                            <p>Amount Bid: {item.bid}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

@@ -46,6 +46,7 @@ def profile():
         # Auction
         output['auctionHistory'] = db.profile_page_auctions(user['ID'])
         # Bid history
+        output['bidHistory'] = db.profile_page_bids(user['ID'])
         return jsonify({'status': 1, 'user': output})
     else:
         return jsonify({'status': 0})
