@@ -21,6 +21,7 @@ export default function Login(page) {
                 else {
                     setImageName(data.user.image)
                     setUsername(data.user.username)
+                    
                 }
             })
     }, [])

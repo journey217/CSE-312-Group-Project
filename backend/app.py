@@ -6,6 +6,7 @@ import os
 import re
 from datetime import datetime, timezone
 from uuid import uuid4, UUID
+import json
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -34,12 +35,21 @@ def sign_out():
 
 @app.route('/profile')
 def profile():
+    output = {}
     cookieToken = request.cookies.get('authenticationToken', '')
     user = db.find_user_by_token(cookieToken)
+    print(output)
     if user:
-        return jsonify({'status': 1, 'user': user})
+        output['username'] = user['username']
+        output['email'] = user['email']
+        output['profile_pic'] = user['profile_pic']
+        # Auction
+        for item in user['auctions_made']:
+            output['auctions'] = 
+        # Bid history
+        return jsonify({'status': '1', 'user': output})
     else:
-        return jsonify({'status': 0})
+        return jsonify({'status': '0'})
 
 
 @app.route("/item/<auction_id>")
@@ -173,7 +183,8 @@ def register():
     # print(authToken)
     response_data = {'status': '1', 'authenticationToken': authToken}
     response = jsonify(response_data)
-    response.set_cookie('authenticationToken', authToken, max_age=3600, httponly=True)
+    response.set_cookie('authenticationToken', authToken,
+                        max_age=3600, httponly=True)
     return response
 
 
