@@ -22,6 +22,7 @@ socket.on('message', function (data) {
 });
 
 export default function Auction_detail() {
+    const itemID = window.location.href.split('/')[4]
     const [item, setItem] = useState(null)
     const [current, setCurrent] = useState(null)
     const [vendor, setVendor] = useState(null)
