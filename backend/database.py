@@ -1,10 +1,9 @@
 from pymongo import MongoClient
 from uuid import uuid4, UUID
-import datetime
 from enum import Enum
 from os import environ as environment
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 import re
 from hashlib import sha256
 
@@ -54,7 +53,7 @@ class Database:
                    "userID": userID,
                    "auctionID": auctionID,
                    "price": price,
-                   "timestamp": datetime.now()
+                   "timestamp": datetime.now(timezone.utc)
                    }
         current_auction = self.auctions_collection.find_one({'ID': auctionID})
         if current_auction['highest_bid'] is None:
@@ -87,7 +86,7 @@ class Database:
                        "price": price,
                        "condition": condition,
                        "image": image_name,
-                       "start_time": datetime.now(),
+                       "start_time": datetime.now(timezone.utc),
                        "end_time": end_time,
                        "bid_history": [],
                        "highest_bid": None}
@@ -130,7 +129,7 @@ class Database:
         return [value for _, value in unique_bids.items()]
 
     def landing_page_items(self):
-        find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.utcnow()}},
+        find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.now(timezone.utc)}},
                                                    projection={"_id": False, "creatorID": False, "start_time": False})
         items_list = [x for x in find_items]
         random.shuffle(items_list)

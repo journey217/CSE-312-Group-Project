@@ -1,6 +1,6 @@
 from login import generate_hashed_pass
 from database import *
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 
 def fill_with_data():
@@ -25,14 +25,14 @@ def fill_with_data():
                          name="Jersey",
                          desc="Gameworn Jersey",
                          image_name="jersey.jpg",
-                         end_time=datetime.max,
+                         end_time=datetime.now(timezone.utc) + timedelta(hours=5),
                          price=500,
                          condition="Brand New")
     db.add_auction_to_db(creatorID=user_2.get('ID'),
                          name="Hat",
                          desc="Old_hat",
                          image_name="hat.png",
-                         end_time=datetime.max,
+                         end_time=datetime.now(timezone.utc) + timedelta(hours=1),
                          price=30,
                          condition="Brand New"
                          )
@@ -40,7 +40,7 @@ def fill_with_data():
                          name="Scarf",
                          desc="Old_Scarf",
                          image_name="NoImage.jpg",
-                         end_time=datetime.max,
+                         end_time=datetime.now(timezone.utc) + timedelta(days=3),
                          price=20,
                          condition="Brand New"
                          )
@@ -48,7 +48,7 @@ def fill_with_data():
                          name="Neckalce",
                          desc="Neckalce",
                          image_name="fakeimage.jpg",
-                         end_time=datetime.max,
+                         end_time=datetime.now(timezone.utc) + timedelta(minutes=10),
                          price=200,
                          condition="Brand New"
                          )

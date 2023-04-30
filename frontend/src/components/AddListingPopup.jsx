@@ -5,11 +5,10 @@ function AddListingPopup({ onClose, onSubmit }) {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [condition, setCondition] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(formatDate(addMinutes(new Date(), 0, 1)));
   const [image, setImage] = useState(null);
   const [addListEnable, setAddListEnable] = useState(true);
-  const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState("");
 
   useEffect(() => {
     if (name.trim() !== '' && price.trim() !== '' && description.trim() !== '' && condition.trim() !== '' && date.trim() !== '' && image !== null) {
@@ -17,7 +16,6 @@ function AddListingPopup({ onClose, onSubmit }) {
     } else {
       setAddListEnable(true);
     }
-    console.log(addListEnable)
   }, [name, price, description, condition, date, image]);
 
   const handleNameChange = (event) => {
@@ -48,41 +46,34 @@ function AddListingPopup({ onClose, onSubmit }) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    formData.append('Item_Name', name);
-    formData.append('Item_Price', price);
-    formData.append('Item_Desc', description);
-    formData.append('condition', condition);
-    formData.append('date', date);
-    formData.append('image', image);
+
+    let date_obj = new Date(date)
+    let utcdate = date_obj.toISOString()
+    formData.set('date', utcdate)
 
     fetch('/add-item', {
       method: 'POST',
       body: formData
     })
-      .then(response => {
-        response.json()
-        console.log(response)
-      })
+      .then(response => response.json())
       .then(data => {
-        if (data.errors) {
-          setErrors(data.errors);
-          setSuccess(false);
+        if (data.status === 1) {
+          setErrors("");
+          onSubmit()
+          onClose()
         } else {
-          setErrors({});
-          setSuccess(true);
+          setErrors(data.field);
         }
       })
       .catch(error => console.error(error));
-    onClose()
   };
 
   return (
     <div className="add-listing-popup">
       <h2>Add Listing</h2>
-      {/*<form action="/add-item" method="POST" onSubmit={handleSubmit} encType="multipart/form-data">*/}
       <form onSubmit={handleSubmit}>
+        {errors !== "" && <div className="error-message">{errors}</div>}
         <div className="form-field">
-          {errors.field && <div className="error-message">{errors.field}</div>}
           <br />
           <label>Item Name:</label>
           <input name="Item_Name" type="text" value={name} onChange={handleNameChange} />
@@ -101,7 +92,6 @@ function AddListingPopup({ onClose, onSubmit }) {
             <option value="" disabled hidden>--- Select From Below ---</option>
             <option name="condition" value="Brand New">Brand New</option>
             <option name="condition" value="Like New">Like New</option>
-            <option name="condition" value="Very Good">Very Good</option>
             <option name="condition" value="Good">Good</option>
             <option name="condition" value="Fair">Fair</option>
             <option name="condition" value="Poor">Poor</option>
@@ -109,7 +99,7 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <div className="form-field">
           <label>Auction End Date:</label>
-          <input id={"Date1"} name="date" value={date} type="datetime-local" min={new Date().getDate()} onChange={handleDateChange} />
+          <input id="Date" min={formatDate(new Date())} name="date" value={date} type="datetime-local" onChange={handleDateChange} />
         </div>
         <div className="form-field">
           <label>Image:</label>
@@ -117,10 +107,34 @@ function AddListingPopup({ onClose, onSubmit }) {
         </div>
         <button type="submit" disabled={addListEnable}>Add Listing</button>
         <button type="button" onClick={onClose}>Cancel</button>
-        {success && <div>Item Listing Success!</div>}
       </form>
     </div>
   );
+}
+
+function addMinutes(date, minutes, hours) {
+    return new Date(date.getTime() + minutes*60000 + hours*60000*60);
+}
+
+function formatDate(date){
+  let dd = date.getDate()
+  let mo = date.getMonth() + 1; //January is 0
+  let yyyy = date.getFullYear();
+  let hh = date.getHours()
+  let mn = date.getMinutes()
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+  if (mo < 10) {
+    mo = '0' + mo;
+  }
+  if (hh < 10) {
+    hh = '0' + hh;
+  }
+  if (mn < 10) {
+    mn = '0' + mn;
+  }
+  return yyyy + '-' + mo + '-' + dd + 'T' + hh + ':' + mn
 }
 
 export default AddListingPopup;

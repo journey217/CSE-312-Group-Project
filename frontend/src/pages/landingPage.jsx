@@ -40,11 +40,7 @@ export default function LandingPage(page) {
         setShowAddListingPopup(false);
     };
 
-    const handleAddListing = (formData) => {
-        // Handle submitting the form data (e.g. send it to your server)
-        console.log(formData);
-
-        // Close the popup form
+    const handleAddListing = () => {
         setShowAddListingPopup(false);
     };
 

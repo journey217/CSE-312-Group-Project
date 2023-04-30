@@ -10,7 +10,6 @@ function Register() {
         confirm_password: '',
         submit: ''
     });
-    const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -32,7 +31,6 @@ function Register() {
                         allErrors[field] = error[field];
                     });
                     setErrors({ ...allErrors, submit: 'Unable to create account, please check all fields' });
-                    setSuccess(false);
                 } else {
                     setErrors({
                         username: '',
@@ -41,7 +39,6 @@ function Register() {
                         password2: '',
                         submit: ''
                     });
-                    setSuccess(true);
                     navigate('/')
                 }
             })
@@ -68,7 +65,6 @@ function Register() {
 
                         <button className="register-button" type="submit" >Register</button>
                         {errors.submit && <div className="error-message">{errors.submit}</div>}
-                        {success && <div>Account Creation Success!</div>}
                     </form>
                     <button className="login-redirect-button" onClick={() => { navigate("/login") }}>
                         Have An Account? Click Here

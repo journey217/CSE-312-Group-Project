@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import "../styles/login.css";
 
 function Login(page) {
-    const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
     const [errors, setError] = useState({
         submit: ''
@@ -20,15 +19,13 @@ function Login(page) {
             .then(response => response.json())
             .then(data => {
                 console.log(data)
-                if (data['status'] == '0') {
+                if (data['status'] === '0') {
                     setError({ submit: data['error'] });
-                    setSuccess(false);
                 } else {
                     console.log('Success')
                     setError({
                         submit: ''
                     });
-                    setSuccess(true);
                     navigate('/')
                 }
             })
@@ -49,7 +46,6 @@ function Login(page) {
                             <input type="password" placeholder="Password" name="password" required />
                             <button className="login-button" type="submit">Login</button>
                             {errors.submit && <div className="error-message">{errors.submit}</div>}
-                            {success && <div>Login Success!</div>}
                         </form>
                         <button className="forgot-button" onClick={() => { navigate("/forgot"); }}>
                             Forgot Password

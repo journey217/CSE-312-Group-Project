@@ -4,7 +4,7 @@ from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4, UUID
 
 app = Flask(__name__)
@@ -177,41 +177,37 @@ def register():
 
 @app.post("/add-item")
 def add_item():
-    errors = []
-    try:
-        item_name = request.form['Item_Name']
-        starting_price = request.form['Item_Price']
-        item_desc = request.form['Item_Desc']
-        condition = request.form['condition']
-        end_date = request.form['date']
-    except KeyError as x:
-        errors.append(
-            {'field': 'Please fill out all fields before submitting!'})
-        return jsonify({'errors': errors})
-    try:
-        cookieToken = request.cookies.get('authenticationToken')
-    except KeyError as x:
-        print("User is not logged in!")
-        errors.append({'field': 'Please log in before posting an item!'})
-        return jsonify({'errors': errors})
+    cookieToken = request.cookies.get('authenticationToken')
+    if not cookieToken:
+        return jsonify({'status': 0, 'field': 'Please log in before posting an item!'})
+
     user = db.find_user_by_token(cookieToken)
     if user is None:
         print("User token is invalid!")
-        errors.append(
-            {'field': 'Invalid log in token. Please sign out and sign back in!'})
-        return jsonify({'errors': errors})
+        return jsonify({'status': 0, 'field': 'Invalid session token. Please sign out and sign back in!'})
+
+    item_name = request.form.get('Item_Name')
+    starting_price = request.form.get('Item_Price')
+    item_desc = request.form.get('Item_Desc')
+    condition = request.form.get('condition')
+    end_date = request.form.get('date')
+    formatted_date = datetime.fromisoformat(end_date)
+    if not (item_name and starting_price and item_desc and condition and end_date):
+        return jsonify({'status': 0, 'field': 'Please fill out all fields before submitting!'})
+
+    if formatted_date < datetime.now(timezone.utc):
+        return jsonify({'status': 0, 'field': 'Please enter a valid end date!'})
+
     filename = f'image{str(uuid4())}.jpg'
     image = request.files['image']
-    if image:
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        db.add_image(filename)
-        db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename,
-                             end_time=datetime.strptime(end_date, '%Y-%m-%dT%H:%M'), price=starting_price, condition=condition)
-        return redirect('/')
-    else:
-        errors.append(
-            {'field': 'Please fill out all fields before submitting!'})
-        return jsonify({'errors': errors})
+    if not image:
+        return jsonify({'status': 0, 'field': 'Please add an Image!'})
+
+    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    db.add_image(filename)
+    db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename,
+                         end_time=formatted_date, price=starting_price, condition=condition)
+    return jsonify({'status': 1})
 
 
 def redirect_response(path, cookies):
