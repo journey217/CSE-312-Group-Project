@@ -44,12 +44,10 @@ def profile():
         output['email'] = user['email']
         output['profile_pic'] = user['profile_pic']
         # Auction
-        for item in user['auctions_made']:
-            output['auctions'] = 
         # Bid history
-        return jsonify({'status': '1', 'user': output})
+        return jsonify({'status': 1, 'user': output})
     else:
-        return jsonify({'status': '0'})
+        return jsonify({'status': 0})
 
 
 @app.route("/item/<auction_id>")
