@@ -22,6 +22,7 @@ export default function Login(page) {
                     setImageName(data.user.image)
                     setUsername(data.user.username)
                     setAuctionHistory(data.user.auctionHistory)
+                    console.log(auctionHistory)
                     // setBidHistory(data.user.bidHistory)
                 }
             })
