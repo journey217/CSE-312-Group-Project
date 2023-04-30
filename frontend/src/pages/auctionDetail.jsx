@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "../styles/auction_detail.css"
-import {io} from "socket.io-client";
+import { io } from "socket.io-client";
 
 let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
@@ -68,7 +68,7 @@ export default function Auction_detail() {
     }, [item]);
 
 
-    socket.on('message', function(data){
+    socket.on('message', function (data) {
         addMessage(data)
     });
 
@@ -77,16 +77,11 @@ export default function Auction_detail() {
         // console.log(item)
         // new_item.bid_history += {'ID': '', 'username': data.username, 'price': data.bid_price, 'timestamp': new Date().getTime()}
         // setItem(new_item)
-
         const input = document.querySelector('.websocket_messages');
-
         console.log(data)
-
-        const bid_data = Object.values(data)
-
+        const bid_data = data
         console.log(bid_data)
-
-        input.innerHTML += <p className='auction_detail_bid_user_id'>{bid_data[0]}</p>
+        input.innerHTML += '<p class="auction_detail_bid_user_id">' + data.username.toString() + '</p>';
 
 
     }
@@ -97,8 +92,8 @@ export default function Auction_detail() {
         const price = input.value;
 
 
-        socket.emit("message",{'type': 'bid', 'auctionID': itemID, 'price': price, "user": current})
-        
+        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current })
+
     }
 
 
