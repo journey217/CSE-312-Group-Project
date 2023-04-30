@@ -10,18 +10,10 @@ from uuid import uuid4, UUID
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = Database()
-socketio = SocketIO(app, namespace="/item")
-
-if os.environ.get('FLASK_ENV') == 'production':
-    origins = [
-        'http://actual-app-url.herokuapp.com',
-        'https://actual-app-url.herokuapp.com'
-    ]
-else:
-    origins = "*"
+origins = "*"
 
 # initialize your socket instance
-socketio = SocketIO(cors_allowed_origins=origins)
+socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
 
 
 @app.route("/landing_page_items")
