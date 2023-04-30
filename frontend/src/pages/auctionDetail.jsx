@@ -67,15 +67,28 @@ export default function Auction_detail() {
         }
     }, [item]);
 
+
     socket.on('message', function(data){
         addMessage(data)
     });
 
     const addMessage = (data) => {
-        let new_item = item
-        console.log(item)
-        new_item.bid_history += {'ID': '', 'username': data.username, 'price': data.bid_price, 'timestamp': new Date().getTime()}
-        setItem(new_item)
+        // let new_item = item
+        // console.log(item)
+        // new_item.bid_history += {'ID': '', 'username': data.username, 'price': data.bid_price, 'timestamp': new Date().getTime()}
+        // setItem(new_item)
+
+        const input = document.querySelector('.websocket_messages');
+
+        console.log(data)
+
+        const bid_data = Object.values(data)
+
+        console.log(bid_data)
+
+        input.innerHTML += <p className='auction_detail_bid_user_id'>{bid_data[0]}</p>
+
+
     }
 
 
