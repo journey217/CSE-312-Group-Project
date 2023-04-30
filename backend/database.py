@@ -55,7 +55,8 @@ class Database:
                    "userID": userID,
                    "auctionID": auctionID,
                    "price": price,
-                   "timestamp": datetime.now(timezone.utc)
+                   "timestamp": datetime.now(timezone.utc),
+                   "winning": True
                    }
         if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
             self.auctions_collection.update_one(
@@ -166,10 +167,13 @@ class Database:
                                  'price': auction['price']})
         return auctions
 
-    # NOT WORKING
     def profile_page_bids(self, userID):
         unique_bids = self.find_unique_item_bids_for_user(userID)
         output_bids = []
         for bid in unique_bids:
-            output_bids.append(bid)
+            output_bids.append({'name': bid['name'],
+                                'timestamp': bid['timestamp'].strftime("%m/%d/%Y, %H:%M:%S"),
+                                'price': bid['price'],
+                                'status': bid['winning']
+            })
         return output_bids
