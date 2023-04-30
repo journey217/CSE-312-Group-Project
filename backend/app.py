@@ -80,7 +80,7 @@ def handle_message(msg):
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
             if not new_bid:
-                emit("Submitted bid is not larger than highest bid!")
+                emit("Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
                 print("Added bid to DB")
                 emit({"username": user['username'], "bid_price": msg['price']})

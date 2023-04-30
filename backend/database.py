@@ -48,6 +48,8 @@ class Database:
         return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
 
     def add_bid_to_db(self, userID, auctionID, price):
+        current_auction = self.auctions_collection.find_one({'ID': auctionID})
+
         bidID = uuid4()
         new_bid = {"ID": bidID,
                    "userID": userID,
@@ -55,27 +57,22 @@ class Database:
                    "price": price,
                    "timestamp": datetime.now(timezone.utc)
                    }
-        current_auction = self.auctions_collection.find_one({'ID': auctionID})
-        if current_auction['highest_bid'] is None:
+        if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
             self.auctions_collection.update_one(
                 {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
-        else:
-            highest_bid = current_auction['highest_bid']
-            current_bid_price = dict(self.bids_collection.find_one({'ID': highest_bid}))['price']
-            if price > current_bid_price:
-                self.auctions_collection.update_one(
-                    {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
-            else:
-                return False
-        # Add bid to Bids
-        self.bids_collection.insert_one(new_bid)
-        # Add bidID to User.bids_history
-        self.users_collection.update_one(
-            {"ID": userID}, {"$push": {"bid_history": bidID}})
-        # Add bidID to Auction.bid_history
-        self.auctions_collection.update_one(
-            {"ID": auctionID}, {"$push": {"bid_history": bidID}})
-        return new_bid
+            self.auctions_collection.update_one(
+                {"ID": auctionID}, {"$set": {"price": price}})
+
+            # Add bid to Bids
+            self.bids_collection.insert_one(new_bid)
+            # Add bidID to User.bids_history
+            self.users_collection.update_one(
+                {"ID": userID}, {"$push": {"bid_history": bidID}})
+            # Add bidID to Auction.bid_history
+            self.auctions_collection.update_one(
+                {"ID": auctionID}, {"$push": {"bid_history": bidID}})
+            return new_bid
+        return False
 
     def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="NoImage.jpg", condition="New"):
         auctionID = uuid4()
@@ -126,7 +123,7 @@ class Database:
                     unique_bids[auctionID] = bid
             else:
                 unique_bids[auctionID] = bid
-        return [value for _, value in unique_bids.items()]
+        return [value for value in unique_bids.values()]
 
     def landing_page_items(self):
         find_items = self.auctions_collection.find({"end_time": {"$gt": datetime.now(timezone.utc)}},
@@ -156,3 +153,23 @@ class Database:
         if self.image_collection.count_documents({'filename': filename}) > 0:
             return True
         return False
+
+    def profile_page_auctions(self, userID):
+        user = self.find_by_ID(userID, DBType.User)
+        auctions = []
+        if user:
+            for auctionID in user.get('auctions_made'):
+                auction = self.find_by_ID(auctionID, DBType.Auction)
+                auctions.append({'name': auction.name,
+                                 'endtime': auction.end_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                                 'ongoing': auction.endtime > datetime.now(),
+                                 'price': auction.price})
+        return auctions
+
+    # NOT WORKING
+    def profile_page_bids(self, userID):
+        unique_bids = self.find_unique_item_bids_for_user(userID)
+        output_bids = []
+        for bid in unique_bids:
+            output_bids.append(bid)
+        return output_bids
