@@ -9,6 +9,7 @@ export default function SignOut() {
         fetch("/sign-out", {method: 'GET'})
             .then(res => {
                 navigate('/')
+                window.location.reload()
             })
     }, [])
 }

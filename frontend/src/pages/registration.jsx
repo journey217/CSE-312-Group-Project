@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/registration.css";
 
-function Register({signal}) {
+function Register() {
     const [errors, setErrors] = useState({
         username: '',
         email: '',
@@ -40,6 +40,7 @@ function Register({signal}) {
                         submit: ''
                     });
                     navigate('/')
+                    window.location.reload()
                 }
             })
             .catch(error => console.error(error));

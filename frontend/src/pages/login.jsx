@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/login.css";
 
-function Login({signal}) {
+function Login() {
     const navigate = useNavigate();
     const [errors, setError] = useState({submit: ''});
 
@@ -24,6 +24,7 @@ function Login({signal}) {
                         submit: ''
                     });
                     navigate('/')
+                    window.location.reload()
                 }
             })
             .catch(error => console.error(error));

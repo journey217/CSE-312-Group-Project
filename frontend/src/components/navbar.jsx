@@ -4,7 +4,7 @@ import "../styles/navbar.css";
 import Dropdown from "./dropdown_nav";
 
 
-export default function Navbar({onTokenChange}) {
+export default function Navbar() {
     const [dropdown, setDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [username, setUsername] = useState('Login');
@@ -20,7 +20,7 @@ export default function Navbar({onTokenChange}) {
                     setUsername('Login')
                 }
             })
-    }, [onTokenChange])
+    }, [])
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -64,7 +64,7 @@ export default function Navbar({onTokenChange}) {
                                 onMouseLeave={() => setDropdown(false)}
                             >
                                 <Link to={item.path}>{username}</Link>
-                                {dropdown && <Dropdown />}
+                                {dropdown && <Dropdown username={username}/>}
                             </li>
                         );
                     }
