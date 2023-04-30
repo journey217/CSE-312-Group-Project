@@ -28,6 +28,20 @@ def fill_with_data():
                          end_time=datetime.now(timezone.utc) + timedelta(hours=5),
                          price=500,
                          condition="Brand New")
+    db.add_auction_to_db(creatorID=user_1.get('ID'),
+                         name="Jersey",
+                         desc="Gameworn Jersey",
+                         image_name="jersey.jpg",
+                         end_time=datetime.now(timezone.utc) + timedelta(hours=5),
+                         price=500,
+                         condition="Brand New")
+    db.add_auction_to_db(creatorID=user_1.get('ID'),
+                         name="Jersey",
+                         desc="Gameworn Jersey",
+                         image_name="jersey.jpg",
+                         end_time=datetime.now(timezone.utc) + timedelta(hours=5),
+                         price=500,
+                         condition="Brand New")
     db.add_auction_to_db(creatorID=user_2.get('ID'),
                          name="Hat",
                          desc="Old_hat",

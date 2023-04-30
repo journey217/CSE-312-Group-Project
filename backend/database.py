@@ -160,10 +160,10 @@ class Database:
         if user:
             for auctionID in user.get('auctions_made'):
                 auction = self.find_by_ID(auctionID, DBType.Auction)
-                auctions.append({'name': auction.name,
-                                 'endtime': auction.end_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                                 'ongoing': auction.endtime > datetime.now(),
-                                 'price': auction.price})
+                auctions.append({'name': auction['name'],
+                                 'endtime': auction['end_time'].strftime("%m/%d/%Y, %H:%M:%S"),
+                                 'ongoing': auction['end_time'] > datetime.now(),
+                                 'price': auction['price']})
         return auctions
 
     # NOT WORKING
