@@ -68,9 +68,13 @@ export default function Auction_detail() {
     }, [item]);
 
 
-    socket.on('message', function (data) {
-        addMessage(data)
-    });
+    const get_message = () => {
+        socket.on('message', function (data) {
+            console.log("Message Received")
+            addMessage(data)
+        });
+    }
+
 
     const addMessage = (data) => {
         // let new_item = item
@@ -79,10 +83,9 @@ export default function Auction_detail() {
         // setItem(new_item)
         const input = document.querySelector('.websocket_messages');
         console.log(data)
-        const bid_data = data
-        console.log(bid_data)
         input.innerHTML += '<p class="auction_detail_bid_user_id">' + data.username.toString() + '</p>';
-
+        input.innerHTML += '<p class="auction_detail_price">$' + data.bid_price.toString() + '</p>';
+        input.innerHTML += '<p class="auction_detail_timestamp">' + new Date()+ '</p>';
 
     }
 
@@ -93,7 +96,7 @@ export default function Auction_detail() {
 
 
         socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current })
-
+        get_message()
     }
 
 

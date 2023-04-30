@@ -59,25 +59,28 @@ class Database:
                    "timestamp": time_now,
                    "winning": True
                    }
-        # if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
-        if int(price) > int(current_auction['price']):
-            self.auctions_collection.update_one(
-                {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
-            self.auctions_collection.update_one(
-                {"ID": auctionID}, {"$set": {"price": price}})
-            username = self.find_user_by_ID(userID)['username']
+        try:
+            # if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
+            if int(price) > int(current_auction['price']):
+                self.auctions_collection.update_one(
+                    {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
+                self.auctions_collection.update_one(
+                    {"ID": auctionID}, {"$set": {"price": price}})
+                username = self.find_user_by_ID(userID)['username']
 
-            # Add bid to Bids
-            self.bids_collection.insert_one(new_bid)
-            push_obj = {"ID": bidID, 'username': username, "price": price, "timestamp": time_now}
+                # Add bid to Bids
+                self.bids_collection.insert_one(new_bid)
+                push_obj = {"ID": bidID, 'username': username, "price": price, "timestamp": time_now}
 
-            # Add bidID to User.bids_history
-            self.users_collection.update_one(
-                {"ID": userID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
-            # Add bidID to Auction.bid_history
-            self.auctions_collection.update_one(
-                {"ID": auctionID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
-            return new_bid
+                # Add bidID to User.bids_history
+                self.users_collection.update_one(
+                    {"ID": userID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
+                # Add bidID to Auction.bid_history
+                self.auctions_collection.update_one(
+                    {"ID": auctionID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
+                return new_bid
+        except ValueError as x:
+            return False
         return False
 
     def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="NoImage.jpg", condition="New"):
