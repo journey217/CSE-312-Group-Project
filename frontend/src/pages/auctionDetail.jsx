@@ -4,7 +4,18 @@ import { io } from "socket.io-client";
 
 let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
+const addMessage = (data) => {
+    const input = document.querySelector('.websocket_messages');
+    input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
+                            "<p class='auction_detail_bid_user_id'>" + data.username.toString() + "</p>" +
+                            "<p class='auction_detail_price'>" +  "$" + data.bid_price.toString() + "</p>" +
+                            "<p class='auction_detail_timestamp'>" + new Date() + "</p>" +
+                        "</div>" + input.innerHTML;
+}
 
+socket.on('message', function (data) {
+    addMessage(data)
+});
 
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
@@ -68,35 +79,12 @@ export default function Auction_detail() {
     }, [item]);
 
 
-    const get_message = () => {
-        socket.on('message', function (data) {
-            console.log("Message Received")
-            addMessage(data)
-        });
-    }
-
-
-    const addMessage = (data) => {
-        // let new_item = item
-        // console.log(item)
-        // new_item.bid_history += {'ID': '', 'username': data.username, 'price': data.bid_price, 'timestamp': new Date().getTime()}
-        // setItem(new_item)
-        const input = document.querySelector('.websocket_messages');
-        console.log(data)
-        input.innerHTML += '<p class="auction_detail_bid_user_id">' + data.username.toString() + '</p>';
-        input.innerHTML += '<p class="auction_detail_price">$' + data.bid_price.toString() + '</p>';
-        input.innerHTML += '<p class="auction_detail_timestamp">' + new Date()+ '</p>';
-
-    }
-
-
     function handleBid() {
         const input = document.querySelector('.auction_detial_bid_input');
         const price = input.value;
 
 
         socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current })
-        get_message()
     }
 
 
