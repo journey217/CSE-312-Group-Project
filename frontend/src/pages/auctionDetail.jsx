@@ -4,6 +4,8 @@ import {io} from "socket.io-client";
 
 let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
+
+
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
     const [item, setItem] = useState(null)
@@ -16,6 +18,7 @@ export default function Auction_detail() {
             .then(data => {
                 setCurrent(data.username)
                 setItem(data.item)
+                console.log(data)
                 fetch(`/users/${data.item.creatorID}`)
                     .then(response => response.json())
                     .then(data => {
@@ -64,6 +67,17 @@ export default function Auction_detail() {
         }
     }, [item]);
 
+    socket.on('message', function(data){
+        addMessage(data)
+    });
+
+    const addMessage = (data) => {
+        let new_item = item
+        console.log(item)
+        new_item.bid_history += {'ID': '', 'username': data.username, 'price': data.bid_price, 'timestamp': new Date().getTime()}
+        setItem(new_item)
+    }
+
 
     function handleBid() {
         const input = document.querySelector('.auction_detial_bid_input');
@@ -73,6 +87,7 @@ export default function Auction_detail() {
         socket.emit("message",{'type': 'bid', 'auctionID': itemID, 'price': price, "user": current})
         
     }
+
 
     return (
         <div className='auction_detail_popup_background'>
@@ -87,11 +102,12 @@ export default function Auction_detail() {
                 <input className='auction_detial_bid_input' type="number"></input>
                 <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
                 <div className='auction_detail_bid_history'>
-                    {item && item.bid_history.map((item, index) => (
+                    <div className='websocket_messages'></div>
+                    {item && item.bid_history.map((bid, index) => (
                         <div className='auction_detail_bid_history_item' key={index}>
-                            <p className='auction_detail_bid_user_id'>{item.user_id}</p>
-                            <p className='auction_detail_price'> ${item.price} </p>
-                            <p className='auction_detail_timestamp'>{item.timestamp}</p>
+                            <p className='auction_detail_bid_user_id'>{bid.username}</p>
+                            <p className='auction_detail_price'> ${bid.price} </p>
+                            <p className='auction_detail_timestamp'>{bid.timestamp}</p>
                         </div>
                     ))}
                 </div>

@@ -85,7 +85,7 @@ def handle_message(msg):
                 emit("Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
                 print("Added bid to DB")
-                emit({"username": user['username'], "bid_price": msg['price']})
+                emit('message', {"username": user['username'], "bid_price": msg['price']}, broadcast=True)
         else:
             emit("User is not logged in!")
 
