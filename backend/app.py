@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room
 from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
@@ -79,15 +79,24 @@ def handle_message(msg):
         user = db.find_user_by_token(msg['user'])
         auction_ID = msg['auctionID']
         price = msg['price']
+        room = msg['room']
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
             if not new_bid:
                 emit("Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
-                print("Added bid to DB")
-                emit('message', {"username": user['username'], "bid_price": msg['price']}, broadcast=True)
+                # print("Added bid to DB")
+                emit('message', {"username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
         else:
             emit("User is not logged in!")
+
+
+@socketio.on('join', namespace='/item')
+def enter_room(msg):
+    room = msg['room']
+    join_room(room)
+    emit(f'Connected to room: {room}', room=room)
+    # print("Entered room:", room)
 
 
 @app.route("/users/<user_id>", methods=['GET'])

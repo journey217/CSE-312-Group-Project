@@ -4,8 +4,12 @@ import { io } from "socket.io-client";
 
 let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
+const itemID = window.location.href.split('/')[4]
+
+socket.emit("join", {'room': itemID});
+
 const addMessage = (data) => {
-    const input = document.querySelector('.websocket_messages');
+    const input = document.querySelector('.ws_bids');
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
                             "<p class='auction_detail_bid_user_id'>" + data.username.toString() + "</p>" +
                             "<p class='auction_detail_price'>" +  "$" + data.bid_price.toString() + "</p>" +
@@ -18,7 +22,6 @@ socket.on('message', function (data) {
 });
 
 export default function Auction_detail() {
-    const itemID = window.location.href.split('/')[4]
     const [item, setItem] = useState(null)
     const [current, setCurrent] = useState(null)
     const [vendor, setVendor] = useState(null)
@@ -83,8 +86,9 @@ export default function Auction_detail() {
         const input = document.querySelector('.auction_detial_bid_input');
         const price = input.value;
 
+        console.log(itemID)
 
-        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current })
+        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID })
     }
 
 
@@ -101,7 +105,7 @@ export default function Auction_detail() {
                 <input className='auction_detial_bid_input' type="number"></input>
                 <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
                 <div className='auction_detail_bid_history'>
-                    <div className='websocket_messages'></div>
+                    <div className="ws_bids"></div>
                     {item && item.bid_history.map((bid, index) => (
                         <div className='auction_detail_bid_history_item' key={index}>
                             <p className='auction_detail_bid_user_id'>{bid.username}</p>
