@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
 import { io } from "socket.io-client";
 

@@ -16,8 +16,6 @@ origins = "*"
 # initialize your socket instance
 socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
 
-active_rooms = []
-
 
 @app.route("/landing_page_items")
 def landing_page_items():
@@ -97,8 +95,6 @@ def handle_message(msg):
 def enter_room(msg):
     room = msg['room']
     join_room(room)
-    if room not in active_rooms:
-        active_rooms.append(room)
     emit(f'Connected to room: {room}', room=room)
     # print("Entered room:", room)
 
@@ -106,7 +102,7 @@ def enter_room(msg):
 @socketio.on('leave', namespace='/item')
 def exit_room(msg):
     room = msg['room']
-    print("leaving room:", room)
+    # print("leaving room:", room)
     leave_room(room)
     emit(f'Left room: {room}', broadcast=True)
 
