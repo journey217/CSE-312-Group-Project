@@ -7,6 +7,7 @@ import re
 from datetime import datetime, timezone, date
 from uuid import uuid4, UUID
 import json
+import html
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -131,6 +132,7 @@ def image(filename):
 @app.post("/login-user")
 def login_user():
     email = request.form['email']
+    email = html.escape(email)
     password = request.form['password']
     # print(email, password)
     if verify_login(email, password):
@@ -161,7 +163,9 @@ def username():
 def register():
     # Get form data
     username = request.form['username']
+    username = html.escape(username)
     email = request.form['email']
+    email = html.escape(email)
     password1 = request.form['password1']
     password2 = request.form['password2']
 
@@ -217,10 +221,15 @@ def add_item():
         return jsonify({'status': 0, 'field': 'Invalid session token. Please sign out and sign back in!'})
 
     item_name = request.form.get('Item_Name')
+    item_name = html.escape(item_name)
     starting_price = request.form.get('Item_Price')
+    starting_price = html.escape(starting_price)
     item_desc = request.form.get('Item_Desc')
+    item_desc = html.escape(item_desc)
     condition = request.form.get('condition')
+    condition = html.escape(condition)
     end_date = request.form.get('date')
+    end_date = html.escape(end_date)
     try:
         formatted_date = datetime.fromisoformat(end_date)
     except ValueError as x:
