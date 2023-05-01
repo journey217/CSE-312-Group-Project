@@ -80,6 +80,7 @@ def handle_message(msg):
         user = db.find_user_by_token(msg['user'])
         auction_ID = msg['auctionID']
         price = msg['price']
+        price = html.escape(price)
         room = msg['room']
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
