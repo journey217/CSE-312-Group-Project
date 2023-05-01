@@ -2,11 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import "../styles/auction_detail.css"
 import { io } from "socket.io-client";
 
-let socket = io.connect(`http://${window.location.hostname}:5000/item`)
-
-const itemID = window.location.href.split('/')[4]
-
-socket.emit("join", {'room': itemID});
+export let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
 const addMessage = (data) => {
     const input = document.querySelector('.ws_bids');
@@ -23,6 +19,7 @@ socket.on('message', function (data) {
 
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
+    socket.emit("join", {'room': itemID});
     const [item, setItem] = useState(null)
     const [current, setCurrent] = useState(null)
     const [vendor, setVendor] = useState(null)

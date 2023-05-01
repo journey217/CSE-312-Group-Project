@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, request, make_response, send_from_directory
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from uuid import uuid4, UUID
 import json
 
@@ -15,6 +15,8 @@ origins = "*"
 
 # initialize your socket instance
 socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
+
+active_rooms = []
 
 
 @app.route("/landing_page_items")
@@ -95,8 +97,18 @@ def handle_message(msg):
 def enter_room(msg):
     room = msg['room']
     join_room(room)
+    if room not in active_rooms:
+        active_rooms.append(room)
     emit(f'Connected to room: {room}', room=room)
     # print("Entered room:", room)
+
+
+@socketio.on('leave', namespace='/item')
+def exit_room(msg):
+    room = msg['room']
+    print("leaving room:", room)
+    leave_room(room)
+    emit(f'Left room: {room}', broadcast=True)
 
 
 @app.route("/users/<user_id>", methods=['GET'])
@@ -213,7 +225,10 @@ def add_item():
     item_desc = request.form.get('Item_Desc')
     condition = request.form.get('condition')
     end_date = request.form.get('date')
-    formatted_date = datetime.fromisoformat(end_date)
+    try:
+        formatted_date = datetime.fromisoformat(end_date)
+    except ValueError as x:
+        formatted_date = datetime.fromisoformat('2023-06-01T00:05:23+04:00')
     if not (item_name and starting_price and item_desc and condition and end_date):
         return jsonify({'status': 0, 'field': 'Please fill out all fields before submitting!'})
 

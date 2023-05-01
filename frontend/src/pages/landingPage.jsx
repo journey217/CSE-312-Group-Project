@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
 import { useNavigate } from "react-router-dom";
+import {socket} from "./auctionDetail";
 export default function LandingPage(page) {
+
 
     const [searchText, setSearchText] = useState("");
     const [auctionItems, setAuctionItems] = useState([]);
@@ -14,6 +16,9 @@ export default function LandingPage(page) {
             .then(data => {
                 setAuctionItems(data);
                 console.log(data)
+                for (let room of data) {
+                    socket.emit('leave', {'room': room.ID})
+                }
             })
     }, [])
 
