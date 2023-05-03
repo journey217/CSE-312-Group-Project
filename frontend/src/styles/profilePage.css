@@ -9,6 +9,8 @@
 }
 
 .profile_profile_area {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+
     margin-top: 10px;
     background: #424242;
     width: 90%;
@@ -59,6 +61,7 @@
 }
 
 .profile_bid_history {
+
     margin-top: 10px;
     width: 90%;
     height: calc(100% - 145px);
@@ -68,6 +71,8 @@
 }
 
 .profile_bid_container {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+
     width: 49%;
     height: 100%;
     background-color: #424242;
@@ -81,23 +86,33 @@
     justify-content: space-between;
     padding: 10px;
     border: 1px solid #ccc;
-    height: 40px; /* or any desired height */
+    height: 40px;
+    /* or any desired height */
     border-style: solid;
     border-width: 1px;
     border-color: #43ac2d;
-  }
-  
-  .item_row_top,
-  .item_row_bottom {
+}
+
+.item_row_top,
+.item_row_bottom {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-  }
-  
-  .item_row_title,
-  .item_row_value {
+}
+
+.item_row_title,
+.item_row_value {
     margin: 0;
     text-align: center;
-    width: 25%; /* adjust to make each column equal width */
+    width: 25%;
+    /* adjust to make each column equal width */
+}
+.profile_bid_container h2 {
+    margin: 0;
+    padding: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color:white;
   }
   
