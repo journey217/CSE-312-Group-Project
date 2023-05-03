@@ -39,7 +39,8 @@ def profile():
     output = {}
     cookieToken = request.cookies.get('authenticationToken', '')
     user = db.find_user_by_token(cookieToken)
-    print(output)
+    print("\nPrint user: ")
+    print(user)
     if user:
         output['username'] = user['username']
         output['email'] = user['email']
@@ -47,7 +48,9 @@ def profile():
         # Auction
         output['auctionHistory'] = db.profile_page_auctions(user['ID'])
         # Bid history
-        output['bidHistory'] = db.profile_page_bids(user['ID'])
+        # output['bidHistory'] = db.profile_page_bids(user['ID'])
+        print("\nPrint output: ")
+        print(output)
         return jsonify({'status': 1, 'user': output})
     else:
         return jsonify({'status': 0})
@@ -88,7 +91,8 @@ def handle_message(msg):
                 emit("Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
                 # print("Added bid to DB")
-                emit('message', {"username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
+                emit('message', {
+                     "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
         else:
             emit("User is not logged in!")
 

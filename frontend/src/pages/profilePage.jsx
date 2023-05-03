@@ -41,12 +41,22 @@ export default function Login(page) {
                 <div className="profile_bid_container">
                     <h2>Selling list</h2>
                     {auctionHistory && auctionHistory.map(item => (
-                        <div key={item.id} className="item_row">
-                            <p>Name: {item.name}</p>
-                            <p>Time: {item.endtime}</p>
-                            <p>Status: {item.ongoing}</p>
-                            <p>Price: {item.price}</p>
+                        <div key={item.id} className="item_row" style={{ backgroundColor: item.ongoing ? '#9AFF86' : '#CCCCCC' }}>
+                            <div className="item_row_top">
+                                <p className="item_row_title">Name:</p>
+                                <p className="item_row_title">Time Ends:</p>
+                                <p className="item_row_title">Status:</p>
+                                <p className="item_row_title">Amount Bid:</p>
+                            </div>
+                            <div className="item_row_bottom">
+                                <p className="item_row_value">{item.name}</p>
+                                <p className="item_row_value">{item.endtime}</p>
+                                <p className="item_row_value">{item.ongoing ? "On Going" : "Ended"}</p>
+                                <p className="item_row_value">{item.price}</p>
+                            </div>
                         </div>
+
+
                     ))}
                 </div>
                 <div className="profile_bid_container">
