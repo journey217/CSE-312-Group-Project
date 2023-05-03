@@ -26,7 +26,7 @@ def landing_page_items():
 @app.route('/sign-out')
 def sign_out():
     response = make_response('Response')
-    response.set_cookie('authenticationToken', '', max_age=0, httponly=True)
+    response.set_cookie('authenticationToken', '', max_age=0, httponly=True, samesite='Strict')
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.status_code = 200
     response.mimetype = 'text/html; charset=utf-8'
@@ -145,7 +145,7 @@ def login_user():
         response_data = {'status': '1', 'authenticationToken': authToken}
         response = jsonify(response_data)
         response.set_cookie('authenticationToken', authToken,
-                            max_age=3600, httponly=True)
+                            max_age=3600, httponly=True, samesite='Strict')
         return response
     else:
         response_data = {'status': '0',
@@ -210,7 +210,7 @@ def register():
     response_data = {'status': '1', 'authenticationToken': authToken}
     response = jsonify(response_data)
     response.set_cookie('authenticationToken', authToken,
-                        max_age=3600, httponly=True)
+                        max_age=3600, httponly=True, samesite='Strict')
     return response
 
 
