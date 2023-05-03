@@ -1,12 +1,13 @@
 .auction_detail_popup_background{
     position: absolute;
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #333333;
     z-index: 101;
+
 }
 
 .auction_detail_popup{
@@ -19,6 +20,7 @@
     align-items: center;
     border-radius: 15px;
     gap: 5px;
+    margin-top: 50px;
 }
 .auction_detail_title{
     display: flex;

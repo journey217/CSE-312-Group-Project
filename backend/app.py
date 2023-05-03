@@ -78,7 +78,9 @@ def route_item(auction_id):
     except TypeError as x:
         xsrf_token_find = ""
     if item:
-        return jsonify({'item': item, 'username': user, 'xsrf_token': xsrf_token_find})
+        username = db.find_user_by_token(user)['username']
+        print(username)
+        return jsonify({'item': item, 'user': user, 'xsrf_token': xsrf_token_find, 'username': username})
     else:
         return "not found"
 
@@ -147,20 +149,6 @@ def exit_room(msg):
     winner = db.find_user_by_ID(item_winner).get('username')
     emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
     emit("winner", {"winner": winner}, room=auction_id)
-
-
-@app.route("/users/<user_id>", methods=['GET'])
-def get_user_by_id(user_id):
-    user_id = UUID(user_id)
-    user = db.find_user_by_ID(user_id)
-    keys_to_remove = ['hashed_password', 'auctions_made', 'bid_history']
-    for key in keys_to_remove:
-        user.pop(key, None)
-    # print(user)
-    if user:
-        return jsonify({'user': user})
-    else:
-        return "not found"
 
 
 @app.route("/image/<filename>")
@@ -248,7 +236,6 @@ def add_item():
 
     user = db.find_user_by_token(cookieToken)
     if user is None:
-        print("User token is invalid!")
         return jsonify({'status': 0, 'field': 'Invalid session token. Please sign out and sign back in!'})
 
     item_name = request.form.get('Item_Name')

@@ -38,18 +38,11 @@ export default function Auction_detail() {
         fetch(`${itemID}`)
             .then(response => response.json())
             .then(data => {
-                setCurrent(data.username)
+                setCurrent(data.user)
                 setItem(data.item)
                 setXSRFToken(data.xsrf_token)
                 console.log(data)
-                fetch(`/users/${data.item.creatorID}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        setVendor(data.user)
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
+                setVendor(data.username)
             })
             .catch(error => {
                 console.log(error);
@@ -113,7 +106,7 @@ export default function Auction_detail() {
                 </div>
                 <hr className='auction_detail_hr' />
                 <img className='auction_detail_image' src={item && `/image/${item.image}`}></img>
-                <p className='auction_detail_vendor'>{vendor && `vendor : ${vendor.username}`}</p>
+                <p className='auction_detail_vendor'>{vendor && `vendor : ${vendor}`}</p>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <input className='auction_detial_bid_input' type="number"></input>
                 <input hidden id="xsrf_token" value={xsrf_token}></input>
