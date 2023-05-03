@@ -6,6 +6,10 @@ import {wait} from "@testing-library/user-event/dist/utils";
 export let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
 let winner = ''
+
+function give_winner() {
+    return winner
+}
 const addMessage = (data) => {
     const input = document.querySelector('.ws_bids');
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
@@ -63,7 +67,8 @@ export default function Auction_detail() {
                 clearInterval(x);
                 socket.emit("end_auction", { 'auction_id': itemID});
                 wait(5000)
-                setCountDownString('Time Expired. ' + winner + ' has won!');
+                let myWinner = give_winner()
+                setCountDownString('Time Expired. ' + myWinner + ' has won!');
             } else {
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
