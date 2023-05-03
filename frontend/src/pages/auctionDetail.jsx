@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
 import { io } from "socket.io-client";
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
+let winner = ''
 const addMessage = (data) => {
     const input = document.querySelector('.ws_bids');
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
@@ -17,6 +19,9 @@ socket.on('message', function (data) {
     addMessage(data)
 });
 
+socket.on('winner', function (data) {
+    winner = (data.winner)
+});
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
     socket.emit("join", {'room': itemID});
@@ -56,7 +61,9 @@ export default function Auction_detail() {
 
             if (distance < 0) {
                 clearInterval(x);
-                setCountDownString('Time Expired');
+                socket.emit("end_auction", { 'auction_id': itemID});
+                wait(3000)
+                setCountDownString('Time Expired. ' + winner + ' has won!');
             } else {
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
