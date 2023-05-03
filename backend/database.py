@@ -70,7 +70,8 @@ class Database:
 
                 # Add bid to Bids
                 self.bids_collection.insert_one(new_bid)
-                push_obj = {"ID": bidID, 'username': username, "price": price, "timestamp": time_now, "auctionID": auctionID, "winning": True}
+                push_obj = {"ID": bidID, 'username': username, "price": price,
+                            "timestamp": time_now, "auctionID": auctionID, "winning": True}
 
                 # Add bidID to User.bids_history
                 self.users_collection.update_one(
