@@ -14,7 +14,7 @@ li {
 .navbar-logo {
   height: 7vh;
   width: 7vw;
-  z-index: 999;
+  z-index: 99;
 }
 
 .nav-items {
