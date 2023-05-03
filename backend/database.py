@@ -70,7 +70,7 @@ class Database:
 
                 # Add bid to Bids
                 self.bids_collection.insert_one(new_bid)
-                push_obj = {"ID": bidID, 'username': username, "price": price, "timestamp": time_now}
+                push_obj = {"ID": bidID, 'username': username, "price": price, "timestamp": time_now, "auctionID": auctionID, "winning": True}
 
                 # Add bidID to User.bids_history
                 self.users_collection.update_one(
@@ -119,11 +119,10 @@ class Database:
     # Returns list of bids for a user
     # If there are multiple bids for an item, only have the newest bid in the return list
     def find_unique_item_bids_for_user(self, userID):
-        unique_bids = {}  # auctionIDs -> bid
-        users_bidIDs = self.users_collection.find_one({"ID": userID})[
-            "bid_history"]
-        for bidID in users_bidIDs:
-            bid = self.find_by_ID(bidID, DBType.Bid)
+        unique_bids = {}
+        user = self.users_collection.find_one({"ID": userID})
+        users_bids = user["bid_history"]
+        for bid in users_bids:
             auctionID = bid["auctionID"]
             if auctionID in unique_bids.keys():
                 current_bid_timestamp = unique_bids[auctionID]["timestamp"]
@@ -179,9 +178,9 @@ class Database:
         unique_bids = self.find_unique_item_bids_for_user(userID)
         output_bids = []
         for bid in unique_bids:
-            output_bids.append({'name': bid['name'],
+            auction = self.find_by_ID(bid['auctionID'], DBType.Auction)
+            output_bids.append({'name': auction['name'],
                                 'timestamp': bid['timestamp'].strftime("%m/%d/%Y, %H:%M:%S"),
                                 'price': bid['price'],
-                                'status': bid['winning']
-            })
+                                'status': bid['winning']})
         return output_bids
