@@ -106,13 +106,15 @@ class Database:
 
     def add_user_to_db(self, username, email, hashed_password, profile_pic="NoUser.jpg"):
         user_id = uuid4()
+        xsrf_token = uuid4()
         new_user = {"ID": user_id,
                     "username": username,
                     "email": email,
                     "hashed_password": hashed_password,
                     "profile_pic": profile_pic,
                     "auctions_made": [],
-                    "bid_history": []}
+                    "bid_history": [],
+                    "xsrf": xsrf_token}
         # Add User to Users
         self.users_collection.insert_one(new_user)
         return new_user

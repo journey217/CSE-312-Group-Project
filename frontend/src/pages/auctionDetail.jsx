@@ -22,6 +22,7 @@ export default function Auction_detail() {
     socket.emit("join", {'room': itemID});
     const [item, setItem] = useState(null)
     const [current, setCurrent] = useState(null)
+    const [xsrf_token, setXSRFToken] = useState(null)
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
     useEffect(() => {
@@ -30,6 +31,7 @@ export default function Auction_detail() {
             .then(data => {
                 setCurrent(data.username)
                 setItem(data.item)
+                setXSRFToken(data.xsrf_token)
                 console.log(data)
                 fetch(`/users/${data.item.creatorID}`)
                     .then(response => response.json())
@@ -82,11 +84,12 @@ export default function Auction_detail() {
 
     function handleBid() {
         const input = document.querySelector('.auction_detial_bid_input');
+        const token = document.getElementById('xsrf_token').value;
         const price = input.value;
 
         console.log(itemID)
 
-        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID })
+        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID, 'token': token });
     }
 
 
@@ -101,6 +104,7 @@ export default function Auction_detail() {
                 <p className='auction_detail_vendor'>{vendor && `vendor : ${vendor.username}`}</p>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <input className='auction_detial_bid_input' type="number"></input>
+                <input hidden id="xsrf_token" value={xsrf_token}></input>
                 <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
                 <div className='auction_detail_bid_history'>
                     <div className="ws_bids"></div>

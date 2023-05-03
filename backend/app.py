@@ -61,8 +61,12 @@ def route_item(auction_id):
     auction_id = UUID(auction_id)
     item = db.find_by_ID(auction_id, DBType.Auction)
     user = request.cookies.get('authenticationToken')
+    try:
+        xsrf_token_find = dict(db.find_user_by_token(user))['xsrf']
+    except TypeError as x:
+        xsrf_token_find = ""
     if item:
-        return jsonify({'item': item, 'username': user})
+        return jsonify({'item': item, 'username': user, 'xsrf_token': xsrf_token_find})
     else:
         return "not found"
 
@@ -80,7 +84,16 @@ def handle_disconnect():
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
     if msg['type'] == 'bid':
+        token = msg['token']
+        if not token:
+            emit("Invalid XSRF Token!")
+            return False
+        token = UUID(token)
         user = db.find_user_by_token(msg['user'])
+        authenticate = db.users_collection.find_one({'username': user['username'], 'xsrf': token})
+        if not authenticate:
+            emit("Invalid XSRF Token!")
+            return False
         auction_ID = msg['auctionID']
         price = msg['price']
         price = html.escape(price)
