@@ -29,6 +29,7 @@ def username():
 
 @app.route("/landing_page_items")
 def landing_page_items():
+    db.end_auctions()
     return jsonify(db.landing_page_items())
 
 
@@ -135,6 +136,17 @@ def exit_room(msg):
     # print("leaving room:", room)
     leave_room(room)
     emit(f'Left room: {room}', broadcast=True)
+
+
+@socketio.on('end_auction', namespace='/item')
+def exit_room(msg):
+    auction_id = msg['auction_id']
+    db.end_auctions()
+    item_winner = dict(db.auctions_collection.find_one({"ID": UUID(auction_id)}))['winner']
+    # item_winner = UUID(item_winner)
+    winner = db.find_user_by_ID(item_winner).get('username')
+    emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
+    emit("winner", {"winner": winner}, room=auction_id)
 
 
 @app.route("/users/<user_id>", methods=['GET'])
