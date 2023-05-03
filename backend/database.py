@@ -150,12 +150,16 @@ class Database:
 
     def end_auctions(self):
         find_items = self.auctions_collection.find({"end_time": {"$lt": datetime.now(timezone.utc)}, "winner": None},
-                                                   projection={"_id": False, "creatorID": False, "start_time": False})
+                                                   projection={"_id": False, "start_time": False})
         items_list = [x for x in find_items]
         for item in items_list:
             item_id = dict(item)['ID']
-            highest_bidder_id = dict(self.bids_collection.find_one({'ID': dict(item)['highest_bid']}))['userID']
-            self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": highest_bidder_id}})
+            try:
+                highest_bidder_id = dict(self.bids_collection.find_one({'ID': dict(item)['highest_bid']}))['userID']
+                self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": highest_bidder_id}})
+            except TypeError as x:
+                self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": dict(item)['creatorID']}})
+
 
     def all_item_search(self):
         items_list = [x for x in self.auctions_collection.find(

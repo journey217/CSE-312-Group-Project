@@ -62,7 +62,7 @@ export default function Auction_detail() {
             if (distance < 0) {
                 clearInterval(x);
                 socket.emit("end_auction", { 'auction_id': itemID});
-                wait(3000)
+                wait(5000)
                 setCountDownString('Time Expired. ' + winner + ' has won!');
             } else {
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
