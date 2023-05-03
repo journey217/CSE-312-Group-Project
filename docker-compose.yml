@@ -5,10 +5,12 @@ services:
     ports:
       - '80:80'
       - '443:443'
+    depends_on:
+      - frontend
   mongo:
     image: mongo:6.0.4
-    ports:
-      - '27017:27017' # MUST BE REMOVED!!!!
+#    ports:
+#      - '27017:27017' # MUST BE REMOVED!!!!
   backend:
     build:
       context: .
@@ -16,11 +18,17 @@ services:
     environment:
       DOCKER: 1 # Environment variable for Vlad
       WAIT_HOSTS: mongo:27017
-    ports:
-      - '5000:5000'  # MUST BE REMOVED!!!!
+    depends_on:
+      - mongo
+#    ports:
+#      - '5000:5000'  # MUST BE REMOVED!!!!
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    ports:
-      - '3000:3000'
+    environment:
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
+    depends_on:
+      - backend
+#    ports:
+#      - '3000:3000'
