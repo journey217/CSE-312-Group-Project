@@ -57,29 +57,29 @@ class Database:
                    "auctionID": auctionID,
                    "price": price,
                    "timestamp": time_now,
-                   "winning": True
+                   "winning": True,
+                   'username': self.find_user_by_ID(userID)['username']
                    }
         try:
             # if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
             if float(price) > float(current_auction['price']):
+                old_highest_bid = self.auctions_collection.find_one({"ID": auctionID})['highest_bid']
+                self.bids_collection.update_one({"ID": auctionID}, {"$set": {"winning": False}})
                 self.auctions_collection.update_one(
                     {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
                 self.auctions_collection.update_one(
                     {"ID": auctionID}, {"$set": {"price": price}})
-                username = self.find_user_by_ID(userID)['username']
-
                 # Add bid to Bids
                 self.bids_collection.insert_one(new_bid)
-                push_obj = {"ID": bidID, 'username': username, "price": price, "timestamp": time_now, "auctionID": auctionID, "winning": True}
-
                 # Add bidID to User.bids_history
                 self.users_collection.update_one(
-                    {"ID": userID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
+                    {"ID": userID}, {"$push": {"bid_history": {"$each": [bidID], "$position": 0}}})
                 # Add bidID to Auction.bid_history
                 self.auctions_collection.update_one(
-                    {"ID": auctionID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
+                    {"ID": auctionID}, {"$push": {"bid_history": {"$each": [bidID], "$position": 0}}})
                 return new_bid
         except ValueError as x:
+            print('error')
             print(x)
             return False
         return False
@@ -125,7 +125,11 @@ class Database:
         unique_bids = {}
         user = self.users_collection.find_one({"ID": userID})
         users_bids = user["bid_history"]
-        for bid in users_bids:
+        for bidID in users_bids:
+            print('la')
+            print(bidID)
+            bid = self.find_by_ID(bidID, DBType.Bid)
+            print(bid)
             auctionID = bid["auctionID"]
             if auctionID in unique_bids.keys():
                 current_bid_timestamp = unique_bids[auctionID]["timestamp"]

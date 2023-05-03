@@ -4,9 +4,8 @@ from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
 import os
 import re
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone
 from uuid import uuid4, UUID
-import json
 import html
 
 app = Flask(__name__)
@@ -16,6 +15,16 @@ origins = "*"
 
 # initialize your socket instance
 socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
+
+
+@app.route("/myUsername")
+def username():
+    cookieToken = request.cookies.get('authenticationToken')
+    user = db.find_user_by_token(cookieToken)
+    if user:
+        return {'status': 1, 'username': user.get('username')}
+    else:
+        return {'status': 0}
 
 
 @app.route("/landing_page_items")
@@ -60,6 +69,8 @@ def profile():
 def route_item(auction_id):
     auction_id = UUID(auction_id)
     item = db.find_by_ID(auction_id, DBType.Auction)
+    bid_history = [db.find_by_ID(x, DBType.Bid) for x in item['bid_history']]
+    item['bid_history'] = bid_history
     user = request.cookies.get('authenticationToken')
     try:
         xsrf_token_find = dict(db.find_user_by_token(user))['xsrf']
@@ -165,16 +176,6 @@ def login_user():
                          'error': 'Incorrect Username or Password'}
         response = jsonify(response_data)
         return response
-
-
-@app.route("/myUsername")
-def username():
-    cookieToken = request.cookies.get('authenticationToken')
-    user = db.find_user_by_token(cookieToken)
-    if user:
-        return {'status': 1, 'username': user.get('username')}
-    else:
-        return {'status': 0}
 
 
 @app.post("/register-user")
