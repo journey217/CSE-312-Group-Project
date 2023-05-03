@@ -61,7 +61,7 @@ class Database:
                    }
         try:
             # if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
-            if int(price) > int(current_auction['price']):
+            if float(price) > float(current_auction['price']):
                 self.auctions_collection.update_one(
                     {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
                 self.auctions_collection.update_one(
@@ -80,6 +80,7 @@ class Database:
                     {"ID": auctionID}, {"$push": {"bid_history": {"$each": [push_obj], "$position": 0}}})
                 return new_bid
         except ValueError as x:
+            print(x)
             return False
         return False
 
