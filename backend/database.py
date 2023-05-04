@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from uuid import uuid4, UUID
+from uuid import uuid4
 from enum import Enum
 from os import environ as environment
 import random
@@ -61,10 +61,9 @@ class Database:
                    'username': self.find_user_by_ID(userID)['username']
                    }
         try:
-            # if price > current_auction['price'] and datetime.now(timezone.utc) < current_auction.end_time:
-            if float(price) > float(current_auction['price']):
+            if float(price) > float(current_auction['price']) and datetime.utcnow() < current_auction['end_time']:
                 old_highest_bid = self.auctions_collection.find_one({"ID": auctionID})['highest_bid']
-                self.bids_collection.update_one({"ID": auctionID}, {"$set": {"winning": False}})
+                self.bids_collection.update_one({"ID": old_highest_bid}, {"$set": {"winning": False}})
                 self.auctions_collection.update_one(
                     {"ID": auctionID}, {"$set": {"highest_bid": bidID}})
                 self.auctions_collection.update_one(
