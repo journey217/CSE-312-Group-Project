@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
 import { io } from "socket.io-client";
 import {wait} from "@testing-library/user-event/dist/utils";
+import {redirect} from "react-router-dom";
 
 export let socket = io.connect(`http://${window.location.hostname}:5000/item`)
 
 let winner = ''
 
-function give_winner() {
-    return winner
-}
 const addMessage = (data) => {
     const input = document.querySelector('.ws_bids');
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
@@ -24,8 +22,14 @@ socket.on('message', function (data) {
 });
 
 socket.on('winner', function (data) {
-    winner = (data.winner)
+    redirect('/')
+    add_winner(data)
 });
+
+const add_winner = (data) => {
+    const input = document.getElementById('winner_string');
+    input.innerHTML = "<b class=\'auction_detial_time_left\'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
+}
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
     socket.emit("join", {'room': itemID});
@@ -59,9 +63,6 @@ export default function Auction_detail() {
             if (distance < 0) {
                 clearInterval(x);
                 socket.emit("end_auction", { 'auction_id': itemID});
-                wait(5000)
-                let myWinner = give_winner()
-                setCountDownString('Time Expired. ' + myWinner + ' has won!');
             } else {
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -106,7 +107,8 @@ export default function Auction_detail() {
                 </div>
                 <hr className='auction_detail_hr' />
                 <img className='auction_detail_image' src={item && `/image/${item.image}`}></img>
-                <p className='auction_detail_vendor'>{vendor && `vendor : ${vendor}`}</p>
+                <p className='auction_detail_vendor'>{vendor && `Vendor : ${vendor}`}</p>
+                <div id="winner_string"></div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <input className='auction_detial_bid_input' type="number"></input>
                 <input hidden id="xsrf_token" value={xsrf_token}></input>

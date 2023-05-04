@@ -78,9 +78,11 @@ def route_item(auction_id):
     except TypeError as x:
         xsrf_token_find = ""
     if item:
-        username = db.find_user_by_token(user)['username']
-        print(username)
-        return jsonify({'item': item, 'user': user, 'xsrf_token': xsrf_token_find, 'username': username})
+        try:
+            vendor = db.find_by_ID(item['creatorID'], DBType.User)['username']
+        except TypeError as x:
+            vendor = "Error: Vendor not found!"
+        return jsonify({'item': item, 'user': user, 'xsrf_token': xsrf_token_find, 'username': vendor})
     else:
         return "not found"
 
