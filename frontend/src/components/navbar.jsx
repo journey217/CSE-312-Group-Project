@@ -6,7 +6,7 @@ import Dropdown from "./dropdown_nav";
 
 export default function Navbar() {
     const [dropdown, setDropdown] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery] = useState("");
     const [username, setUsername] = useState('Login');
 
     useEffect(() => {
@@ -21,11 +21,11 @@ export default function Navbar() {
                 }
             })
     }, [])
-
+/*
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
-
+*/
     const navItems = [
     {
         id: 1,

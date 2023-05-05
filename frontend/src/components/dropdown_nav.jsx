@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 import "../styles/dropdown_nav.css"
 
-export default function Dropdown({username}) {
+export default function Dropdown({ username }) {
     const [dropdown_nav, setDropdown] = useState(false);
 
     return (
         <ul className={dropdown_nav ? "dropdown clicked" : "dropdown_nav"} onClick={() => setDropdown(!dropdown_nav)}>
-            {(username === 'Login'? dropDownItems1 : dropDownItems2).map((item) => {
+            {(username === 'Login' ? dropDownItems1 : dropDownItems2).map((item) => {
                 return (
                     <li key={item.id}>
                         <Link to={item.path} className={item.cName} onClick={() => setDropdown(false)}>

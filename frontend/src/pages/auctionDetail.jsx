@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
 import { io } from "socket.io-client";
-import {wait} from "@testing-library/user-event/dist/utils";
+/*import {wait} from "@testing-library/user-event/dist/utils";*/
 import {redirect} from "react-router-dom";
 
 export let socket = io.connect(`http://${window.location.hostname}:5000/item`)
