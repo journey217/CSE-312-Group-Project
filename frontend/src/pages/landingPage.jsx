@@ -55,10 +55,12 @@ export default function LandingPage(page) {
 
     return (
         <div className="landing_page">
+            {/*
             <div className="landing_search_container">
                 <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
                 <button className="landing_search_button">Search</button>
             </div>
+    */}
             <div className="landing_category">
 
                 <div className="landing_category_title_floor">
