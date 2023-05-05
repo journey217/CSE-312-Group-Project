@@ -159,7 +159,6 @@ class Database:
             except TypeError as x:
                 self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": dict(item)['creatorID']}})
 
-
     def all_item_search(self):
         items_list = [x for x in self.auctions_collection.find(
             {}, projection={"_id": False})]

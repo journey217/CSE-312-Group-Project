@@ -5,7 +5,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #333333;
+    background-color: #2C2C3C;
     z-index: 101;
 
 }
@@ -13,14 +13,15 @@
 .auction_detail_popup{
     position: relative;
     width: 90%;
-    height: 800px;
+    height: calc(100% - 20px);
     background: #424242;
     display: flex;
     flex-direction: column;
     align-items: center;
     border-radius: 15px;
     gap: 5px;
-    margin-top: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .auction_detail_title{
     display: flex;
