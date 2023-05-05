@@ -6,7 +6,7 @@ import {socket} from "./auctionDetail";
 export default function LandingPage(page) {
 
 
-    const [searchText, setSearchText] = useState("");
+    /*const [searchText, setSearchText] = useState("");*/
     const [auctionItems, setAuctionItems] = useState([]);
     const [showAddListingPopup, setShowAddListingPopup] = useState(false);
     const navigate = useNavigate();
@@ -21,11 +21,11 @@ export default function LandingPage(page) {
                 }
             })
     }, [])
-
+/*
     const handleChange = (e) => {
         setSearchText(e.target.value);
     };
-/*
+
     const categories = [
         "All",
         "Car Parts",
