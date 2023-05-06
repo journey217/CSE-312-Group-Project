@@ -4,7 +4,9 @@ import { io } from "socket.io-client";
 /*import {wait} from "@testing-library/user-event/dist/utils";*/
 import {redirect} from "react-router-dom";
 
-export let socket = io.connect(`http://${window.location.hostname}:5000/item`)
+export let socket = io.connect(`https://${window.location.hostname}:5000/item`, {
+    transports: ['websocket']
+})
 
 let winner = ''
 
