@@ -106,6 +106,8 @@ export default function Auction_detail() {
                 </div>
                 <hr className='auction_detail_hr' />
                 <img className='auction_detail_image' src={item && `/image/${item.image}`}></img>
+                <p className='auction_detail_vendor'>{item && `Description : ${item.description}`}</p>
+                <p className='auction_detail_vendor'>{item && `Condition : ${item.condition}`}</p>
                 <p className='auction_detail_vendor'>{vendor && `Vendor : ${vendor}`}</p>
                 <div id="winner_string"></div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
