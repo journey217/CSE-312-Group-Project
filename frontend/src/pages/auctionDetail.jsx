@@ -31,7 +31,11 @@ const add_winner = (data) => {
 }
 export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
-    socket.emit("join", {'room': itemID});
+    const [connected, setConnected] = useState(false)
+    if (connected === false) {
+        socket.emit("join", {'room': itemID});
+        setConnected(true)
+    }
     const [item, setItem] = useState(null)
     const [current, setCurrent] = useState("")
     const [xsrf_token, setXSRFToken] = useState("")
@@ -91,9 +95,6 @@ export default function Auction_detail() {
         const input = document.querySelector('.auction_detial_bid_input');
         const token = document.getElementById('xsrf_token').value;
         const price = input.value;
-
-        console.log(itemID)
-
         socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID, 'token': token });
     }
 
@@ -106,7 +107,7 @@ export default function Auction_detail() {
                 </div>
                 <hr className='auction_detail_hr' />
                 <div className='auction_detail_item_desc_container'>
-                    <img className='auction_detail_image' src={item && `/image/${item.image}`}></img>
+                    <img className='auction_detail_image' alt="Item Image" src={item && `/image/${item.image}`}></img>
                     <div className='auction_detail_item_desc'>
                         <p className='auction_detail_vendor'>{item && `Description : ${item.description}`}</p>
                         <p className='auction_detail_vendor'>{item && `Condition : ${item.condition}`}</p>
