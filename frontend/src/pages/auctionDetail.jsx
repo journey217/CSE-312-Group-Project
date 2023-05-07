@@ -113,7 +113,7 @@ export default function Auction_detail() {
                 </div>
                 <hr className='auction_detail_hr' />
                 <div className='auction_detail_item_desc_container'>
-                    <img className='auction_detail_image' alt="Item Image" src={item && `/image/${item.image}`}></img>
+                    <img className='auction_detail_image' alt="Item" src={item && `/image/${item.image}`}></img>
                     <div className='auction_detail_item_desc'>
                         <p className='auction_detail_vendor'>{item && `Description : ${item.description}`}</p>
                         <p className='auction_detail_vendor'>{item && `Condition : ${item.condition}`}</p>
