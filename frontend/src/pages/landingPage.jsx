@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import "../styles/landingPage.css"
 import AddListingPopup from "../components/AddListingPopup";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {socket} from "./auctionDetail";
+
+
 export default function LandingPage(page) {
-
-
-    /*const [searchText, setSearchText] = useState("");*/
     const [auctionItems, setAuctionItems] = useState([]);
     const [showAddListingPopup, setShowAddListingPopup] = useState(false);
     const navigate = useNavigate();
@@ -21,22 +20,7 @@ export default function LandingPage(page) {
                 }
             })
     }, [])
-/*
-    const handleChange = (e) => {
-        setSearchText(e.target.value);
-    };
 
-    const categories = [
-        "All",
-        "Car Parts",
-        "Electronics",
-        "Home Decor",
-        "Clothing",
-        "Toys",
-        "Sports",
-        "Appliances"
-    ]
-*/
     const handleOpenAddListingPopup = () => {
         setShowAddListingPopup(true);
     };
@@ -55,21 +39,8 @@ export default function LandingPage(page) {
 
     return (
         <div className="landing_page">
-            {/*
-            <div className="landing_search_container">
-                <input className="landing_search_textfield" type="text" value={searchText} onChange={handleChange}></input>
-                <button className="landing_search_button">Search</button>
-            </div>
-    */}
             <div className="landing_category">
-
                 <div className="landing_category_title_floor">
-                    {/*
-                    <div>
-                        <p className="landing_category_container_title">Category</p>
-                        <hr style={{ width: "105px", margin: "5px 0px 0px 0px", alignSelf: "flex-start" }}></hr>
-                    </div>
-                    */}
                     <div>
                         <button className="landing_category_new_item" onClick={handleOpenAddListingPopup}>Add Listing</button>
                         {showAddListingPopup && (
@@ -77,11 +48,6 @@ export default function LandingPage(page) {
                         )}
                     </div>
                 </div>
-                {/*
-                <div className="landing_category_container">
-                    <Category categories={categories}></Category>
-                </div>
-                 */}
             </div>
             <div className="landing_items_container">
                 {auctionItems.map((item, index) => (
@@ -95,21 +61,3 @@ export default function LandingPage(page) {
         </div >
     );
 }
-/*
-function Category(props) {
-    return (
-        <div className="landing_categories">
-            {props.categories.slice(0, -1).map((item, index) => (
-                <div className="landing_category_item" key={index}>
-                    <p>{item}</p>
-                    <hr></hr>
-                </div>
-            ))}
-            {<div className="landing_category_item" key={props.categories.length - 1}>
-                <p>{props.categories.slice(-1)}</p>
-            </div>
-            }
-        </div>
-    );
-}
-*/
