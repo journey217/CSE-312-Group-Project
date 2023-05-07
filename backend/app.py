@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, send_from_directory
+from flask import Flask, jsonify, request, make_response, send_from_directory, abort
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
@@ -14,7 +14,7 @@ db = Database()
 origins = "*"
 
 # initialize your socket instance
-socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
+socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins, transports='websocket')
 
 
 @app.route("/myUsername")
@@ -68,23 +68,22 @@ def profile():
 
 @app.route("/item/<auction_id>")
 def route_item(auction_id):
+    if not valid_uuid(auction_id):
+        return jsonify({'error': 1})
     auction_id = UUID(auction_id)
     item = db.find_by_ID(auction_id, DBType.Auction)
+    if not item:
+        return jsonify({'error': 1})
     bid_history = [db.find_by_ID(x, DBType.Bid) for x in item['bid_history']]
     item['bid_history'] = bid_history
-    user = request.cookies.get('authenticationToken')
-    try:
-        xsrf_token_find = dict(db.find_user_by_token(user))['xsrf']
-    except TypeError as x:
-        xsrf_token_find = ""
-    if item:
-        try:
-            vendor = db.find_by_ID(item['creatorID'], DBType.User)['username']
-        except TypeError as x:
-            vendor = "Error: Vendor not found!"
-        return jsonify({'item': item, 'user': user, 'xsrf_token': xsrf_token_find, 'username': vendor})
+    auth_token = request.cookies.get('authenticationToken')
+    user = db.find_user_by_token(auth_token)
+    if user:
+        xsrf_token_find = user.get('xsrf', '')
     else:
-        return "not found"
+        xsrf_token_find = ''
+    vendor = db.find_by_ID(item['creatorID'], DBType.User).get('username', 'Error: Vendor not Found')
+    return jsonify({'error': 0, 'item': item, 'user': auth_token, 'xsrf_token': xsrf_token_find, 'username': vendor})
 
 
 @socketio.on('connect', namespace="/item")
@@ -99,6 +98,7 @@ def handle_disconnect():
 
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
+    print('message')
     if msg['type'] == 'bid':
         token = msg['token']
         if not token:
@@ -113,7 +113,7 @@ def handle_message(msg):
         auction_ID = msg['auctionID']
         price = msg['price']
         price = html.escape(price)
-        room = msg['room']
+        # room = msg['room']
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
             if not new_bid:
@@ -121,7 +121,7 @@ def handle_message(msg):
             else:
                 # print("Added bid to DB")
                 emit('message', {
-                     "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
+                     "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, broadcast=True)
         else:
             emit("User is not logged in!")
 
@@ -137,7 +137,7 @@ def enter_room(msg):
 @socketio.on('leave', namespace='/item')
 def exit_room(msg):
     room = msg['room']
-    # print("leaving room:", room)
+    print("leaving room:", room)
     leave_room(room)
     emit(f'Left room: {room}', broadcast=True)
 
@@ -149,8 +149,8 @@ def exit_room(msg):
     item_winner = dict(db.auctions_collection.find_one({"ID": UUID(auction_id)}))['winner']
     # item_winner = UUID(item_winner)
     winner = db.find_user_by_ID(item_winner).get('username')
-    emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
-    emit("winner", {"winner": winner}, room=auction_id)
+    # emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
+    emit("winner", {"winner": winner, 'auction_id': auction_id}, broadcast=True)
 
 
 @app.route("/image/<filename>")
@@ -165,7 +165,6 @@ def login_user():
     email = request.form['email']
     email = html.escape(email)
     password = request.form['password']
-    # print(email, password)
     if verify_login(email, password):
         authToken = set_browser_cookie(email)
         response_data = {'status': '1', 'authenticationToken': authToken}
@@ -270,3 +269,8 @@ def add_item():
     db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename,
                          end_time=formatted_date, price=starting_price, condition=condition)
     return jsonify({'status': 1})
+
+
+def valid_uuid(uuid_string):
+    pattern = re.compile(r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$")
+    return pattern.match(uuid_string)

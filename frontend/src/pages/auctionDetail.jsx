@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
 import { io } from "socket.io-client";
 import {redirect} from "react-router-dom";
+import {useNavigate } from 'react-router-dom';
 
 export let socket = io.connect(`http://${window.location.hostname}:5000/item`, {
     transports: ['websocket']
@@ -29,7 +30,9 @@ const add_winner = (data) => {
     const input = document.getElementById('winner_string');
     input.innerHTML = "<b class=\'auction_detial_time_left\'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
 }
+
 export default function Auction_detail() {
+    const navigate = useNavigate()
     const itemID = window.location.href.split('/')[4]
     const [connected, setConnected] = useState(false)
     if (connected === false) {
@@ -45,6 +48,9 @@ export default function Auction_detail() {
         fetch(`${itemID}`)
             .then(response => response.json())
             .then(data => {
+                if(data.error === 1){
+                    navigate('/')
+                }
                 setCurrent(data.user)
                 setItem(data.item)
                 setXSRFToken(data.xsrf_token)
@@ -117,7 +123,7 @@ export default function Auction_detail() {
                 <div id="winner_string"></div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <input className='auction_detial_bid_input' type="number"></input>
-                <input hidden id="xsrf_token" value={xsrf_token}></input>
+                <input hidden id="xsrf_token" value={xsrf_token} onChange={setXSRFToken}></input>
                 <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
                 <div className='auction_detail_bid_history'>
                     <div className="ws_bids"></div>
