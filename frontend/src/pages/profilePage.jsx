@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import "../styles/profilePage.css";
-import BasicProfile from "../assets/Profile_img.png"
-import { Link, useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+
 
 export default function Login(page) {
     const [imageName, setImageName] = useState("")
     const [username, setUsername] = useState("")
     const [bidHistory, setBidHistory] = useState([])
     const [auctionHistory, setAuctionHistory] = useState([])
-
     const navigate = useNavigate()
+
     useEffect(() => {
         fetch('/profile')
             .then(res => res.json())
@@ -26,11 +26,12 @@ export default function Login(page) {
                     setBidHistory(data.user.bidHistory)
                 }
             })
-    }, [])
+    })
+
     return (
         <div className="profile_background">
             <div className="profile_profile_area">
-                <img src={imageName}
+                <img src={imageName} alt='profile picture'
                     className="profile_profile_area_profileImage"
                 ></img>
                 <div className="profile_profile_area_name_desc">
@@ -52,7 +53,6 @@ export default function Login(page) {
                             backgroundColor: item.ongoing ? '#9AFF86' : '#CCCCCC',
                             borderColor: item.ongoing ? '#43ac2d' : '#8E8E8E',
                         }}>
-
 
                             <div className="item_row_bottom">
                                 <p className="item_row_value">{item.name}</p>

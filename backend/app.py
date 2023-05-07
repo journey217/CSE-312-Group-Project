@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, send_from_directory, abort
+from flask import Flask, jsonify, request, make_response, send_from_directory
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from database import Database, DBType
 from login import verify_login, set_browser_cookie, generate_hashed_pass, check_email_exists, check_username_exists, strong_password_check
@@ -98,7 +98,6 @@ def handle_disconnect():
 
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
-    print('message')
     if msg['type'] == 'bid':
         token = msg['token']
         if not token:
@@ -113,15 +112,13 @@ def handle_message(msg):
         auction_ID = msg['auctionID']
         price = msg['price']
         price = html.escape(price)
-        # room = msg['room']
+        room = msg['room']
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
             if not new_bid:
                 emit("Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
-                # print("Added bid to DB")
-                emit('message', {
-                     "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, broadcast=True)
+                emit('message', {"username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
         else:
             emit("User is not logged in!")
 
@@ -131,26 +128,23 @@ def enter_room(msg):
     room = msg['room']
     join_room(room)
     emit(f'Connected to room: {room}', room=room)
-    # print("Entered room:", room)
 
 
 @socketio.on('leave', namespace='/item')
 def exit_room(msg):
     room = msg['room']
-    print("leaving room:", room)
     leave_room(room)
     emit(f'Left room: {room}', broadcast=True)
 
 
 @socketio.on('end_auction', namespace='/item')
-def exit_room(msg):
+def end_auction(msg):
     auction_id = msg['auction_id']
     db.end_auctions()
     item_winner = dict(db.auctions_collection.find_one({"ID": UUID(auction_id)}))['winner']
-    # item_winner = UUID(item_winner)
     winner = db.find_user_by_ID(item_winner).get('username')
-    # emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
-    emit("winner", {"winner": winner, 'auction_id': auction_id}, broadcast=True)
+    emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
+    emit("winner", {"winner": winner}, room=auction_id)
 
 
 @app.route("/image/<filename>")

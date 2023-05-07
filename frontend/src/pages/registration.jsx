@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState} from "react";
+import {useNavigate} from 'react-router-dom';
 import "../styles/registration.css";
+
 
 function Register() {
     const [errors, setErrors] = useState({
