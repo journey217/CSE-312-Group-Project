@@ -28,22 +28,23 @@ socket.on('winner', function (data) {
 
 const add_winner = (data) => {
     const input = document.getElementById('winner_string');
-    input.innerHTML = "<b class=\'auction_detial_time_left\'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
+    input.innerHTML = "<b class='auction_detail_time_left'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
 }
 
 export default function Auction_detail() {
     const navigate = useNavigate()
     const itemID = window.location.href.split('/')[4]
     const [connected, setConnected] = useState(false)
-    if (connected === false) {
-        socket.emit("join", {'room': itemID});
-        setConnected(true)
-    }
     const [item, setItem] = useState(null)
     const [current, setCurrent] = useState("")
     const [xsrf_token, setXSRFToken] = useState("")
-    const [vendor, setVendor] = useState(null)
+    const [vendor, setVendor] = useState("")
     const [countDownString, setCountDownString] = useState('00:00:00')
+        if (connected === false) {
+        socket.emit("join", {'room': itemID});
+        setConnected(true)
+    }
+
     useEffect(() => {
         fetch(`${itemID}`)
             .then(response => response.json())
@@ -54,13 +55,12 @@ export default function Auction_detail() {
                 setCurrent(data.user)
                 setItem(data.item)
                 setXSRFToken(data.xsrf_token)
-                console.log(data)
                 setVendor(data.username)
             })
             .catch(error => {
                 console.log(error);
             });
-    }, []);
+    });
 
     const countDown = () => {
         const countDownDate = new Date(item.end_time).getTime();
@@ -113,7 +113,7 @@ export default function Auction_detail() {
                 </div>
                 <hr className='auction_detail_hr' />
                 <div className='auction_detail_item_desc_container'>
-                    <img className='auction_detail_image' alt="Item Image" src={item && `/image/${item.image}`}></img>
+                    <img className='auction_detail_image' alt='auction item' src={item && `/image/${item.image}`}></img>
                     <div className='auction_detail_item_desc'>
                         <p className='auction_detail_vendor'>{item && `Description : ${item.description}`}</p>
                         <p className='auction_detail_vendor'>{item && `Condition : ${item.condition}`}</p>
