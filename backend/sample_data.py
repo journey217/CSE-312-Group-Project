@@ -32,7 +32,7 @@ def fill_with_data():
                          name="Journey's 1 minute Auction",
                          desc="going, going, gone.",
                          image_name="fakeimage.jpg",
-                         end_time=datetime.now(timezone.utc) + timedelta(seconds=30),
+                         end_time=datetime.now(timezone.utc) + timedelta(seconds=20),
                          price=500,
                          condition="Brand New")
     db.add_auction_to_db(creatorID=user_1.get('ID'),

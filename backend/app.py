@@ -1,3 +1,5 @@
+import time
+
 from flask import Flask, jsonify, request, make_response, send_from_directory
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from database import Database, DBType
@@ -146,6 +148,7 @@ def exit_room(msg):
 def exit_room(msg):
     auction_id = msg['auction_id']
     db.end_auctions()
+    time.sleep(1)
     item_winner = dict(db.auctions_collection.find_one({"ID": UUID(auction_id)}))['winner']
     # item_winner = UUID(item_winner)
     winner = db.find_user_by_ID(item_winner).get('username')
