@@ -1,3 +1,4 @@
+from flask import Flask, jsonify, request, make_response, send_from_directory, abort
 import time
 
 from flask import Flask, jsonify, request, make_response, send_from_directory
@@ -70,23 +71,22 @@ def profile():
 
 @app.route("/item/<auction_id>")
 def route_item(auction_id):
+    if not valid_uuid(auction_id):
+        return jsonify({'error': 1})
     auction_id = UUID(auction_id)
     item = db.find_by_ID(auction_id, DBType.Auction)
+    if not item:
+        return jsonify({'error': 1})
     bid_history = [db.find_by_ID(x, DBType.Bid) for x in item['bid_history']]
     item['bid_history'] = bid_history
-    user = request.cookies.get('authenticationToken')
-    try:
-        xsrf_token_find = dict(db.find_user_by_token(user))['xsrf']
-    except TypeError as x:
-        xsrf_token_find = ""
-    if item:
-        try:
-            vendor = db.find_by_ID(item['creatorID'], DBType.User)['username']
-        except TypeError as x:
-            vendor = "Error: Vendor not found!"
-        return jsonify({'item': item, 'user': user, 'xsrf_token': xsrf_token_find, 'username': vendor})
+    auth_token = request.cookies.get('authenticationToken')
+    user = db.find_user_by_token(auth_token)
+    if user:
+        xsrf_token_find = user.get('xsrf', '')
     else:
-        return "not found"
+        xsrf_token_find = ''
+    vendor = db.find_by_ID(item['creatorID'], DBType.User).get('username', 'Error: Vendor not Found')
+    return jsonify({'error': 0, 'item': item, 'user': auth_token, 'xsrf_token': xsrf_token_find, 'username': vendor})
 
 
 @socketio.on('connect', namespace="/item")
@@ -168,7 +168,6 @@ def login_user():
     email = request.form['email']
     email = html.escape(email)
     password = request.form['password']
-    # print(email, password)
     if verify_login(email, password):
         authToken = set_browser_cookie(email)
         response_data = {'status': '1', 'authenticationToken': authToken}
@@ -273,3 +272,8 @@ def add_item():
     db.add_auction_to_db(creatorID=user.get('ID'), name=item_name, desc=item_desc, image_name=filename,
                          end_time=formatted_date, price=starting_price, condition=condition)
     return jsonify({'status': 1})
+
+
+def valid_uuid(uuid_string):
+    pattern = re.compile(r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$")
+    return pattern.match(uuid_string)

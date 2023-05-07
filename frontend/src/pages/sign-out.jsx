@@ -1,9 +1,8 @@
-import {useEffect, useState} from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import {useEffect} from "react";
+import {useNavigate} from 'react-router-dom';
 
 
 export default function SignOut() {
-
     const navigate = useNavigate()
     useEffect(() => {
         fetch("/sign-out", {method: 'GET'})
