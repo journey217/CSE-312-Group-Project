@@ -10,7 +10,8 @@ function Register() {
         email: '',
         password: '',
         confirm_password: '',
-        submit: ''
+        submit: '',
+        image: ''
     });
     const handleImageChange = (event) => {
         setImage(event.target.files[0]);
@@ -20,6 +21,7 @@ function Register() {
         event.preventDefault();
 
         const formData = new FormData(event.target);
+        formData.append('image', image); // add the image file to the FormData
 
         fetch('/register-user', {
             method: 'POST',
@@ -27,6 +29,7 @@ function Register() {
         })
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 if (data.errors) {
                     const errors = data.errors;
                     let allErrors = {};
@@ -58,7 +61,7 @@ function Register() {
                     <form className="reg-inputs" onSubmit={handleSubmit}>
                         <header className="formheader">Create New Account</header>
                         <p>Upload Profile Picture</p>
-                        <input name="image" type="file" valueonChange={handleImageChange} />
+                        <input name="image" type="file" onChange={handleImageChange} />
                         {errors.username && <div className="error-message">{errors.username}</div>}
                         <input type="text" placeholder='Username' name='username' required />
                         {errors.email && <div className="error-message">{errors.email}</div>}

@@ -37,7 +37,8 @@ def landing_page_items():
 @app.route('/sign-out')
 def sign_out():
     response = make_response('Response')
-    response.set_cookie('authenticationToken', '', max_age=0, httponly=True, samesite='Strict')
+    response.set_cookie('authenticationToken', '', max_age=0,
+                        httponly=True, samesite='Strict')
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.status_code = 200
     response.mimetype = 'text/html; charset=utf-8'
@@ -83,7 +84,8 @@ def route_item(auction_id):
         xsrf_token_find = user.get('xsrf', '')
     else:
         xsrf_token_find = ''
-    vendor = db.find_by_ID(item['creatorID'], DBType.User).get('username', 'Error: Vendor not Found')
+    vendor = db.find_by_ID(item['creatorID'], DBType.User).get(
+        'username', 'Error: Vendor not Found')
     return jsonify({'error': 0, 'item': item, 'user': auth_token, 'xsrf_token': xsrf_token_find, 'username': vendor})
 
 
@@ -109,7 +111,8 @@ def handle_message(msg):
         if not user:
             emit("error", "You must be logged in to place bids.")
             return False
-        authenticate = db.users_collection.find_one({'username': user['username'], 'xsrf': token})
+        authenticate = db.users_collection.find_one(
+            {'username': user['username'], 'xsrf': token})
         if not authenticate:
             emit("error", "Invalid XSRF token. Please sign-out and sign back in.")
             return False
@@ -120,9 +123,11 @@ def handle_message(msg):
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
             if not new_bid:
-                emit('error', "Submitted bid is not larger than highest bid! Or Auction Expired")
+                emit(
+                    'error', "Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
-                emit('message', {"username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
+                emit('message', {
+                     "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
         else:
             emit("error", "You must be logged in to place bids.")
 
@@ -146,9 +151,11 @@ def end_auction(msg):
     auction_id = msg['auction_id']
     db.end_auctions()
     time.sleep(1)
-    item_winner = dict(db.auctions_collection.find_one({"ID": UUID(auction_id)}))['winner']
+    item_winner = dict(db.auctions_collection.find_one(
+        {"ID": UUID(auction_id)}))['winner']
     winner = db.find_user_by_ID(item_winner).get('username')
-    emit(f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
+    emit(
+        f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
     emit("winner", {"winner": winner}, room=auction_id)
 
 
@@ -216,10 +223,21 @@ def register():
     if errors:
         return jsonify({'status': '0', 'errors': errors})
 
-    # Submit data to database
+    image = request.files['image']
     hash_ = generate_hashed_pass(password1)
-    db.add_user_to_db(username, email, hash_)
+    if not image:
+        # set image to default image if no image was submitted
+        db.add_user_to_db(username, email, hash_)
+
+    else:
+        filename = f'image{str(uuid4())}.jpg'
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Submit data to database
+        db.add_image(filename)
+        db.add_user_to_db(username, email, hash_, profile_pic=filename)
+
     authToken = set_browser_cookie(email)
+
     # print(authToken)
     response_data = {'status': '1', 'authenticationToken': authToken}
     response = jsonify(response_data)
@@ -271,5 +289,6 @@ def add_item():
 
 
 def valid_uuid(uuid_string):
-    pattern = re.compile(r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$")
+    pattern = re.compile(
+        r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$")
     return pattern.match(uuid_string)
