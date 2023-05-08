@@ -20,8 +20,8 @@ services:
       WAIT_HOSTS: mongo:27017
 #    depends_on:
 #      - mongo
-    ports:
-      - '5000:5000'  # MUST BE REMOVED!!!!
+#    ports:
+#      - '5000:5000'  # MUST BE REMOVED!!!!
   frontend:
     build:
       context: .
@@ -30,5 +30,5 @@ services:
       - DANGEROUSLY_DISABLE_HOST_CHECK=true
 #    depends_on:
 #      - backend
-    ports:
-      - '3000:3000'
+#    ports:
+#      - '3000:3000'

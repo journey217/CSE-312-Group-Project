@@ -4,7 +4,7 @@ import {io} from "socket.io-client";
 import {redirect} from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
 
-export let socket = io.connect(`http://${window.location.hostname}:5000/item`, {
+export let socket = io.connect(`https://${window.location.hostname}/item`, {
     transports: ['websocket']
 })
 
@@ -66,7 +66,6 @@ export default function Auction_detail() {
                 setCurrent(data.user)
                 setItem(data.item)
                 setXSRFToken(data.xsrf_token)
-                console.log(data)
                 setVendor(data.username)
             })
             .catch(error => {
@@ -136,7 +135,7 @@ export default function Auction_detail() {
                 <div id="winner_string"></div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <input className='auction_detial_bid_input' type="number"></input>
-                <input hidden id="xsrf_token" value={xsrf_token} onChange={setXSRFToken}></input>
+                <input hidden readOnly id="xsrf_token" value={xsrf_token}></input>
                 <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
                 <div className='auction_detail_bid_history'>
                     <div className="ws_bids"></div>

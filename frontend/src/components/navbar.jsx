@@ -13,7 +13,6 @@ export default function Navbar() {
         fetch('/myUsername')
             .then(res => res.json())
             .then(data => {
-                console.log('username', data.username)
                 if(data.status){
                     setUsername(data.username)
                 } else {
@@ -21,11 +20,7 @@ export default function Navbar() {
                 }
             })
     }, [])
-/*
-    const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value);
-    };
-*/
+
     const navItems = [
     {
         id: 1,

@@ -14,7 +14,6 @@ export default function LandingPage(page) {
             .then(res => res.json())
             .then(data => {
                 setAuctionItems(data);
-                console.log(data)
                 for (let room of data) {
                     socket.emit('leave', {'room': room.ID})
                 }
