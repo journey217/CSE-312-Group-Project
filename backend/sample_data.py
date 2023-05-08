@@ -75,6 +75,8 @@ def fill_with_data():
                          )
     db.add_image('jersey.jpg')
     db.add_image('hat.png')
+    db.add_image('NoUser.jpg')
+    db.add_image('NoImage.jpg')
 
 
 if __name__ == "__main__":

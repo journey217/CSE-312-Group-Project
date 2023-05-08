@@ -161,6 +161,7 @@ def end_auction(msg):
 
 @app.route("/image/<filename>")
 def image(filename):
+    print(filename)
     if db.image_exists(filename):
         return send_from_directory('images', filename)
     return send_from_directory('images', 'NoImage.jpg')

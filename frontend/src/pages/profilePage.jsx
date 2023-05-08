@@ -19,7 +19,7 @@ export default function Login(page) {
                     navigate('/login')
                 }
                 else {
-                    setImageName(data.user.image)
+                    setImageName(data.user.profile_pic)
                     setUsername(data.user.username)
                     setAuctionHistory(data.user.auctionHistory)
                     console.log(auctionHistory)
@@ -31,7 +31,7 @@ export default function Login(page) {
     return (
         <div className="profile_background">
             <div className="profile_profile_area">
-                <img src={imageName} alt='profile'
+                <img src={`/image/${imageName}`} alt='profile'
                     className="profile_profile_area_profileImage"
                 ></img>
                 <div className="profile_profile_area_name_desc">
