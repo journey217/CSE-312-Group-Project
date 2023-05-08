@@ -8,6 +8,15 @@ export let socket = io.connect(`http://${window.location.hostname}:5000/item`, {
     transports: ['websocket']
 })
 
+socket.on('message', function (data) {
+    addMessage(data)
+});
+
+socket.on('winner', function (data) {
+    redirect('/')
+    addWinner(data)
+});
+
 const addMessage = (data) => {
     const input = document.querySelector('.ws_bids');
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
@@ -17,18 +26,9 @@ const addMessage = (data) => {
                         "</div>" + input.innerHTML;
 }
 
-socket.on('message', function (data) {
-    addMessage(data)
-});
-
-socket.on('winner', function (data) {
-    redirect('/')
-    add_winner(data)
-});
-
-const add_winner = (data) => {
+const addWinner = (data) => {
     const input = document.getElementById('winner_string');
-    input.innerHTML = "<b class=\'auction_detial_time_left\'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
+    input.innerHTML = "<b className='auction_detial_time_left'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
 }
 
 export default function Auction_detail() {
