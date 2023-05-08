@@ -151,3 +151,9 @@
 .auction_detail_price{
     color: #E5DDDD;
 }
+
+.error_class{
+    font-size: 30px;
+    line-height: 40px;
+    color: red;
+}

@@ -18,6 +18,8 @@ socket.on('winner', function (data) {
 });
 
 const addMessage = (data) => {
+    const input1 = document.getElementById('error_string');
+    input1.innerHTML = "<b class=\'auction_detial_time_left\'></b>"
     const input = document.querySelector('.ws_bids');
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
                             "<p class='auction_detail_bid_user_id'>" + data.username.toString() + "</p>" +
@@ -28,7 +30,17 @@ const addMessage = (data) => {
 
 const addWinner = (data) => {
     const input = document.getElementById('winner_string');
-    input.innerHTML = "<b className='auction_detial_time_left'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
+    input.innerHTML = "<b class='auction_detial_time_left'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
+}
+
+socket.on('error', function (data) {
+    redirect('/')
+    add_error(data)
+});
+
+const add_error = (data) => {
+    const input = document.getElementById('error_string');
+    input.innerHTML = "<b class=\'error_class\'>" + data + "</b>"
 }
 
 export default function Auction_detail() {
@@ -120,6 +132,7 @@ export default function Auction_detail() {
                         <p className='auction_detail_vendor'>{vendor && `Vendor : ${vendor}`}</p>
                     </div>
                 </div>
+                <div id="error_string"></div>
                 <div id="winner_string"></div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <input className='auction_detial_bid_input' type="number"></input>

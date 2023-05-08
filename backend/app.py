@@ -1,4 +1,3 @@
-from flask import Flask, jsonify, request, make_response, send_from_directory
 import time
 from flask import Flask, jsonify, request, make_response, send_from_directory
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -103,13 +102,16 @@ def handle_message(msg):
     if msg['type'] == 'bid':
         token = msg['token']
         if not token:
-            emit("Invalid XSRF Token!")
+            emit("error", "You must be logged in to place bids.")
             return False
         token = UUID(token)
         user = db.find_user_by_token(msg['user'])
+        if not user:
+            emit("error", "You must be logged in to place bids.")
+            return False
         authenticate = db.users_collection.find_one({'username': user['username'], 'xsrf': token})
         if not authenticate:
-            emit("Invalid XSRF Token!")
+            emit("error", "Invalid XSRF token. Please sign-out and sign back in.")
             return False
         auction_ID = msg['auctionID']
         price = msg['price']
@@ -118,11 +120,11 @@ def handle_message(msg):
         if user:
             new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
             if not new_bid:
-                emit("Submitted bid is not larger than highest bid! Or Auction Expired")
+                emit('error', "Submitted bid is not larger than highest bid! Or Auction Expired")
             else:
                 emit('message', {"username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
         else:
-            emit("User is not logged in!")
+            emit("error", "You must be logged in to place bids.")
 
 
 @socketio.on('join', namespace='/item')
