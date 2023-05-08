@@ -7,8 +7,8 @@
     align-items: center;
     background-color: #2C2C3C;
     z-index: 101;
-
 }
+
 .auction_detail_popup{
     position: relative;
     width: 90%;
@@ -156,4 +156,12 @@
     font-size: 30px;
     line-height: 40px;
     color: red;
+}
+
+.ws_bids{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

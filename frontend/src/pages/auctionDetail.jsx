@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/auction_detail.css"
-import {io} from "socket.io-client";
-import {redirect} from "react-router-dom";
-import {useNavigate} from 'react-router-dom';
+import { io } from "socket.io-client";
+import { redirect } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export let socket = io.connect(`https://${window.location.hostname}/item`, {
     transports: ['websocket']
@@ -21,22 +21,56 @@ const addMessage = (data) => {
     const input1 = document.getElementById('error_string');
     input1.innerHTML = "<b class=\'auction_detial_time_left\'></b>"
     const input = document.querySelector('.ws_bids');
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+    });
+    const formattedDate = formatter.format(now);
+
     input.innerHTML = "<div class='auction_detail_bid_history_item'>" +
-                            "<p class='auction_detail_bid_user_id'>" + data.username.toString() + "</p>" +
-                            "<p class='auction_detail_price'>" +  "$" + data.bid_price.toString() + "</p>" +
-                            "<p class='auction_detail_timestamp'>" + new Date() + "</p>" +
-                        "</div>" + input.innerHTML;
+        "<p class='auction_detail_bid_user_id'>" + data.username.toString() + "</p>" +
+        "<p class='auction_detail_price'>" + "$" + data.bid_price.toString() + "</p>" +
+        "<p class='auction_detail_timestamp'>" + formattedDate
+        + "</p>" +
+        "</div>" + input.innerHTML;
 }
 
 const addWinner = (data) => {
     const input = document.getElementById('winner_string');
-    input.innerHTML = "<b class='auction_detial_time_left'>" + "Time expired. " +  data.winner.toString() + " has won!" + "</b>"
+    input.innerHTML = "<b class='auction_detial_time_left'>" + "Time expired. " + data.winner.toString() + " has won!" + "</b>"
 }
 
 socket.on('error', function (data) {
     redirect('/')
     add_error(data)
 });
+
+const changeToEST = (dateString) => {
+    const date = new Date(dateString);
+
+    const options = {
+        weekday: 'short',
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short',
+        timeZone: 'America/New_York'
+    };
+
+    const formatter = new Intl.DateTimeFormat('en-US', options);
+    const formattedDate = formatter.format(date);
+    return formattedDate
+}
 
 const add_error = (data) => {
     const input = document.getElementById('error_string');
@@ -48,7 +82,7 @@ export default function Auction_detail() {
     const itemID = window.location.href.split('/')[4]
     const [connected, setConnected] = useState(false)
     if (connected === false) {
-        socket.emit("join", {'room': itemID});
+        socket.emit("join", { 'room': itemID });
         setConnected(true)
     }
     const [item, setItem] = useState(null)
@@ -60,7 +94,7 @@ export default function Auction_detail() {
         fetch(`${itemID}`)
             .then(response => response.json())
             .then(data => {
-                if(data.error === 1){
+                if (data.error === 1) {
                     navigate('/')
                 }
                 setCurrent(data.user)
@@ -82,7 +116,7 @@ export default function Auction_detail() {
 
             if (distance < 0) {
                 clearInterval(x);
-                socket.emit("end_auction", { 'auction_id': itemID});
+                socket.emit("end_auction", { 'auction_id': itemID });
             } else {
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -143,7 +177,7 @@ export default function Auction_detail() {
                         <div className='auction_detail_bid_history_item' key={index}>
                             <p className='auction_detail_bid_user_id'>{bid.username}</p>
                             <p className='auction_detail_price'> ${bid.price} </p>
-                            <p className='auction_detail_timestamp'>{bid.timestamp}</p>
+                            <p className='auction_detail_timestamp'>{changeToEST(bid.timestamp)}</p>
                         </div>
                     ))}
                 </div>

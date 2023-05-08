@@ -1,9 +1,10 @@
-import React, {useState} from "react";
-import {useNavigate} from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import "../styles/registration.css";
 
 
 function Register() {
+    const [image, setImage] = useState(null);
     const [errors, setErrors] = useState({
         username: '',
         email: '',
@@ -11,6 +12,9 @@ function Register() {
         confirm_password: '',
         submit: ''
     });
+    const handleImageChange = (event) => {
+        setImage(event.target.files[0]);
+    };
     const navigate = useNavigate();
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -53,6 +57,8 @@ function Register() {
                 <div className="register-form">
                     <form className="reg-inputs" onSubmit={handleSubmit}>
                         <header className="formheader">Create New Account</header>
+                        <p>Upload Profile Picture</p>
+                        <input name="image" type="file" valueonChange={handleImageChange} />
                         {errors.username && <div className="error-message">{errors.username}</div>}
                         <input type="text" placeholder='Username' name='username' required />
                         {errors.email && <div className="error-message">{errors.email}</div>}
@@ -63,6 +69,7 @@ function Register() {
                         <input type="password" placeholder="Confirm Password" name="password2" required />
                         <button className="register-button" type="submit" >Register</button>
                         {errors.submit && <div className="error-message">{errors.submit}</div>}
+                        
                     </form>
                     <button className="login-redirect-button" onClick={() => { navigate("/login") }}>
                         Have An Account? Click Here
