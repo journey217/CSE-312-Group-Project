@@ -23,12 +23,11 @@
     text-align: center;
     color: #0BA484;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 1);
-    margin-top: -200px;
+    margin-top: 10px;
 }
 
 .register .register-form {
     width: 321px;
-    margin: 0 auto;
     padding: 2rem;
     background-color: #424242;
     border-radius: 5px;
@@ -67,7 +66,9 @@
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
 }
-
+p{
+    color:white;
+}
 .register-button:hover {
     background-color: #37AA91;
 }
