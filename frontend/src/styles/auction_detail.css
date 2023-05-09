@@ -1,15 +1,16 @@
-.auction_detail_popup_background{
+.auction_detail_popup_background {
     position: absolute;
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #2C2C3C;
     z-index: 101;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
 }
 
-.auction_detail_popup{
+.auction_detail_popup {
     position: relative;
     width: 90%;
     height: calc(100% - 20px);
@@ -21,14 +22,19 @@
     gap: 5px;
     margin-top: 10px;
     margin-bottom: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
+
 }
-.auction_detail_title{
+
+.auction_detail_title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
 }
-.auction_detail_item_name{
+
+.auction_detail_item_name {
     padding: 0;
     margin: 0;
     color: #E5DDDD;
@@ -36,11 +42,12 @@
     padding-left: 4%;
 }
 
-.auction_detail_hr{
+.auction_detail_hr {
     width: 92%;
     margin-top: -5px;
 }
-.auction_detail_item_desc_container{
+
+.auction_detail_item_desc_container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -49,13 +56,14 @@
     justify-content: center;
 }
 
-.auction_detail_item_desc{
+.auction_detail_item_desc {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
 }
-.auction_detail_close_button{
+
+.auction_detail_close_button {
     width: 15px;
     height: 15px;
     margin-top: 10px;
@@ -68,16 +76,17 @@
     background-size: 15px;
 }
 
-.auction_detail_close_button:hover{
+.auction_detail_close_button:hover {
     background-size: 15px;
     background-image: url("../assets/close_button_hover.png");
 }
-.auction_detail_image{
+
+.auction_detail_image {
     width: 150px;
     height: 150px;
 }
 
-.auction_detail_vendor{
+.auction_detail_vendor {
     font-size: 20px;
     line-height: 20px;
     margin: 0px;
@@ -85,13 +94,13 @@
     color: #E5DDDD;
 }
 
-.auction_detial_time_left{
+.auction_detial_time_left {
     font-size: 30px;
     line-height: 40px;
     color: #E5DDDD;
 }
 
-.auction_detial_bid_button{
+.auction_detial_bid_button {
     appearance: none;
     border: none;
 
@@ -104,7 +113,7 @@
     border-radius: 15px;
 }
 
-.auction_detial_bid_button:hover{
+.auction_detial_bid_button:hover {
     appearance: none;
     border: none;
 
@@ -112,7 +121,7 @@
     font-size: 20px;
 }
 
-.auction_detail_bid_history{
+.auction_detail_bid_history {
     width: 90%;
     flex-grow: 1;
     padding-bottom: 20px;
@@ -125,7 +134,7 @@
     align-items: center;
 }
 
-.auction_detail_bid_history_item{
+.auction_detail_bid_history_item {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -133,7 +142,7 @@
     width: 96%;
 }
 
-.auction_detail_timestamp{
+.auction_detail_timestamp {
     margin-left: auto;
     justify-self: flex-end;
     align-items: flex-end;
@@ -141,18 +150,18 @@
     color: #E5DDDD;
 }
 
-.auction_detail_bid_user_id{
+.auction_detail_bid_user_id {
     color: #E5DDDD;
     width: 20%;
     font-weight: 900;
     font-size: 20px;
 }
 
-.auction_detail_price{
+.auction_detail_price {
     color: #E5DDDD;
 }
 
-.error_class{
+.error_class {
     font-size: 25px;
     line-height: 40px;
     text-align: center;
@@ -160,7 +169,7 @@
     color: red;
 }
 
-.ws_bids{
+.ws_bids {
     width: 100%;
     display: flex;
     flex-direction: column;
