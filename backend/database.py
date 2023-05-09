@@ -66,7 +66,7 @@ class Database:
             elif price <= float(current_auction['price']):
                 return "Submitted Bid is Smaller than the Current Winning Bid"
             elif not self.valid_money(price):
-                return "Please Submit a Valid $ Bid"
+                return "Please Submit to the nearest $0.01"
             else:
                 old_highest_bid = self.auctions_collection.find_one({"ID": auctionID})['highest_bid']
                 self.bids_collection.update_one({"ID": old_highest_bid}, {"$set": {"winning": False}})
