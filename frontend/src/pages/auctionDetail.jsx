@@ -21,7 +21,10 @@ const addMessage = (data) => {
     const input1 = document.getElementById('error_string');
     input1.innerHTML = "<b class=\'auction_detial_time_left\'></b>"
     const input = document.querySelector('.ws_bids');
+    const highest = document.getElementById('HighestBid_string');
+    highest.innerHTML = "<b class=\'auction_detial_time_left\'> Current bid: " + data.bid_price.toString() + "</b>"
     const now = new Date();
+
     const formatter = new Intl.DateTimeFormat('en-US', {
         weekday: 'short',
         day: '2-digit',
@@ -91,6 +94,7 @@ export default function Auction_detail() {
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
 
+
     const handleBid = () => {
         const input = document.querySelector('.auction_detial_bid_input');
         const token = document.getElementById('xsrf_token').value;
@@ -109,6 +113,11 @@ export default function Auction_detail() {
                 setItem(data.item)
                 setXSRFToken(data.xsrf_token)
                 setVendor(data.username)
+                const highest = document.getElementById('HighestBid_string');
+
+                const price = data.item.price ;
+
+                highest.innerHTML = "<b class=\'auction_detial_time_left\'> Current bid: " + price + "</b>"
             })
             .catch(error => {
                 console.log(error);
@@ -166,6 +175,8 @@ export default function Auction_detail() {
                 </div>
                 <div id="error_string"></div>
                 <div id="winner_string"></div>
+                <div id="HighestBid_string">
+                </div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <form onSubmit={(e) => e.preventDefault()}>
                     <input className='auction_detial_bid_input' type="number"></input>

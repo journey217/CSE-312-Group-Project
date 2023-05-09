@@ -153,8 +153,10 @@
 }
 
 .error_class{
-    font-size: 30px;
+    font-size: 25px;
     line-height: 40px;
+    text-align: center;
+    width: 100%;
     color: red;
 }
 
