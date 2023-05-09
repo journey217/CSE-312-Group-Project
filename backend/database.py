@@ -200,11 +200,12 @@ class Database:
         output_bids = []
         for bid in unique_bids:
             auction = self.find_by_ID(bid['auctionID'], DBType.Auction)
+            current_price = self.find_by_ID(auction['highest_bid'], DBType.Bid)['price']
             output_bids.append({'name': auction['name'],
                                 'timestamp': bid['timestamp'].strftime("%m/%d/%Y, %H:%M:%S"),
                                 'ongoing': auction['end_time'] > datetime.utcnow(),
                                 'price': bid['price'],
-                                'status': bid['winning']})
+                                'winning': bid['price'] == current_price})
         return output_bids
 
     @staticmethod
