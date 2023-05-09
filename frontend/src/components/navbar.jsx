@@ -14,7 +14,6 @@ export default function Navbar() {
             .then(res => res.json())
             .then(data => {
                 if (data.status === 1) {
-                    console.log(data)
                     setUsername(data.username)
                     setIsLoggedIn(true)
                 } else {

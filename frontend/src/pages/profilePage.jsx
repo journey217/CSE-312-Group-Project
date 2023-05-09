@@ -32,7 +32,6 @@ export default function Login(page) {
         fetch('/profile')
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 if (data.status === 0) {
                     navigate('/login')
                 }
@@ -40,7 +39,6 @@ export default function Login(page) {
                     setImageName(data.user.profile_pic)
                     setUsername(data.user.username)
                     setAuctionHistory(data.user.auctionHistory)
-                    console.log(auctionHistory)
                     setBidHistory(data.user.bidHistory)
                 }
             })

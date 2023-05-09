@@ -45,7 +45,6 @@ function Register() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.errors) {
                     const errors = data.errors;
                     let allErrors = {};
