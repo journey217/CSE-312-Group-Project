@@ -90,6 +90,14 @@ export default function Auction_detail() {
     const [xsrf_token, setXSRFToken] = useState("")
     const [vendor, setVendor] = useState(null)
     const [countDownString, setCountDownString] = useState('00:00:00')
+
+    const handleBid = () => {
+        const input = document.querySelector('.auction_detial_bid_input');
+        const token = document.getElementById('xsrf_token').value;
+        const price = input.value;
+        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID, 'token': token });
+    }
+
     useEffect(() => {
         fetch(`${itemID}`)
             .then(response => response.json())
@@ -141,15 +149,6 @@ export default function Auction_detail() {
         }
     }, [item]);
 
-
-    function handleBid() {
-        const input = document.querySelector('.auction_detial_bid_input');
-        const token = document.getElementById('xsrf_token').value;
-        const price = input.value;
-        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID, 'token': token });
-    }
-
-
     return (
         <div className='auction_detail_popup_background'>
             <div className='auction_detail_popup'>
@@ -168,9 +167,11 @@ export default function Auction_detail() {
                 <div id="error_string"></div>
                 <div id="winner_string"></div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
-                <input className='auction_detial_bid_input' type="number"></input>
-                <input hidden readOnly id="xsrf_token" value={xsrf_token}></input>
-                <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <input className='auction_detial_bid_input' type="number"></input>
+                    <input hidden readOnly id="xsrf_token" value={xsrf_token}></input>
+                    <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
+                </form>
                 <div className='auction_detail_bid_history'>
                     <div className="ws_bids"></div>
                     {item && item.bid_history.map((bid, index) => (
