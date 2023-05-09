@@ -38,16 +38,16 @@ class Database:
     def find_user_by_email(self, email):
         return self.users_collection.find_one({"email": email}, projection={"_id": False, "ID": False})
 
-    def find_user_by_token(self, token):
+    def find_user_by_auth_token(self, token):
         token = str(token)
         token = sha256(token.encode()).hexdigest()
-        # print(token)
         return self.users_collection.find_one({"token": token}, projection={"_id": False, 'token': False})
 
     def find_user_by_username(self, username):
         return self.users_collection.find_one({"username": username}, projection={"_id": False, "ID": False})
 
     def add_bid_to_db(self, userID, auctionID, price):
+        price = float(price)
         current_auction = self.auctions_collection.find_one({'ID': auctionID})
 
         bidID = uuid4()
@@ -61,7 +61,13 @@ class Database:
                    'username': self.find_user_by_ID(userID)['username']
                    }
         try:
-            if float(price) > float(current_auction['price']) and datetime.utcnow() < current_auction['end_time']:
+            if datetime.utcnow() >= current_auction['end_time']:
+                return "Auction is Over"
+            elif price <= current_auction['price']:
+                return "Submitted Bid is Smaller than the Current Winning Bid"
+            elif not self.valid_money(price):
+                return "Please Submit a Valid $ Bid"
+            else:
                 old_highest_bid = self.auctions_collection.find_one({"ID": auctionID})['highest_bid']
                 self.bids_collection.update_one({"ID": old_highest_bid}, {"$set": {"winning": False}})
                 self.auctions_collection.update_one(
@@ -81,7 +87,6 @@ class Database:
             print('error')
             print(x)
             return False
-        return False
 
     def add_auction_to_db(self, creatorID, name, desc, end_time, price, image_name="NoImage.jpg", condition="New"):
         auctionID = uuid4()
@@ -126,10 +131,7 @@ class Database:
         user = self.users_collection.find_one({"ID": userID})
         users_bids = user["bid_history"]
         for bidID in users_bids:
-            print('la')
-            print(bidID)
             bid = self.find_by_ID(bidID, DBType.Bid)
-            print(bid)
             auctionID = bid["auctionID"]
             if auctionID in unique_bids.keys():
                 current_bid_timestamp = unique_bids[auctionID]["timestamp"]
@@ -148,16 +150,15 @@ class Database:
         return items_list
 
     def end_auctions(self):
-        find_items = self.auctions_collection.find({"end_time": {"$lt": datetime.now(timezone.utc)}, "winner": None},
-                                                   projection={"_id": False, "start_time": False})
+        find_items = self.auctions_collection.find({"end_time": {"$lt": datetime.now(timezone.utc)}, "winner": None})
         items_list = [x for x in find_items]
         for item in items_list:
-            item_id = dict(item)['ID']
-            try:
-                highest_bidder_id = dict(self.bids_collection.find_one({'ID': dict(item)['highest_bid']}))['userID']
-                self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": highest_bidder_id}})
-            except TypeError as x:
-                self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": dict(item)['creatorID']}})
+            item_id = item.get('ID', 'No_ID')
+            if item['highest_bid']:
+                highest_bid_username = self.bids_collection.find_one({'ID': item['highest_bid']})['username']
+                self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": highest_bid_username}})
+            else:
+                self.auctions_collection.update_one({'ID': item_id}, {"$set": {"winner": "Nobody"}})
 
     def all_item_search(self):
         items_list = [x for x in self.auctions_collection.find(
@@ -204,3 +205,9 @@ class Database:
                                 'price': bid['price'],
                                 'status': bid['winning']})
         return output_bids
+
+    @staticmethod
+    def valid_money(number):
+        if len(str(number).split(".")[1]) > 2:
+            return False
+        return True

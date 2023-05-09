@@ -3,15 +3,9 @@ from database import *
 import bcrypt
 from hashlib import sha256
 from base64 import b64encode
-from enum import Enum
-
+from secrets import randbits
 
 db = Database()
-
-
-# Class holding different password Errors
-class PasswordError(Enum):
-    pass
 
 
 # This function will check the database upon login to ensure that the entered email is linked to an account.
@@ -50,7 +44,7 @@ def verify_login(email, password):
 
 
 def set_browser_cookie(email):
-    authToken = (bcrypt.gensalt()).decode()
+    authToken = str(randbits(80))
     encToken = generated_token_hash(authToken)
     db.users_collection.update_one({"email": email}, {"$set": {"token": encToken}})
     return authToken

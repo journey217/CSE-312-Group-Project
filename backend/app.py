@@ -21,7 +21,7 @@ socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
 @app.route("/myUsername")
 def username():
     cookieToken = request.cookies.get('authenticationToken')
-    user = db.find_user_by_token(cookieToken)
+    user = db.find_user_by_auth_token(cookieToken)
     if user:
         return {'status': 1, 'username': user.get('username')}
     else:
@@ -50,7 +50,7 @@ def sign_out():
 def profile():
     output = {}
     cookieToken = request.cookies.get('authenticationToken', '')
-    user = db.find_user_by_token(cookieToken)
+    user = db.find_user_by_auth_token(cookieToken)
     print("\nPrint user: ")
     print(user)
     if user:
@@ -79,14 +79,14 @@ def route_item(auction_id):
     bid_history = [db.find_by_ID(x, DBType.Bid) for x in item['bid_history']]
     item['bid_history'] = bid_history
     auth_token = request.cookies.get('authenticationToken')
-    user = db.find_user_by_token(auth_token)
+    user = db.find_user_by_auth_token(auth_token)
     if user:
         xsrf_token_find = user.get('xsrf', '')
     else:
         xsrf_token_find = ''
     vendor = db.find_by_ID(item['creatorID'], DBType.User).get(
         'username', 'Error: Vendor not Found')
-    return jsonify({'error': 0, 'item': item, 'user': auth_token, 'xsrf_token': xsrf_token_find, 'username': vendor})
+    return jsonify({'error': 0, 'item': item, 'auth_token': auth_token, 'xsrf_token': xsrf_token_find, 'username': vendor})
 
 
 @socketio.on('connect', namespace="/item")
@@ -102,34 +102,33 @@ def handle_disconnect():
 @socketio.on('message', namespace="/item")
 def handle_message(msg):
     if msg['type'] == 'bid':
-        token = msg['token']
-        if not token:
-            emit("error", "You must be logged in to place bids.")
-            return False
-        token = UUID(token)
-        user = db.find_user_by_token(msg['user'])
+        xsrf_token = msg.get('xsrf_token', 'no_token')
+        auth_token = msg.get('auth_token', 'no_token')
+        user = db.find_user_by_auth_token(auth_token)
         if not user:
-            emit("error", "You must be logged in to place bids.")
+            emit("error", "Please log in.")
             return False
-        authenticate = db.users_collection.find_one(
-            {'username': user['username'], 'xsrf': token})
+        if not valid_uuid(xsrf_token):
+            emit("error", "Please sign out and sign back in.")
+            return False
+        token = UUID(xsrf_token)
+        authenticate = db.users_collection.find_one({'username': user['username'], 'xsrf': token})
         if not authenticate:
-            emit("error", "Invalid XSRF token. Please sign-out and sign back in.")
+            emit("error", "Please sign out and sign back in.")
             return False
         auction_ID = msg['auctionID']
         price = msg['price']
         price = html.escape(price)
         room = msg['room']
-        if user:
-            new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
-            if not new_bid:
-                emit(
-                    'error', "Submitted bid is not larger than highest bid! Or Auction Expired")
-            else:
-                emit('message', {
-                     "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
+        new_bid = db.add_bid_to_db(user['ID'], UUID(auction_ID), price)
+        if isinstance(new_bid, str):
+            emit(
+                'error', new_bid)
         else:
-            emit("error", "You must be logged in to place bids.")
+            emit('message', {
+                 "username": user['username'], "bid_price": msg['price'], "auction_id": auction_ID}, room=room)
+    else:
+         emit("error", "You must be logged in to place bids.")
 
 
 @socketio.on('join', namespace='/item')
@@ -150,13 +149,9 @@ def exit_room(msg):
 def end_auction(msg):
     auction_id = msg['auction_id']
     db.end_auctions()
-    time.sleep(1)
-    item_winner = dict(db.auctions_collection.find_one(
-        {"ID": UUID(auction_id)}))['winner']
-    winner = db.find_user_by_ID(item_winner).get('username')
-    emit(
-        f"Auction: {auction_id} has ended. {winner} is the winner!", broadcast=True)
-    emit("winner", {"winner": winner}, room=auction_id)
+    item_winner = db.auctions_collection.find_one({"ID": UUID(auction_id)}).get('winner', 'Error')
+    # emit(f"Auction: {auction_id} has ended. {winner_name} is the winner!", broadcast=True)
+    emit("winner", {"winner": item_winner}, room=auction_id)
 
 
 @app.route("/image/<filename>")
@@ -239,7 +234,6 @@ def register():
 
     authToken = set_browser_cookie(email)
 
-    # print(authToken)
     response_data = {'status': '1', 'authenticationToken': authToken}
     response = jsonify(response_data)
     response.set_cookie('authenticationToken', authToken,
@@ -253,7 +247,7 @@ def add_item():
     if not cookieToken:
         return jsonify({'status': 0, 'field': 'Please log in before posting an item!'})
 
-    user = db.find_user_by_token(cookieToken)
+    user = db.find_user_by_auth_token(cookieToken)
     if user is None:
         return jsonify({'status': 0, 'field': 'Invalid session token. Please sign out and sign back in!'})
 

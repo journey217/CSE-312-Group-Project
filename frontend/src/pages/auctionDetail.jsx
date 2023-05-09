@@ -97,9 +97,8 @@ export default function Auction_detail() {
 
     const handleBid = () => {
         const input = document.querySelector('.auction_detial_bid_input');
-        const token = document.getElementById('xsrf_token').value;
         const price = input.value;
-        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "user": current, 'room': itemID, 'token': token });
+        socket.emit("message", { 'type': 'bid', 'auctionID': itemID, 'price': price, "auth_token": current, 'room': itemID, 'xsrf_token': xsrf_token });
     }
 
     useEffect(() => {
@@ -109,7 +108,7 @@ export default function Auction_detail() {
                 if (data.error === 1) {
                     navigate('/')
                 }
-                setCurrent(data.user)
+                setCurrent(data.auth_token)
                 setItem(data.item)
                 setXSRFToken(data.xsrf_token)
                 setVendor(data.username)
@@ -179,7 +178,7 @@ export default function Auction_detail() {
                 </div>
                 <b className='auction_detial_time_left'>{countDownString}</b>
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <input className='auction_detial_bid_input' type="number"></input>
+                    <input className='auction_detial_bid_input' type="number" step='0.01'></input>
                     <input hidden readOnly id="xsrf_token" value={xsrf_token}></input>
                     <button className="auction_detial_bid_button" type='submit' onClick={handleBid}>BID</button>
                 </form>
