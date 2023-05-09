@@ -77,7 +77,8 @@ function Register() {
                         <header className="formheader">Create New Account</header>
                         <p>
                             <input name="image" type="file" id="image" onChange={handleImageChange} className="file-input" />
-                            <label htmlFor="image" className="file-input-label">{imageName || "Upload Profile Picture"}</label>
+                            <label htmlFor="image" className="file-input-label">{imageName || "Upload Profile Picture"}<br />(Not Required)</label>
+
                             {imagePreview && (
                                 <div className="upload-preview">
                                     <img src={imagePreview} alt="Profile" />
