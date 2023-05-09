@@ -216,6 +216,9 @@ class Database:
 
     @staticmethod
     def valid_money(number):
-        if len(str(number).split(".")[1]) > 2:
+        try:
+            if len(str(number).split(".")[1]) > 2:
+                return False
+        except IndexError as x:
             return False
         return True
