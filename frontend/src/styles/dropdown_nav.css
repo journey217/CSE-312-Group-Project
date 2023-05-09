@@ -7,11 +7,14 @@
     list-style: none;
     text-align: center;
     align-items: center;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
 }
 
 .dropdown_nav li {
     background: #424242;
     cursor: pointer;
+    
 }
 
 .dropdown_nav li a:hover {
@@ -19,6 +22,7 @@
     background: #2c2c2c;
     width: 80%;
     cursor: pointer;
+
 }
 
 .dropdown_nav.clicked {
