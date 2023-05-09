@@ -61,6 +61,7 @@ function AddListingPopup({ onClose, onSubmit }) {
           setErrors("");
           onSubmit()
           onClose()
+          window.location.reload();
         } else {
           setErrors(data.field);
         }
