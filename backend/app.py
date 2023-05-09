@@ -256,7 +256,7 @@ def add_item():
     starting_price = html.escape(starting_price)
     try:
         starting_price = float(starting_price)
-    except TypeError as x:
+    except ValueError as x:
         return jsonify({'status': 0, 'field': 'Please enter a valid price!'})
     if not db.valid_money(starting_price):
         return jsonify({'status': 0, 'field': 'Please enter a valid price to the nearest cent!'})
