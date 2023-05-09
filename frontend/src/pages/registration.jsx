@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../styles/registration.css";
 
-
+let stri = "hi"
 function Register() {
     const [image, setImage] = useState(null);
     const [errors, setErrors] = useState({
@@ -66,7 +66,7 @@ function Register() {
                         <input type="text" placeholder='Username' name='username' required />
                         {errors.email && <div className="error-message">{errors.email}</div>}
                         <input type="email" placeholder="Email" name="email" required />
-                        {errors.password1 && <div className="error-message">{errors.password1}</div>}
+                        {errors.password1 && <div className="error-message" dangerouslySetInnerHTML={{ __html: errors.password1}}></div>}
                         <input type="password" placeholder="Password" name="password1" required />
                         {errors.password2 && <div className="error-message">{errors.password2}</div>}
                         <input type="password" placeholder="Confirm Password" name="password2" required />

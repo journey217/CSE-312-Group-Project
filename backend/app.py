@@ -218,7 +218,7 @@ def register():
     # Validate password
     password_errors = strong_password_check(password1)
     if len(password_errors) != 0:
-        errors.append({'password1': '<br>'.join(password_errors)})
+        errors.append({'password1': '</br>'.join(password_errors)})
 
     # If there are errors, return them as a JSON response
     if errors:
