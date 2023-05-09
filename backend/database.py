@@ -190,7 +190,8 @@ class Database:
                 auctions.append({'name': auction['name'],
                                  'endtime': auction['end_time'].strftime("%m/%d/%Y, %H:%M:%S"),
                                  'ongoing': auction['end_time'] > datetime.utcnow(),
-                                 'price': auction['price']})
+                                 'price': auction['price'],
+                                 'auction_id': auction['ID']})
         return auctions
 
     def profile_page_bids(self, userID):

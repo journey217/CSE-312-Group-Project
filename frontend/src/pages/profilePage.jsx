@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/profilePage.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 export default function Login(page) {
@@ -9,7 +9,25 @@ export default function Login(page) {
     const [bidHistory, setBidHistory] = useState([])
     const [auctionHistory, setAuctionHistory] = useState([])
     const navigate = useNavigate()
+    const changeToEST = (dateString) => {
+        const date = new Date(dateString);
 
+        const options = {
+            weekday: 'short',
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+            timeZone: 'America/New_York'
+        };
+
+        const formatter = new Intl.DateTimeFormat('en-US', options);
+        const formattedDate = formatter.format(date);
+        return formattedDate
+    }
     useEffect(() => {
         fetch('/profile')
             .then(res => res.json())
@@ -48,21 +66,20 @@ export default function Login(page) {
                         <p className="item_row_title">Amount Bid:</p>
                     </div>
                     {auctionHistory && auctionHistory.map(item => (
+                        <Link key={item.id} to={`../item/${item.auction_id}`} style={{ textDecoration: 'none' }}>
+                            <div key={item.id} className="item_row" style={{
+                                backgroundColor: item.ongoing ? '#9AFF86' : '#CCCCCC',
+                                borderColor: item.ongoing ? '#43ac2d' : '#8E8E8E',
+                            }}>
 
-                        <div key={item.id} className="item_row" style={{
-                            backgroundColor: item.ongoing ? '#9AFF86' : '#CCCCCC',
-                            borderColor: item.ongoing ? '#43ac2d' : '#8E8E8E',
-                        }}>
-
-                            <div className="item_row_bottom">
-                                <p className="item_row_value">{item.name}</p>
-                                <p className="item_row_value">{item.endtime}</p>
-                                <p className="item_row_value">{item.ongoing ? "On Going" : "Ended"}</p>
-                                <p className="item_row_value">{item.price}</p>
+                                <div className="item_row_bottom">
+                                    <p className="item_row_value">{item.name}</p>
+                                    <p className="item_row_value">{changeToEST(item.endtime)}</p>
+                                    <p className="item_row_value">{item.ongoing ? "On Going" : "Ended"}</p>
+                                    <p className="item_row_value">{item.price}</p>
+                                </div>
                             </div>
-                        </div>
-
-
+                        </Link>
                     ))}
                 </div>
                 <div className="profile_bid_container">
@@ -81,7 +98,7 @@ export default function Login(page) {
                         }}>
                             <div className="item_row_bottom">
                                 <p className="item_row_value">{item.name}</p>
-                                <p className="item_row_value">{item.timestamp}</p>
+                                <p className="item_row_value">{changeToEST(item.timestamp)}</p>
                                 <p className="item_row_value">{item.ongoing ? "On Going" : "Ended"}</p>
                                 <p className="item_row_value">{item.price}</p>
                             </div>
