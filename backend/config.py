@@ -1,4 +1,4 @@
-FLASK_ENV = 'development'
+FLASK_ENV = 'production'
 UPLOAD_FOLDER = 'images'
 MAX_CONTENT_PATH = 10485760
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024

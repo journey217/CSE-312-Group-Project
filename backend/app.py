@@ -11,6 +11,7 @@ import html
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
+app.config['SECRET_KEY'] = os.urandom(100)
 db = Database()
 origins = "*"
 
@@ -51,8 +52,6 @@ def profile():
     output = {}
     cookieToken = request.cookies.get('authenticationToken', '')
     user = db.find_user_by_auth_token(cookieToken)
-    print("\nPrint user: ")
-    print(user)
     if user:
         output['username'] = user['username']
         output['email'] = user['email']
@@ -61,8 +60,6 @@ def profile():
         output['auctionHistory'] = db.profile_page_auctions(user['ID'])
         # Bid history
         output['bidHistory'] = db.profile_page_bids(user['ID'])
-        print("\nPrint output: ")
-        print(output)
         return jsonify({'status': 1, 'user': output})
     else:
         return jsonify({'status': 0})
@@ -91,12 +88,12 @@ def route_item(auction_id):
 
 @socketio.on('connect', namespace="/item")
 def handle_connect():
-    print('Client connected')
+    pass
 
 
 @socketio.on('disconnect', namespace="/item")
 def handle_disconnect():
-    print('Client disconnected')
+    pass
 
 
 @socketio.on('message', namespace="/item")
@@ -112,6 +109,7 @@ def handle_message(msg):
             emit("error", "Please sign out and sign back in.")
             return False
         token = UUID(xsrf_token)
+
         authenticate = db.users_collection.find_one({'username': user['username'], 'xsrf': token})
         if not authenticate:
             emit("error", "Please sign out and sign back in.")
@@ -156,7 +154,6 @@ def end_auction(msg):
 
 @app.route("/image/<filename>")
 def image(filename):
-    print(filename)
     if db.image_exists(filename):
         return send_from_directory('images', filename)
     return send_from_directory('images', 'NoImage.jpg')
