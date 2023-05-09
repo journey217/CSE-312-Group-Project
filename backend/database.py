@@ -188,9 +188,15 @@ class Database:
         if user:
             for auctionID in user.get('auctions_made'):
                 auction = self.find_by_ID(auctionID, DBType.Auction)
+                current_price = self.find_by_ID(auction['highest_bid'], DBType.Bid)
+                if current_price:
+                    winning = current_price['username']
+                else:
+                    winning = "No bids."
                 auctions.append({'name': auction['name'],
                                  'endtime': auction['end_time'].strftime("%m/%d/%Y, %H:%M:%S"),
                                  'ongoing': auction['end_time'] > datetime.utcnow(),
+                                 'winning': winning,
                                  'price': auction['price'],
                                  'auction_id': auction['ID']})
         return auctions

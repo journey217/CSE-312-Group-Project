@@ -63,6 +63,7 @@ export default function Login(page) {
                         <p className="item_row_title">Name:</p>
                         <p className="item_row_title">Time Ends:</p>
                         <p className="item_row_title">Status:</p>
+                        <p className="item_row_title">Highest Bidder:</p>
                         <p className="item_row_title">Amount Bid:</p>
                     </div>
                     {auctionHistory && auctionHistory.map(item => (
@@ -76,6 +77,7 @@ export default function Login(page) {
                                     <p className="item_row_value">{item.name}</p>
                                     <p className="item_row_value">{changeToEST(item.endtime)}</p>
                                     <p className="item_row_value">{item.ongoing ? "On Going" : "Ended"}</p>
+                                    <p className="item_row_value">{item.winning}</p>
                                     <p className="item_row_value">{item.price}</p>
                                 </div>
                             </div>
