@@ -9,12 +9,11 @@ export let socket = io.connect(`https://${window.location.hostname}/item`, {
 })
 
 socket.on('message', function (data) {
-    addMessage(data)
+    addMessage(data);
 });
 
 socket.on('winner', function (data) {
-    redirect('/')
-    addWinner(data)
+    addWinner(data);
 });
 
 const addMessage = (data) => {

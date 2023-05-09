@@ -87,7 +87,8 @@ export default function Login(page) {
                     <div className="item_row_top">
                         <p className="item_row_title">Name:</p>
                         <p className="item_row_title">Time Ends:</p>
-                        <p className="item_row_title">Status:</p>
+                        <p className="item_row_title">Bid Status:</p>
+                        <p className="item_row_title">Auction Status:</p>
                         <p className="item_row_title">Amount Bid:</p>
                     </div>
                     {bidHistory && bidHistory.map(item => (
@@ -99,6 +100,7 @@ export default function Login(page) {
                             <div className="item_row_bottom">
                                 <p className="item_row_value">{item.name}</p>
                                 <p className="item_row_value">{changeToEST(item.timestamp)}</p>
+                                <p className="item_row_value">{item.winning ? "Winning" : "Outbid"}</p>
                                 <p className="item_row_value">{item.ongoing ? "On Going" : "Ended"}</p>
                                 <p className="item_row_value">{item.price}</p>
                             </div>

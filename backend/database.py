@@ -202,6 +202,7 @@ class Database:
             auction = self.find_by_ID(bid['auctionID'], DBType.Auction)
             output_bids.append({'name': auction['name'],
                                 'timestamp': bid['timestamp'].strftime("%m/%d/%Y, %H:%M:%S"),
+                                'ongoing': auction['end_time'] > datetime.utcnow(),
                                 'price': bid['price'],
                                 'status': bid['winning']})
         return output_bids
