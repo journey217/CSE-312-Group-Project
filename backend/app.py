@@ -18,6 +18,8 @@ origins = "*"
 # initialize your socket instance
 socketio = SocketIO(app, namespace="item", cors_allowed_origins=origins)
 
+condition_array = ['Brand New', 'Like New', 'Good', 'Fair', 'Poor']
+
 
 @app.route("/myUsername")
 def username():
@@ -256,6 +258,8 @@ def add_item():
     item_desc = html.escape(item_desc)
     condition = request.form.get('condition')
     condition = html.escape(condition)
+    if condition not in condition_array:
+        return jsonify({'status': 0, 'field': 'Please select a valid condition!'})
     end_date = request.form.get('date')
     end_date = html.escape(end_date)
     try:
