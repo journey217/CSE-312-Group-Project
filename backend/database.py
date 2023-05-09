@@ -63,7 +63,7 @@ class Database:
         try:
             if datetime.utcnow() >= current_auction['end_time']:
                 return "Auction is Over"
-            elif price <= current_auction['price']:
+            elif price <= float(current_auction['price']):
                 return "Submitted Bid is Smaller than the Current Winning Bid"
             elif not self.valid_money(price):
                 return "Please Submit a Valid $ Bid"
