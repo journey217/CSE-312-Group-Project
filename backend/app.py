@@ -254,6 +254,12 @@ def add_item():
     item_name = html.escape(item_name)
     starting_price = request.form.get('Item_Price')
     starting_price = html.escape(starting_price)
+    try:
+        starting_price = float(starting_price)
+    except TypeError as x:
+        return jsonify({'status': 0, 'field': 'Please enter a valid price!'})
+    if not db.valid_money(starting_price):
+        return jsonify({'status': 0, 'field': 'Please enter a valid price to the nearest cent!'})
     item_desc = request.form.get('Item_Desc')
     item_desc = html.escape(item_desc)
     condition = request.form.get('condition')
