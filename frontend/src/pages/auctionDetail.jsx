@@ -32,7 +32,8 @@ const addMessage = (data) => {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        timeZoneName: 'short'
+        timeZoneName: 'short',
+        timeZone: 'America/New_York'
     });
     const formattedDate = formatter.format(now);
 

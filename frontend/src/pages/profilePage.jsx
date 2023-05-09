@@ -10,7 +10,7 @@ export default function Login(page) {
     const [auctionHistory, setAuctionHistory] = useState([])
     const navigate = useNavigate()
     const changeToEST = (dateString) => {
-        const date = new Date(dateString);
+        const date = new Date(`${dateString} GMT`);
 
         const options = {
             weekday: 'short',
