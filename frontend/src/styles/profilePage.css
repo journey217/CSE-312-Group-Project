@@ -1,5 +1,4 @@
 .profile_background {
-    background-color: #2C2C3C;
     width: 100vw;
     height: 90vh;
     position: relative;
@@ -101,8 +100,13 @@
 }
 
 .item_row p {
-    margin-top: 10px; /* or any desired value */
-}
+    color: rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Set height to 100% to occupy the full height of the .item_row container */
+  }
+  
 
 .item_row_top{
     text-align: center;
@@ -111,7 +115,6 @@
     padding: 10px;
     height: 25px; /* or any desired height */
     border-style: none;
-    color:white;
     font-weight: 10;
 }
 

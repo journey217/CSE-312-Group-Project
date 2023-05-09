@@ -1,20 +1,11 @@
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
+
 
 .landing_page {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #2C2C3C;
-
     gap: 10px;
-    width: 100vw;
     height: 100vh;
 }
 
@@ -102,6 +93,7 @@ body {
 }
 
 .landing_category_new_item {
+
     appearance: none;
     border: none;
 
@@ -111,11 +103,6 @@ body {
     width: 90px;
     height: 35px;
 
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 24px;
     text-align: center;
 
     color: #FFFFFF;
@@ -126,6 +113,7 @@ body {
 .landing_category_new_item:hover {
     background-color: #37AA91;
     box-shadow: none;
+    
 }
 
 .landing_category_container {
@@ -183,6 +171,7 @@ body {
     background-color: #424242;
     width: 90%;
     height: 80%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 
     overflow: auto;
 }
@@ -191,21 +180,27 @@ body {
     flex: 0 0 calc(25% - 10px);
     align-items: flex-start;
     margin: 10px;
-    background: #424242;
+    background: #2c2b2b;
     outline: 1px solid #333333;
     padding: 10px;
     text-align: center;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
     max-width: 250px;
     max-height: 250px;
     box-sizing: border-box;
+    transition: transform 0.2s ease-out;
 }
 
 .landing_items_container :hover {
     background: #4A4646;
     outline: 1px solid #8F8F8F;
+    cursor:pointer;
 }
 
 .landing_items_item_img {
+    border-radius: 10px;
+
     pointer-events: none;
     width: 70%;
     height: 70%;

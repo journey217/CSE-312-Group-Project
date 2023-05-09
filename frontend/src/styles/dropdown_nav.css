@@ -10,12 +10,13 @@
 }
 
 .dropdown_nav li {
-    background: blue;
+    background: #424242;
     cursor: pointer;
 }
 
 .dropdown_nav li a:hover {
-    background: rgb(105, 105, 184);
+    border-radius: 0;
+    background: #2c2c2c;
     width: 80%;
     cursor: pointer;
 }
